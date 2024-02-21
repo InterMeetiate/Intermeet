@@ -7,4 +7,5 @@
     tools:context=".LoginActivity"
     android:background="@drawable/gradient_list">
 
+
 </androidx.constraintlayout.widget.ConstraintLayout>

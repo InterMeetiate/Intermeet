@@ -7,6 +7,12 @@
     <string name="what_s_your">
         Whats your name?
     </string>
+    <string name="what_email">
+        Whats your email?
+    </string>
+    <string name="just_incase">
+        Just incase we need to reach out to you !
+    </string>
     <string name="you_should_">
         You should get to know each others names first.
     </string>

@@ -4,4 +4,13 @@
     <string name="app_motto">Where we initiate the meet between you and others</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
+    <string name="what_s_your">
+        Whats your name?
+    </string>
+    <string name="you_should_">
+        You should get to know each others names first.
+    </string>
+    <string name="next">Next</string>
+    <string name="make_a_pass">Make a password!</string>
+    <string name="we_want_to_">We want to make sure your account stays safe and secure!</string>
 </resources>

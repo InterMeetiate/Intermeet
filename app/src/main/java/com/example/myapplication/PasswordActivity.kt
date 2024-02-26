@@ -10,13 +10,13 @@ class PasswordActivity : AppCompatActivity(){
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password)
-        //ButtonFunc()
+        ButtonFunc()
     }
 
     private
     fun ButtonFunc()
     {
-        val nextButton: Button = findViewById(R.id.next_button_Password)
+        val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
             val intent = Intent(this, PasswordActivity::class.java)
             startActivity(intent)

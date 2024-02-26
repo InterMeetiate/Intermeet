@@ -2,61 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/passwordLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".PasswordActivity">
+    android:background="@color/white">
+
+
+    <!--        android:textColor="@color/black"-->
+<!--        android:textColorHint="@color/black"-->
 
     <TextView
-        android:id="@+id/make_a_pass"
-        android:layout_width="351dp"
-        android:layout_height="58dp"
+        android:id="@+id/what_s_your"
+        android:layout_width="383dp"
+        android:layout_height="53dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="top"
-        android:text="@string/make_a_pass"
-        android:textAppearance="@style/sign_up_heading"
+        android:text="@string/what_email"
+        android:textAppearance="@style/email_up"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.483"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.248" />
+        app:layout_constraintVertical_bias="0.251" />
 
     <TextView
-        android:id="@+id/we_want_to_"
-        android:layout_width="320dp"
-        android:layout_height="55dp"
+        android:id="@+id/just_incase"
+        android:layout_width="377dp"
+        android:layout_height="39dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="top"
-        android:text="@string/we_want_to_"
-        android:textAppearance="@style/sign_up_p1"
+        android:text="@string/just_incase"
+        android:textAppearance="@style/just_incase"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.318"
+        app:layout_constraintHorizontal_bias="0.823"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.334" />
+        app:layout_constraintVertical_bias="0.325" />
 
     <EditText
-        android:id="@+id/password"
-        android:layout_width="321dp"
-        android:layout_height="41dp"
-        android:background="@drawable/edittext_border"
-        android:backgroundTint="@color/gray"
-        android:hint="Password"
-        android:padding="12dp"
+        android:id="@+id/username_input"
+        android:layout_width="352dp"
+        android:layout_height="43dp"
+        android:background="@drawable/rounded_corner"
+        android:hint="e.g.contact@intermediate.com"
+        android:inputType="text"
+        android:padding="10dp"
         android:textColor="@color/black"
         android:textColorHint="@color/dark_gray"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.322"
+        app:layout_constraintHorizontal_bias="0.474"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.44" />
+        app:layout_constraintVertical_bias="0.408" />
 
     <Button
         android:id="@+id/next_button"
@@ -67,9 +70,10 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.803"
+        app:layout_constraintHorizontal_bias="0.834"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.516" />
+        app:layout_constraintVertical_bias="0.52" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

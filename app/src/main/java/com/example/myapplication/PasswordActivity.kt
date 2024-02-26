@@ -1,25 +1,22 @@
 package com.example.myapplication
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AppCompatActivity
 
-
-class SignupActivity : AppCompatActivity()
-{
+class PasswordActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
-        ButtonFunc()
+        setContentView(R.layout.activity_password)
+        //ButtonFunc()
     }
 
     private
     fun ButtonFunc()
     {
-        val nextButton: Button = findViewById(R.id.next_button)
+        val nextButton: Button = findViewById(R.id.next_button_Password)
         nextButton.setOnClickListener{
             val intent = Intent(this, PasswordActivity::class.java)
             startActivity(intent)

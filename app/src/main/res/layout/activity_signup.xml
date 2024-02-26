@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SignupActivity"
@@ -25,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.24000001" />
+        app:layout_constraintVertical_bias="0.159" />
 
     <EditText
         android:id="@+id/signupUsername"
@@ -41,7 +42,7 @@
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.42000002" />
+        app:layout_constraintVertical_bias="0.351" />
 
     <TextView
         android:id="@+id/you_should_"
@@ -60,14 +61,13 @@
         app:layout_constraintVertical_bias="0.022" />
 
     <EditText
-        android:id="@+id/signupPassword"
+        android:id="@+id/signupUsername2"
         android:layout_width="276dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
         android:background="@drawable/edittext_border"
         android:backgroundTint="@color/gray"
         android:hint="Last Name"
-        android:inputType="textPassword"
         android:padding="12dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +75,7 @@
         app:layout_constraintHorizontal_bias="0.436"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.49" />
+        app:layout_constraintVertical_bias="0.419" />
 
     <Button
         android:id="@+id/next_button"

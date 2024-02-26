@@ -32,7 +32,6 @@ class BeginningActivity : AppCompatActivity() {
         signupbutton.setOnClickListener{
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
-
         }
     }
 }

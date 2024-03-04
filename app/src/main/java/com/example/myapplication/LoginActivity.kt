@@ -15,15 +15,15 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        buttonFunc()
+
 
         // Initializing firebase auth
         auth = FirebaseAuth.getInstance()
 
-        val emailEditText: EditText = findViewById(R.id.signupemail)
-        val passwordEditText: EditText = findViewById(R.id.signupPassword)
+        val emailEditText: EditText = findViewById(R.id.signInEmail)
+        val passwordEditText: EditText = findViewById(R.id.signInPassword)
         val loginButton: Button = findViewById(R.id.loginButton)
-        val signUpButton: Button = findViewById(R.id.loginText)
+        val signUpButton: Button = findViewById(R.id.signUpButton)
         val forgotPasswordButton: Button = findViewById(R.id.forgotPassword)
 
         loginButton.setOnClickListener {
@@ -31,6 +31,12 @@ class LoginActivity : AppCompatActivity() {
             val password = passwordEditText.text.toString().trim()
 
             logIn(email, password)
+        }
+
+        signUpButton.setOnClickListener {
+            // Intent to navigate to the SecondActivity
+            val intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -43,8 +49,10 @@ class LoginActivity : AppCompatActivity() {
                     updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     updateUI(null)
                 }
             }
@@ -64,13 +72,13 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(baseContext, "Please sign in to continue.", Toast.LENGTH_SHORT).show()
         }
     }
-    private
-    fun buttonFunc(){
-        val signInButton: Button = findViewById(R.id.loginText)
-        signInButton.setOnClickListener {
-            // Intent to navigate to the SecondActivity
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
-        }
-}
+
+//    private
+//    fun buttonFunc() {
+//        signUpButton.setOnClickListener {
+//            // Intent to navigate to the SecondActivity
+//            val intent = Intent(this, SignupActivity::class.java)
+//            startActivity(intent)
+//        }
+//    }
 }

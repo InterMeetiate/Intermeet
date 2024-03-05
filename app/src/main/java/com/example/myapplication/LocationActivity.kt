@@ -6,17 +6,22 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class LocationActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
         ButtonFunc()
     }
-    private fun ButtonFunc()
-    {
-        val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener{
-            val intent = Intent(this, LocationActivity::class.java)
+
+    private fun ButtonFunc() {
+        val agreeButton: Button = findViewById(R.id.accept)
+        agreeButton.setOnClickListener {
+            //probably have logic here to handle notifications
+            val intent = Intent(this, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+        val signUpButton: Button = findViewById(R.id.decline)
+        signUpButton.setOnClickListener {
+            val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
     }

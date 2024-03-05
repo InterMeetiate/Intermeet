@@ -16,7 +16,8 @@ class NotificationActivity : AppCompatActivity(){
     fun ButtonFunc(){
         val agreeButton: Button = findViewById(R.id.Agree)
         agreeButton.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            //probably have logic here to handle notifications
+            val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
         val signUpButton: Button = findViewById(R.id.notAllow)

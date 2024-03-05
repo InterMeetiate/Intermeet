@@ -18,10 +18,10 @@
         android:textAppearance="@style/location_subtext"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.264" />
+        app:layout_constraintVertical_bias="0.253" />
 
     <TextView
         android:id="@+id/location_text"
@@ -51,18 +51,32 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/next_button"
+        android:id="@+id/accept"
         android:layout_width="102dp"
         android:layout_height="57dp"
         android:background="@drawable/black_button"
-        android:text="@string/decide"
+        android:text="@string/accept"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.258"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.737" />
+
+    <Button
+        android:id="@+id/decline"
+        android:layout_width="102dp"
+        android:layout_height="57dp"
+        android:background="@drawable/black_button"
+        android:text="@string/decline"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.736" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

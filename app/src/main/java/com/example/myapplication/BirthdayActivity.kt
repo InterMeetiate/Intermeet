@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -20,6 +21,7 @@ class BirthdayActivity : AppCompatActivity(){
         selectDate.setOnClickListener {
             showDatePickerDialog()
         }
+        ButtonFunc()
     }
     private fun showDatePickerDialog() {
         val cal = Calendar.getInstance()
@@ -35,5 +37,13 @@ class BirthdayActivity : AppCompatActivity(){
                 tvDate.text = "${dayStr}-${monthStr}-${year}"
             }
         })
+    }
+    private fun ButtonFunc()
+    {
+        val nextButton: Button = findViewById(R.id.next_button)
+        nextButton.setOnClickListener{
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

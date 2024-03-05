@@ -28,6 +28,9 @@
             android:name=".BirthdayActivity"
             android:exported="false" />
         <activity
+            android:name=".LocationActivity"
+            android:exported="false"/>
+        <activity
             android:name=".BeginningActivity"
             android:exported="true">
             <intent-filter>

@@ -10,6 +10,15 @@
     <string name="what_email">
         Whats your email?
     </string>
+    <string name="what_birthday">
+        Whats your birthday?
+    </string>
+    <string name="location_access">
+        Can we introduce you to people nearby?
+    </string>
+    <string name="location_subtext">
+        Location is a must - its how we set you up with the real people you can meet
+    </string>
     <string name="just_incase">
         Just incase we need to reach out to you !
     </string>
@@ -17,6 +26,7 @@
         You should get to know each others names first.
     </string>
     <string name="next">Next</string>
+    <string name="decide">Decide</string>
     <string name="make_a_pass">Make a password!</string>
     <string name="we_want_to_">We want to make sure your account stays safe and secure!</string>
     <string name="textview_email">Email</string>

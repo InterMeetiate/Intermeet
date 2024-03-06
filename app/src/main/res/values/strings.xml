@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Intermeet</string>
     <string name="logo">LOGO</string>
+    <string name="give_an_intro">Give an intro about yourself</string>
     <string name="app_motto">Where we initiate the meet between you and others</string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
+    <string name="i_am">I am...</string>
     <string name="what_s_your">
         Whats your name?
     </string>

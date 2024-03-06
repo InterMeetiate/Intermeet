@@ -24,4 +24,34 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="no_account_sign_up">Don\'t have an account? Signup</string>
+    <string name="get_to_know">
+    Lets get to know you a bit more
+    </string>
+    <string name="gender">
+        Gender
+    </string>
+    <string name="height">
+        Height
+    </string>
+    <string name="religion">
+        Religion
+    </string>
+    <string name="race">
+        Ethnicity 
+    </string>
+    <string name="work">
+        Occupation
+    </string>
+    <string name="sex">
+        Sexuality
+    </string>
+    <string name="pronoun">
+        Pronouns
+    </string>
+    <string name="interest">
+        Interests
+    </string>
+    <string name="input_default">
+        >
+    </string>
 </resources>

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-
+/*test*/
 class UserInfoActivity : AppCompatActivity() {
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView

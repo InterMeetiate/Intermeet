@@ -2,15 +2,24 @@ package com.example.myapplication
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-/*test*/
-class UserInfoActivity : AppCompatActivity() {
+import com.example.myapplication.OccupationFragment.OccupationListener
+import com.example.myapplication.OccupationFragment
+import com.example.myapplication.PronounFragment.PronounListener
+import com.example.myapplication.PronounFragment
+
+class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
+    PronounFragment.PronounListener {
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
     private lateinit var tvEthnicity: TextView
+    private lateinit var tvJob: TextView // TextView for occupation
+    private lateinit var tvSex: TextView
+    private lateinit var tvPronoun: TextView
     private val genders = arrayOf("Male", "Female", "Nonbinary", "Other")
     private val heights = arrayOf(
         "3'0","3'1","3'2","3'3","3'4","3'5","3'6","3'7","3'8","3'9","3'10","3'11",
@@ -24,10 +33,16 @@ class UserInfoActivity : AppCompatActivity() {
     private val ethnicity = arrayOf(
         "Black/African Descent", "East Asian", "Hispanic/Latino", "Middle Eastern", "Native American",
         "Pacific Islander", "South Asian", "Southeast Asian", "White/Caucasian", "Other", "Prefer not to say")
+    private val sexuality = arrayOf(
+        "Straight", "Gay", "Lesbian", "Bisexual", "Asexual", "Pansexual", "Queer", "Other")
+
     private var selectedGender: String? = null
     private var selectedHeight: String? = null
     private var selectedReligion: String? = null
     private var selectedEthnicity: String? = null
+    private var selectedJob: String? = null // Variable to store the occupation
+    private var selectedSex: String? = null
+    private var selectedPronoun: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +64,46 @@ class UserInfoActivity : AppCompatActivity() {
         tvEthnicity.setOnClickListener {
             showEthnicityPicker()
         }
+        tvJob= findViewById(R.id.tvJob)
+        tvJob.setOnClickListener {
+            tvJob.visibility = View.GONE
+            val occupationFragment = OccupationFragment().also {
+                // "this" is UserInfoActivity which implements OccupationListener
+                it.setOccupationListener(this)
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container1, occupationFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+        tvSex = findViewById(R.id.tvSex)
+        tvSex.setOnClickListener {
+            showSexualityPicker()
+        }
+        tvPronoun= findViewById(R.id.tvPronoun)
+        tvPronoun.setOnClickListener {
+            tvPronoun.visibility = View.GONE
+            val pronounFragment = PronounFragment().also {
+                it.setPronounListener(this)
+            }
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container2, pronounFragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
+    }
+    override fun onOccupationEntered(occupation: String) {
+        tvJob.text = "$occupation >"
+        selectedJob = occupation
+        tvJob.visibility = View.VISIBLE
+    }
+    override fun onPronounEntered(pronoun: String) {
+        tvPronoun.text = "$pronoun >"
+        selectedPronoun = pronoun
+        tvPronoun.visibility = View.VISIBLE
     }
 
     private fun showGenderPicker() {
@@ -128,4 +183,35 @@ class UserInfoActivity : AppCompatActivity() {
             setNegativeButton("Cancel", null)
         }.show()
     }
+    private fun showSexualityPicker() {
+        val numberPicker = NumberPicker(this).apply {
+            minValue = 0
+            maxValue = sexuality.size - 1
+            displayedValues = sexuality
+            wrapSelectorWheel = true
+        }
+
+        AlertDialog.Builder(this).apply {
+            setTitle("Select Your Sexuality")
+            setView(numberPicker)
+            setPositiveButton("OK") { _, _ ->
+                /*Updates user Sexuality input*/
+                selectedSex = sexuality[numberPicker.value]
+                tvSex.text = "${sexuality[numberPicker.value]} >"
+            }
+            setNegativeButton("Cancel", null)
+        }.show()
+    }
+    override fun onResume() {
+        super.onResume()
+        tvJob.visibility = View.VISIBLE
+        tvPronoun.visibility = View.VISIBLE
+        // similarly for the button if it's a separate view
+    }
+}
+interface OccupationListener {
+    fun onOccupationEntered(occupation: String)
+}
+interface PronounListener {
+    fun onPronounEntered(pronoun: String)
 }

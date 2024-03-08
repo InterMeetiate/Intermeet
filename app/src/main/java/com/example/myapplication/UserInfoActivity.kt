@@ -2,17 +2,16 @@ package com.example.myapplication
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.OccupationFragment.OccupationListener
-import com.example.myapplication.OccupationFragment
-import com.example.myapplication.PronounFragment.PronounListener
-import com.example.myapplication.PronounFragment
 
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
-    PronounFragment.PronounListener {
+    PronounFragment.PronounListener, TagsFragment.TagsSelectionListener {
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
@@ -20,6 +19,8 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
     private lateinit var tvJob: TextView // TextView for occupation
     private lateinit var tvSex: TextView
     private lateinit var tvPronoun: TextView
+    private lateinit var tvOccupation: TextView
+    private lateinit var tagsDisplay: TextView // TextView to display selected tags
     private val genders = arrayOf("Male", "Female", "Nonbinary", "Other")
     private val heights = arrayOf(
         "3'0","3'1","3'2","3'3","3'4","3'5","3'6","3'7","3'8","3'9","3'10","3'11",
@@ -93,6 +94,18 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
                 .addToBackStack(null)
                 .commit()
         }
+        val tagsFragment = TagsFragment().also {
+            it.setTagsSelectionListener(this)
+        }
+        val btnAddTags = findViewById<Button>(R.id.addTagButton)
+        btnAddTags.setOnClickListener {
+            val tagsFragment = TagsFragment()
+            // Assuming you have a FrameLayout with the ID fragment_container in your layout
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container3, tagsFragment)
+                .addToBackStack(null) // Add this transaction to the back stack
+                .commit()
+        }
 
     }
     override fun onOccupationEntered(occupation: String) {
@@ -105,6 +118,13 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         selectedPronoun = pronoun
         tvPronoun.visibility = View.VISIBLE
     }
+
+    override fun onTagsSelected(selectedTags: List<String>) {
+        // This method will be called when the tags are selected in the fragment.
+        // Update your UI or data model accordingly.
+        tagsDisplay.text = selectedTags.joinToString(", ")
+    }
+
 
     private fun showGenderPicker() {
         val numberPicker = NumberPicker(this).apply {

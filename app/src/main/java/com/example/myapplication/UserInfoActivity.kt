@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
     PronounFragment.PronounListener, TagsFragment.OnTagsSelectedListener {
@@ -135,11 +137,21 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         tags.forEach { tag ->
             val textView = TextView(this).apply {
                 text = tag
+                gravity = Gravity.CENTER
+                textSize = 14f // Set the text size or use resources
                 setTextColor(Color.BLACK)
+                background = ContextCompat.getDrawable(context, R.drawable.tag_background)
+                setPadding(1, 2, 2, 1) // Set padding (left, top, right, bottom)
+
                 layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                )
+                ).apply {
+                    // Add layout parameters if necessary, e.g., margins
+                    if (this is ViewGroup.MarginLayoutParams) {
+                        setMargins(0, 0, 0, 0) // Set margins (left, top, right, bottom)
+                    }
+                }
                 // Add styling here if needed
             }
             tagsContainer.addView(textView)

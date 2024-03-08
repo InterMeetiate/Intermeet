@@ -28,7 +28,7 @@
                 android:id="@+id/foodTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -44,7 +44,7 @@
                 android:id="@+id/entertainmentTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -60,7 +60,7 @@
                 android:id="@+id/creativityTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -76,7 +76,7 @@
                 android:id="@+id/musicTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -92,7 +92,7 @@
                 android:id="@+id/socialTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -108,7 +108,7 @@
                 android:id="@+id/valuesTagsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:orientation="horizontal"
                 android:padding="4dp">
@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:columnCount="3"
+                android:columnCount="2"
                 android:rowCount="2"
                 android:padding="4dp">
 

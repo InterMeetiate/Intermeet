@@ -1,17 +1,20 @@
 package com.example.myapplication
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
-    PronounFragment.PronounListener, TagsFragment.TagsSelectionListener {
+    PronounFragment.PronounListener, TagsFragment.OnTagsSelectedListener {
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
@@ -21,6 +24,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
     private lateinit var tvPronoun: TextView
     private lateinit var tvOccupation: TextView
     private lateinit var tagsDisplay: TextView // TextView to display selected tags
+    private lateinit var btnNavigateFragment: TextView
     private val genders = arrayOf("Male", "Female", "Nonbinary", "Other")
     private val heights = arrayOf(
         "3'0","3'1","3'2","3'3","3'4","3'5","3'6","3'7","3'8","3'9","3'10","3'11",
@@ -94,19 +98,24 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
                 .addToBackStack(null)
                 .commit()
         }
-        val tagsFragment = TagsFragment().also {
-            it.setTagsSelectionListener(this)
-        }
-        val btnAddTags = findViewById<Button>(R.id.addTagButton)
-        btnAddTags.setOnClickListener {
-            val tagsFragment = TagsFragment()
-            // Assuming you have a FrameLayout with the ID fragment_container in your layout
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container3, tagsFragment)
-                .addToBackStack(null) // Add this transaction to the back stack
-                .commit()
+
+        btnNavigateFragment = findViewById(R.id.addTagButton) // Replace with your actual button ID
+        btnNavigateFragment.setOnClickListener {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container3, TagsFragment())
+            transaction.addToBackStack(null) // Add this transaction to the back stack (optional)
+            transaction.commit()
+
         }
 
+
+    }
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
     }
     override fun onOccupationEntered(occupation: String) {
         tvJob.text = "$occupation >"
@@ -118,12 +127,29 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         selectedPronoun = pronoun
         tvPronoun.visibility = View.VISIBLE
     }
+    override fun onTagsSelected(tags: List<String>) {
+        // Assuming you have a LinearLayout (tagsContainer) to add tags TextViews
+        val tagsContainer: LinearLayout = findViewById(R.id.customTagsContainer)
+        tagsContainer.removeAllViews() // Clear previous tags if any
 
-    override fun onTagsSelected(selectedTags: List<String>) {
-        // This method will be called when the tags are selected in the fragment.
-        // Update your UI or data model accordingly.
-        tagsDisplay.text = selectedTags.joinToString(", ")
+        tags.forEach { tag ->
+            val textView = TextView(this).apply {
+                text = tag
+                setTextColor(Color.BLACK)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                // Add styling here if needed
+            }
+            tagsContainer.addView(textView)
+        }
+        val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton)
+        btnNavigateFragment.visibility = View.VISIBLE
+        tagsContainer.visibility = View.VISIBLE
+        Log.d("UserInfoActivity", "Tags received: $tags")
     }
+
 
 
     private fun showGenderPicker() {
@@ -226,8 +252,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         super.onResume()
         tvJob.visibility = View.VISIBLE
         tvPronoun.visibility = View.VISIBLE
+        println("here")
+        val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton) // Adjust ID as needed
+        btnNavigateFragment.visibility = View.VISIBLE // Make the button visible again
         // similarly for the button if it's a separate view
+
     }
+
+
 }
 interface OccupationListener {
     fun onOccupationEntered(occupation: String)
@@ -235,3 +267,9 @@ interface OccupationListener {
 interface PronounListener {
     fun onPronounEntered(pronoun: String)
 }
+interface OnTagsSelectedListener {
+    fun onTagsSelected(tags: List<String>)
+}
+
+// In your fragment
+

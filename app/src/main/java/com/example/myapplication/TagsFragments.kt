@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -12,13 +13,20 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.GridLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import android.util.Log
+
 
 class TagsFragment : Fragment() {
 
     private val selectedTags = mutableListOf<String>()
-    private var listener: TagsSelectionListener? = null
+
+    private var tagsSelectedListener: OnTagsSelectedListener? = null
+
+
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,7 +85,7 @@ class TagsFragment : Fragment() {
                 if (tag.isNotEmpty() && selectedTags.size < 6) {
                     selectedTags.add(tag)
                     // Update the UI accordingly
-                    v.setText("")  // Clear the EditText after adding the tag
+                      // Clear the EditText after adding the tag
                 }
                 true // Return true because the event has been handled
             } else {
@@ -118,28 +126,93 @@ class TagsFragment : Fragment() {
     }
 
     private fun toggleTagSelection(tag: String) {
-        // Implementation to add/remove the tag from selectedTags and update UI accordingly
+        if (selectedTags.contains(tag)) {
+            selectedTags.remove(tag)
+            Log.d("TagsFragment", "Tag removed: $tag")
+        } else {
+            // Check to ensure you don't exceed the maximum number of allowed tags
+            if (selectedTags.size < 6) {
+                selectedTags.add(tag)
+                Log.d("TagsFragment", "Tag added: $tag")
+            } else {
+                Log.d("TagsFragment", "Cannot add more tags. Limit reached.")
+            }
+        }
+        // Optionally, update the UI here to reflect the selection state
     }
 
-    interface TagsSelectionListener {
-        fun onTagsSelected(selectedTags: List<String>)
+
+    interface TagSelectionListener {
+        fun onTagSelected(tag: String)
     }
 
-    fun setTagsSelectionListener(listener: UserInfoActivity) {
-        this.listener = listener
-    }
 
-    private fun doneSelectingTags() {
-        listener?.onTagsSelected(selectedTags)
-        // Possibly pop back the fragment or navigate accordingly
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.btnBackToActivity).setOnClickListener {
-            activity?.onBackPressed()
+        val customTagInput = view.findViewById<EditText>(R.id.customTagInput)
+        customTagInput.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Code to handle the input, e.g., creating a tag
+                val tagText = customTagInput.text.toString().trim()
+                if (tagText.isNotEmpty()) {
+                    // Create the tag
+                    createTag(tagText)
+                    // Clear the EditText for the next input
+                    customTagInput.text.clear()
+                }
+                true  // Return true as we have handled the action
+            } else {
+                false  // Return false to let the system handle the action
+            }
         }
+        val backButton = view.findViewById<Button>(R.id.btnBackToActivity)
+        backButton.setOnClickListener {
+            sendSelectedTagsBack()
+            // Pop the current fragment off the back stack
+            parentFragmentManager.popBackStack()
+        }
+
     }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        tagsSelectedListener = context as? OnTagsSelectedListener
+    }
+
+
+    fun sendSelectedTagsBack() {
+        tagsSelectedListener?.onTagsSelected(selectedTags) // selectedTags should be the list of tags the user has selected
+        parentFragmentManager.popBackStack()
+    }
+    private fun createTag(tagText: String) {
+        // Find the LinearLayout where tags will be added
+        val customTagsContainer = view?.findViewById<LinearLayout>(R.id.customTagsContainer)
+
+        // Create a TextView for the new tag
+        val tagView = TextView(context).apply {
+            text = tagText
+            textSize = 14f // Adjust the text size as needed
+            setTextColor(Color.WHITE) // Set the text color to white
+            setBackgroundColor(Color.BLACK) // Set the background color to black
+            setPadding(16, 8, 16, 8) // Adjust the padding as needed
+
+            // Define layout parameters including margins
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(8, 8, 8, 8) // Adjust the margins as needed
+            }
+            this.layoutParams = layoutParams
+        }
+
+        // Add the newly created tag view to the LinearLayout
+        customTagsContainer?.addView(tagView)
+    }
+    interface OnTagsSelectedListener {
+        fun onTagsSelected(tags: List<String>)
+    }
+
     companion object {
         @JvmStatic
         fun newInstance() = TagsFragment()

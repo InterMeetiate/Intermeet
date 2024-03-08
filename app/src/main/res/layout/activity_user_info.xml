@@ -314,7 +314,7 @@
 
 
     <TextView
-        android:id="@+id/selectedTagsTextView"
+        android:id="@+id/selectedTagTextView"
         android:layout_width="349dp"
         android:layout_height="168dp"
         android:layout_marginTop="56dp"
@@ -324,7 +324,7 @@
         app:layout_constraintStart_toStartOf="@+id/interests"
         app:layout_constraintTop_toBottomOf="@+id/view" />
 
-    <Button
+    <TextView
         android:id="@+id/addTagButton"
         android:layout_width="113dp"
         android:layout_height="44dp"

@@ -17,17 +17,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import android.util.Log
+import androidx.fragment.app.activityViewModels
 
 
 class TagsFragment : Fragment() {
-
+    val sharedViewModel: SharedViewModel by activityViewModels()
     private val selectedTags = mutableListOf<String>()
 
     private var tagsSelectedListener: OnTagsSelectedListener? = null
-
-
-
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tags_fragments, container, false)
@@ -79,17 +76,20 @@ class TagsFragment : Fragment() {
 
         // Custom tag input
         val customTagInput = view.findViewById<EditText>(R.id.customTagInput)
-        customTagInput.setOnEditorActionListener { v: TextView, actionId: Int, _ ->
+        customTagInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val tag = v.text.toString()
-                if (tag.isNotEmpty() && selectedTags.size < 6) {
-                    selectedTags.add(tag)
-                    // Update the UI accordingly
-                      // Clear the EditText after adding the tag
+                val tagText = v.text.toString().trim()
+                if (tagText.isNotEmpty()) {
+                    if (!selectedTags.contains(tagText) && selectedTags.size < 6) {
+                        selectedTags.add(tagText)
+                        createTag(tagText) // Optional: Update the UI with the new tag
+                        v.text = ""  // Corrected line
+                        Log.d("TagsFragment", "Custom tag added: $tagText")
+                    }
                 }
-                true // Return true because the event has been handled
+                true  // Indicate that the action has been handled
             } else {
-                false // Return false to let the system handle the event
+                false  // Let the system handle the event
             }
         }
 
@@ -149,7 +149,11 @@ class TagsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        sharedViewModel.selectedTags.observe(viewLifecycleOwner) { tags ->
+            tags.forEach { tag ->
+                createTag(tag)
+            }
+        }
         val customTagInput = view.findViewById<EditText>(R.id.customTagInput)
         customTagInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -183,32 +187,54 @@ class TagsFragment : Fragment() {
     fun sendSelectedTagsBack() {
         tagsSelectedListener?.onTagsSelected(selectedTags) // selectedTags should be the list of tags the user has selected
         parentFragmentManager.popBackStack()
+        sharedViewModel.setSelectedTags(selectedTags)
     }
     private fun createTag(tagText: String) {
-        // Find the LinearLayout where tags will be added
-        val customTagsContainer = view?.findViewById<LinearLayout>(R.id.customTagsContainer)
+        // Check if the tag is already in the list to avoid duplicates
+        if (!selectedTags.contains(tagText)) {
+            // Add the tag to the list of selected tags
+            selectedTags.add(tagText)
 
-        // Create a TextView for the new tag
-        val tagView = TextView(context).apply {
-            text = tagText
-            textSize = 14f // Adjust the text size as needed
-            setTextColor(Color.WHITE) // Set the text color to white
-            setBackgroundColor(Color.BLACK) // Set the background color to black
-            setPadding(16, 8, 16, 8) // Adjust the padding as needed
+            // Find the LinearLayout where tags will be added (this should be in your fragment's layout)
+            val customTagsContainer = view?.findViewById<LinearLayout>(R.id.customTagsContainer)
 
-            // Define layout parameters including margins
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(8, 8, 8, 8) // Adjust the margins as needed
+            // Create a TextView for the new tag
+            val tagView = TextView(context).apply {
+                text = tagText
+                textSize = 14f // Adjust the text size as needed
+                setTextColor(Color.WHITE) // Set the text color to white
+                setBackgroundColor(Color.BLACK) // Set the background color to black
+                setPadding(16, 8, 16, 8) // Adjust the padding as needed
+
+                // Define layout parameters including margins
+                val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    setMargins(8, 8, 8, 8) // Adjust the margins as needed
+                }
+                this.layoutParams = layoutParams
+                setOnClickListener {
+                    // Remove the tag from the displayed container
+                    customTagsContainer?.removeView(this)
+                    // Remove the tag from the selectedTags list
+                    selectedTags.remove(tagText)
+                    // Update the sharedViewModel with the new list of tags
+                    sharedViewModel.setSelectedTags(selectedTags)
+                }
             }
-            this.layoutParams = layoutParams
+
+            // Add the newly created tag view to the LinearLayout
+            customTagsContainer?.addView(tagView)
+
+            Log.d("TagsFragment", "Custom tag added and displayed: $tagText")
+        } else {
+            Log.d("TagsFragment", "Tag is already selected: $tagText")
         }
 
-        // Add the newly created tag view to the LinearLayout
-        customTagsContainer?.addView(tagView)
     }
+
+
     interface OnTagsSelectedListener {
         fun onTagsSelected(tags: List<String>)
     }

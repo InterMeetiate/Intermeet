@@ -14,9 +14,11 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.activity.viewModels
 
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
     PronounFragment.PronounListener, TagsFragment.OnTagsSelectedListener {
+    val sharedViewModel: SharedViewModel by viewModels()
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
@@ -27,6 +29,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
     private lateinit var tvOccupation: TextView
     private lateinit var tagsDisplay: TextView // TextView to display selected tags
     private lateinit var btnNavigateFragment: TextView
+    private var selectedTags: List<String> = listOf()
     private val genders = arrayOf("Male", "Female", "Nonbinary", "Other")
     private val heights = arrayOf(
         "3'0","3'1","3'2","3'3","3'4","3'5","3'6","3'7","3'8","3'9","3'10","3'11",
@@ -111,7 +114,9 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }
 
 
+
     }
+
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
@@ -130,6 +135,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         tvPronoun.visibility = View.VISIBLE
     }
     override fun onTagsSelected(tags: List<String>) {
+        selectedTags = tags
         // Assuming you have a LinearLayout (tagsContainer) to add tags TextViews
         val tagsContainer: LinearLayout = findViewById(R.id.customTagsContainer)
         tagsContainer.removeAllViews() // Clear previous tags if any
@@ -155,6 +161,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
                 // Add styling here if needed
             }
             tagsContainer.addView(textView)
+            sharedViewModel.setSelectedTags(tags)
         }
         val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton)
         btnNavigateFragment.visibility = View.VISIBLE

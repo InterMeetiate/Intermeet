@@ -28,16 +28,6 @@
             android:name=".BirthdayActivity"
             android:exported="false" />
         <activity
-            android:name=".LocationActivity"
-            android:exported="false"/>
-        <activity
-            android:name=".NotificationActivity"
-            android:exported="false"/>
-        <activity
-            android:name=".SchoolActivity"
-            android:exported="false"/>
-        <activity
-        <activity
             android:name=".BeginningActivity"
             android:exported="false">
         </activity>
@@ -47,12 +37,7 @@
         </activity>
         <activity android:name=".UserInfoActivity"
             android:windowSoftInputMode="adjustPan"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
         <activity android:name=".PreferenceActivity"
             android:exported="true">

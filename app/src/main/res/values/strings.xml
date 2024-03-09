@@ -43,6 +43,200 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="no_account_sign_up">Don\'t have an account? Signup</string>
+    <string name="get_to_know">
+    Lets get to know you a bit more
+    </string>
+    <string name="gender">
+        Gender
+    </string>
+    <string name="height">
+        Height
+    </string>
+    <string name="religion">
+        Religion
+    </string>
+    <string name="race">
+        Ethnicity 
+    </string>
+    <string name="work">
+        Occupation
+    </string>
+    <string name="sex">
+        Sexuality
+    </string>
+    <string name="pronoun">
+        Pronouns
+    </string>
+    <string name="interest">
+        Interests
+    </string>
+    <string name="input_default">
+        >
+    </string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="food">
+        Food
+    </string>
+    <string name="entertain">
+        Entertainment
+    </string>
+    <string name="creativity">
+        Creativity
+    </string>
+    <string name="music">
+        Music
+    </string>
+    <string name="values">
+        Values
+    </string>
+    <string name="social">
+        Socializing
+    </string>
+    <string name="customTag">
+        Custome Tag
+    </string>
+    <string-array name="food_tags">
+        <item>Pizza</item>
+        <item>Sesame Chicken</item>
+        <item>Nachos</item>
+        <item>Seaweed Salad</item>
+        <item>Chili</item>
+        <item>Hummus</item>
+        <item>Sweet Potato fries</item>
+        <item>Quesadilla</item>
+        <item>Chicken Tenders</item>
+        <item>Wonton Soup</item>
+        <item>Sushi</item>
+        <item>Garlic Knots</item>
+        <item>Burritos</item>
+        <item>Thai tea</item>
+        <item>Milkshake</item>
+        <item>Hamburger</item>
+        <item>Chicken Wings</item>
+        <item>Boba Milk Tea</item>
+        <item>Doughnut</item>
+        <item>Tacos</item>
+        <item>Pie</item>
+        <item>French Fries</item>
+        <item>Salads</item>
+        <item>Gyoza</item>
+        <item>Chicken Sandwich</item>
+        <item>Icecream</item>
+        <item>Gyro</item>
+        <item>Mac and Cheese</item>
+        <item>Chicken Nuggets</item>
+        <item>Miso Soup</item>
+        <item>Pad Thai</item>
+        <item>Cheeseburger</item>
+        <item>Ramen</item>
+    </string-array>
+    <string-array name="show_tags">
+        <item>Anime</item>
+        <item>Action</item>
+        <item>Adventure</item>
+        <item>Going Out</item>
+        <item>Animated</item>
+        <item>Bollywood</item>
+        <item>Comedy</item>
+        <item>Cooking Shows</item>
+        <item>Crime</item>
+        <item>Documentaries</item>
+        <item>Drama</item>
+        <item>Fantasy</item>
+        <item>Game Shows</item>
+        <item>Horrors</item>
+        <item>Indie</item>
+        <item>K-Drama</item>
+        <item>Mystery</item>
+        <item>Reality Shows</item>
+        <item>Rom-com</item>
+        <item>Romance</item>
+        <item>Sci-fi</item>
+        <item>Superhero</item>
+        <item>Thriller</item>
+    </string-array>
+    <string-array name="Creativity">
+        <item>Art</item>
+        <item>Crafts</item>
+        <item>Dancing</item>
+        <item>Design</item>
+        <item>Make-up</item>
+        <item>Video Editing</item>
+        <item>Photography</item>
+        <item>Singing</item>
+        <item>Writing</item>
+
+    </string-array>
+    <string-array name="social">
+        <item>Bars</item>
+        <item>Clubs</item>
+        <item>Cafe-hopping</item>
+        <item>Festival</item>
+        <item>Theater</item>
+        <item>Nightlife</item>
+        <item>Concert</item>
+    </string-array>
+    <string-array name="music">
+        <item>Afro</item>
+        <item>Arab</item>
+        <item>Blues</item>
+        <item>Classical</item>
+        <item>Country</item>
+        <item>Desi</item>
+        <item>EDM</item>
+        <item>Electronic</item>
+        <item>Funk</item>
+        <item>Hip hop</item>
+        <item>Indie</item>
+        <item>Jazz</item>
+        <item>K-pop</item>
+        <item>Latin</item>
+        <item>Metal</item>
+        <item>Pop</item>
+        <item>Punk</item>
+        <item>R&amp;B</item>
+        <item>Rap</item>
+        <item>Reggae</item>
+        <item>Rock</item>
+        <item>Soul</item>
+        <item>Techno</item>
+    </string-array>
+    <string-array name="values">
+        <item>Ambition</item>
+        <item>Being Active</item>
+        <item>Family-oriented</item>
+        <item>Open-minded</item>
+        <item>Romantic</item>
+        <item>Confidence</item>
+        <item>Creativity</item>
+        <item>Empathy</item>
+        <item>Intelligence</item>
+        <item>Positivity</item>
+        <item>Chill</item>
+        <item>Self-awareness</item>
+        <item>Humorous</item>
+        <item>Socially Aware</item>
+    </string-array>
+    <string name="people_filter">
+        I\'m interested in…
+    </string>
+    <string name="distance">
+        Maximum Distance
+    </string>
+    <string name="drink">
+        Drinking
+    </string>
+    <string name="smoke">
+        Smoking
+    </string>
+    <string name="drug">
+        Drugs
+    </string>
+    <string name="politics">
+        Politics
+    </string>
+
     <string name="never_miss_">Never miss a message</string>
     <string name="Agree">Agree</string>
 </resources>

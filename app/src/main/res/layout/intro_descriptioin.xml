@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/Logo"
+        android:id="@+id/IntroTitle"
         android:layout_width="354dp"
         android:layout_height="101dp"
         android:text="@string/give_an_intro"

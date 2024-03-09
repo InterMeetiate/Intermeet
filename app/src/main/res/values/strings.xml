@@ -199,6 +199,9 @@
         <item>Humorous</item>
         <item>Socially Aware</item>
     </string-array>
+    <string name="preferencePage">
+        Lets see who oyu want to meet
+    </string>
     <string name="people_filter">
         I\'m interested in…
     </string>
@@ -217,5 +220,10 @@
     <string name="politics">
         Politics
     </string>
+    <string name="distanceset">
+        Distance
+    </string>
+    <string name="selected_distance">Selected distance: %1$d miles</string>
+    <string name="selected_distance_initial">Selected distance: 1 mile</string>
 
 </resources>

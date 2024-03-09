@@ -199,4 +199,23 @@
         <item>Humorous</item>
         <item>Socially Aware</item>
     </string-array>
+    <string name="people_filter">
+        I\'m interested in…
+    </string>
+    <string name="distance">
+        Maximum Distance
+    </string>
+    <string name="drink">
+        Drinking
+    </string>
+    <string name="smoke">
+        Smoking
+    </string>
+    <string name="drug">
+        Drugs
+    </string>
+    <string name="politics">
+        Politics
+    </string>
+
 </resources>

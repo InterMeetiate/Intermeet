@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
@@ -19,6 +21,7 @@ import androidx.activity.viewModels
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
     PronounFragment.PronounListener, TagsFragment.OnTagsSelectedListener {
     val sharedViewModel: SharedViewModel by viewModels()
+    private lateinit var backButton: Button
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
@@ -56,7 +59,10 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_user_info)
+        backButton = findViewById(R.id.next_button)
+
 
         tvGender = findViewById(R.id.tvGender)
         tvGender.setOnClickListener {
@@ -80,6 +86,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             val occupationFragment = OccupationFragment().also {
                 // "this" is UserInfoActivity which implements OccupationListener
                 it.setOccupationListener(this)
+                backButton.visibility = View.GONE
             }
 
             supportFragmentManager.beginTransaction()
@@ -96,6 +103,8 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             tvPronoun.visibility = View.GONE
             val pronounFragment = PronounFragment().also {
                 it.setPronounListener(this)
+                backButton.visibility = View.GONE
+
             }
 
             supportFragmentManager.beginTransaction()
@@ -110,7 +119,15 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             transaction.replace(R.id.fragment_container3, TagsFragment())
             transaction.addToBackStack(null) // Add this transaction to the back stack (optional)
             transaction.commit()
+            backButton.visibility = View.GONE
 
+
+        }
+
+        backButton.setOnClickListener {
+            // Intent to navigate to the SecondActivity
+            val intent = Intent(this, PreferenceActivity::class.java)
+            startActivity(intent)
         }
 
 
@@ -128,16 +145,20 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         tvJob.text = "$occupation >"
         selectedJob = occupation
         tvJob.visibility = View.VISIBLE
+        backButton.visibility = View.VISIBLE
+
     }
     override fun onPronounEntered(pronoun: String) {
         tvPronoun.text = "$pronoun >"
         selectedPronoun = pronoun
         tvPronoun.visibility = View.VISIBLE
+        backButton.visibility = View.VISIBLE
+
     }
     override fun onTagsSelected(tags: List<String>) {
         selectedTags = tags
         // Assuming you have a LinearLayout (tagsContainer) to add tags TextViews
-        val tagsContainer: LinearLayout = findViewById(R.id.customTagsContainer)
+        val tagsContainer: GridLayout = findViewById(R.id.customTagsContainer)
         tagsContainer.removeAllViews() // Clear previous tags if any
 
         tags.forEach { tag ->
@@ -147,15 +168,12 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
                 textSize = 14f // Set the text size or use resources
                 setTextColor(Color.BLACK)
                 background = ContextCompat.getDrawable(context, R.drawable.tag_background)
-                setPadding(1, 2, 2, 1) // Set padding (left, top, right, bottom)
+                setPadding(10, 10, 10, 10) // Set padding (left, top, right, bottom)
 
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply {
+                layoutParams = GridLayout.LayoutParams().apply {
                     // Add layout parameters if necessary, e.g., margins
                     if (this is ViewGroup.MarginLayoutParams) {
-                        setMargins(0, 0, 0, 0) // Set margins (left, top, right, bottom)
+                        setMargins(20, 20, 20, 20) // Set margins (left, top, right, bottom)
                     }
                 }
                 // Add styling here if needed
@@ -166,6 +184,8 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton)
         btnNavigateFragment.visibility = View.VISIBLE
         tagsContainer.visibility = View.VISIBLE
+        backButton.visibility = View.VISIBLE
+
         Log.d("UserInfoActivity", "Tags received: $tags")
     }
 
@@ -269,6 +289,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
     }
     override fun onResume() {
         super.onResume()
+        backButton.visibility = View.VISIBLE
         tvJob.visibility = View.VISIBLE
         tvPronoun.visibility = View.VISIBLE
         println("here")

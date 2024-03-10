@@ -107,14 +107,14 @@ class TagsFragment : Fragment() {
             setTextColor(Color.BLACK) // Set text color to white
             textSize = 14f // Set the text size or use resources
             background = ContextCompat.getDrawable(context, R.drawable.tag_background)
-            setPadding(1, 2, 2, 1) // Set padding (left, top, right, bottom)
+            setPadding(20, 30, 30, 20) // Set padding (left, top, right, bottom)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 // Add layout parameters if necessary, e.g., margins
                 if (this is ViewGroup.MarginLayoutParams) {
-                    setMargins(0, 0, 0, 0) // Set margins (left, top, right, bottom)
+                    setMargins(30, 40, 40, 30) // Set margins (left, top, right, bottom)
                 }
             }
 
@@ -204,14 +204,15 @@ class TagsFragment : Fragment() {
                 textSize = 14f // Adjust the text size as needed
                 setTextColor(Color.WHITE) // Set the text color to white
                 setBackgroundColor(Color.BLACK) // Set the background color to black
-                setPadding(16, 8, 16, 8) // Adjust the padding as needed
+                setPadding(10, 10, 10, 10) // Set padding (left, top, right, bottom)
+
 
                 // Define layout parameters including margins
                 val layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    setMargins(8, 8, 8, 8) // Adjust the margins as needed
+                    setMargins(20, 20, 20, 20) // Adjust the margins as needed
                 }
                 this.layoutParams = layoutParams
                 setOnClickListener {

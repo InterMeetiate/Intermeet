@@ -242,9 +242,22 @@
     <string name="distanceset">
         Distance
     </string>
-    <string name="selected_distance">Selected distance: %1$d miles</string>
+    <string name="distancemessage">
+        How far are you willing to go?
+    </string>
+    <string name="distanceinfo">
+        Set a distance on how far do you want to meet people
+    </string>
+    <string name="age">
+        Ages
+    </string>
+    <string name="ageSelect">
+        Age Range
+    </string>
+    <string name="selected_distance">%1$d miles></string>
     <string name="selected_distance_initial">Selected distance: 1 mile</string>
 
     <string name="never_miss_">Never miss a message</string>
     <string name="Agree">Agree</string>
+
 </resources>

@@ -75,7 +75,7 @@
         Socializing
     </string>
     <string name="customTag">
-        Custome Tag
+        Custom Tag
     </string>
     <string-array name="food_tags">
         <item>Pizza</item>
@@ -200,7 +200,7 @@
         <item>Socially Aware</item>
     </string-array>
     <string name="preferencePage">
-        Lets see who oyu want to meet
+        Lets see who you want to meet
     </string>
     <string name="people_filter">
         I\'m interested in…
@@ -223,7 +223,20 @@
     <string name="distanceset">
         Distance
     </string>
-    <string name="selected_distance">Selected distance: %1$d miles</string>
+    <string name="distancemessage">
+        How far are you willing to go?
+    </string>
+    <string name="distanceinfo">
+        Set a distance on how far do you want to meet people
+    </string>
+    <string name="age">
+        Ages
+    </string>
+    <string name="ageSelect">
+        Age Range
+    </string>
+    <string name="selected_distance">%1$d miles></string>
     <string name="selected_distance_initial">Selected distance: 1 mile</string>
+
 
 </resources>

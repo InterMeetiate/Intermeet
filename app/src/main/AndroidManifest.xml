@@ -34,6 +34,9 @@
             android:name=".NotificationActivity"
             android:exported="false"/>
         <activity
+            android:name=".SchoolActivity"
+            android:exported="false"/>
+        <activity
             android:name=".BeginningActivity"
             android:exported="true">
             <intent-filter>

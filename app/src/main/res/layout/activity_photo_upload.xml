@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -9,11 +10,12 @@
         android:id="@+id/uploadTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
         android:text="@string/photo_upload_title"
         android:textColor="#000000"
-        android:textStyle="bold"
-        android:layout_marginTop="75dp"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
 
     <!-- LinearLayout for ImageViews -->
     <LinearLayout
@@ -21,68 +23,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/uploadTitle"
-        android:orientation="vertical"
+        android:layout_marginTop="35dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="35dp">
+        android:orientation="vertical">
 
         <!-- First row of ImageViews -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="22dp">
+            android:layout_marginBottom="22dp"
+            android:gravity="center">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView1"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginEnd="43dp"
-                android:src="@drawable/image_placeholder"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedCorners"
+                app:srcCompat="@drawable/image_placeholder" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView2"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/image_placeholder"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedCorners"
+                app:srcCompat="@drawable/image_placeholder" />
         </LinearLayout>
 
-        <!-- First row of ImageViews -->
+        <!-- Second row of ImageViews -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="22dp">
+            android:layout_marginBottom="22dp"
+            android:gravity="center">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView3"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginEnd="43dp"
-                android:src="@drawable/image_placeholder"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedCorners"
+                app:srcCompat="@drawable/image_placeholder" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imageView4"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/image_placeholder"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedCorners"
+                app:srcCompat="@drawable/image_placeholder" />
         </LinearLayout>
 
         <!-- Last ImageView centered -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageView5"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/image_placeholder"
             android:layout_gravity="center_horizontal"
-            android:scaleType="centerCrop"/>
-
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedCorners"
+            app:srcCompat="@drawable/image_placeholder" />
     </LinearLayout>
-
-
 
     <Button
         android:id="@+id/nextButton"
@@ -94,8 +98,7 @@
         android:background="@drawable/rounded_gradient_button"
         android:text="@string/next"
         android:textColor="#000000"
-        android:textStyle="bold"
         android:textSize="30sp"
-        />
+        android:textStyle="bold" />
 
 </RelativeLayout>

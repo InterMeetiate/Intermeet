@@ -13,6 +13,9 @@
     <string name="what_birthday">
         Whats your birthday?
     </string>
+    <string name="what_school">
+        Are you in school?
+    </string>
     <string name="location_access">
         Can we introduce you to people nearby?
     </string>

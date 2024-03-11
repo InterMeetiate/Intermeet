@@ -33,6 +33,8 @@
         <activity
             android:name=".NotificationActivity"
             android:exported="false"/>
+        <activity android:name=".PhotoUploadActivity" />
+
         <activity
             android:name=".BeginningActivity"
             android:exported="true">

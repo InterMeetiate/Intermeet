@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/uploadTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/photo_upload_title"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:layout_marginTop="75dp"
+        android:textSize="30sp" />
+
+    <!-- LinearLayout for ImageViews -->
+    <LinearLayout
+        android:id="@+id/imagesContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/uploadTitle"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="35dp">
+
+        <!-- First row of ImageViews -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="22dp">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginEnd="43dp"
+                android:src="@drawable/image_placeholder"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/image_placeholder"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+        <!-- First row of ImageViews -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginBottom="22dp">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginEnd="43dp"
+                android:src="@drawable/image_placeholder"
+                android:scaleType="centerCrop"/>
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/image_placeholder"
+                android:scaleType="centerCrop"/>
+        </LinearLayout>
+
+        <!-- Last ImageView centered -->
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/image_placeholder"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="centerCrop"/>
+
+    </LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/nextButton"
+        android:layout_width="283dp"
+        android:layout_height="53dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_gradient_button"
+        android:text="@string/next"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        />
+
+</RelativeLayout>

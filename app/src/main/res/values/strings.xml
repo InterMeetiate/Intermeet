@@ -90,6 +90,9 @@
     <string name="customTag">
         Custome Tag
     </string>
+    <string name="photo_upload_title">Upload a few photos to show yourself off.</string>
+    <string name="never_miss_">Never miss a message</string>
+    <string name="allow_notif">Allow notifications so we can let you know when you have a match and messages</string>
     <string-array name="food_tags">
         <item>Pizza</item>
         <item>Sesame Chicken</item>

@@ -26,4 +26,7 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="no_account_sign_up">Don\'t have an account? Signup</string>
+    <string name="talk_a_little">Talk a little more about yourself</string>
+    <string name="make_your_personality">Make your personality standout from the crowd</string>
+    <string name="email_hint">e.g.contact@intermediate.com</string>
 </resources>

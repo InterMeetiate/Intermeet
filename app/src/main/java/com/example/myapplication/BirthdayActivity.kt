@@ -22,7 +22,6 @@ class BirthdayActivity : AppCompatActivity(){
         selectDate.setOnClickListener {
             birthday = showDatePickerDialog()
         }
-
         ButtonFunc()
     }
     private fun showDatePickerDialog() :String {
@@ -42,6 +41,14 @@ class BirthdayActivity : AppCompatActivity(){
         })
         val birthdayDate : TextView = findViewById(R.id.tvDate)
         return birthdayDate.text.toString()
+    }
+    private fun ButtonFunc()
+    {
+        val nextButton: Button = findViewById(R.id.next_button)
+        nextButton.setOnClickListener{
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
     }
     private fun ButtonFunc()
     {

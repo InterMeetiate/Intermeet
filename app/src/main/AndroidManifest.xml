@@ -28,7 +28,25 @@
             android:name=".BirthdayActivity"
             android:exported="false" />
         <activity
+            android:name=".LocationActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false"/>
+        <activity 
+             android:name=".PhotoUploadActivity" 
+              android:exported="false"/>
+        <activity
             android:name=".BeginningActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".UserInfoActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false">
         </activity>
         <activity
@@ -36,21 +54,8 @@
             android:exported="false">
         </activity>
         <activity
-            android:name=".UserInfoActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".PreferenceActivity"
             android:exported="false">
         </activity>
-
     </application>
-
-
 </manifest>

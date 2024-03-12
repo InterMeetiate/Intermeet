@@ -16,6 +16,9 @@
             android:name=".PromptsActivity"
             android:exported="false" />
         <activity
+            android:name=".ResetPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".SchoolActivity"
             android:exported="false" />
         <activity
@@ -23,6 +26,9 @@
             android:exported="false" />
         <activity
             android:name=".SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DescriptionActivity"
             android:exported="false" />
         <activity
             android:name=".PasswordActivity"

@@ -279,5 +279,6 @@
     <string name="selected_distance_initial">Selected distance: 1 mile</string>
 
     <string name="Agree">Agree</string>
+    <string name="homePageIndicator">This is the home page!</string>
 
 </resources>

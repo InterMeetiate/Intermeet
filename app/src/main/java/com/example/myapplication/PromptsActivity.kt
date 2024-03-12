@@ -1,10 +1,12 @@
 package com.example.myapplication
 
 import CustomAdapter
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
@@ -17,10 +19,14 @@ class PromptsActivity : AppCompatActivity() {
     lateinit var enter: ImageView
     lateinit var promptDropdown: Spinner
     lateinit var promptList: ArrayList<String>
+    private lateinit var backButton: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prompts)
+        backButton = findViewById(R.id.next_button)
+
 
         listView = findViewById(R.id.listView)
         promptTextbox = findViewById(R.id.enter_prompt)
@@ -51,6 +57,11 @@ class PromptsActivity : AppCompatActivity() {
                 // Clear textbox after adding it to the list
                 promptTextbox.setText("")
             }
+        }
+        backButton.setOnClickListener {
+            // Intent to navigate to the SecondActivity
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 }

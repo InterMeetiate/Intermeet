@@ -29,4 +29,6 @@
     <string name="talk_a_little">Talk a little more about yourself</string>
     <string name="make_your_personality">Make your personality standout from the crowd</string>
     <string name="email_hint">e.g.contact@intermediate.com</string>
+    <string name="delete">Delete</string>
+    <string name="checkmark">Checkmark</string>
 </resources>

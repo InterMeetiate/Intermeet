@@ -39,33 +39,46 @@
 
     <EditText
         android:id="@+id/enter_prompt"
-        android:layout_width="308dp"
-        android:layout_height="94dp"
+        android:layout_width="309dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/prompt_rectangle"
         android:imeOptions="actionDone"
-        android:inputType="text"
+        android:inputType="textMultiLine"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:importantForAutofill="no"
+        android:gravity="top|start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/make_your_personality" />
+        app:layout_constraintTop_toBottomOf="@+id/make_your_personality"
+        tools:ignore="RtlSymmetry" />
 
     <ImageView
+        android:id="@+id/add"
         android:layout_width="40sp"
         android:layout_height="40sp"
-        android:id="@+id/add"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/add_prompts"
+        app:layout_constraintBottom_toTopOf="@+id/listView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/enter_prompt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.95"
+        android:contentDescription="@string/checkmark" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:divider="@null"
+        android:dividerHeight="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter_prompt" />
 

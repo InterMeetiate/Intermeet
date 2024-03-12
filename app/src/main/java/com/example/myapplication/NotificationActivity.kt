@@ -14,13 +14,13 @@ class NotificationActivity : AppCompatActivity(){
     }
     private
     fun ButtonFunc(){
-        val agreeButton: Button = findViewById(R.id.Agree)
+        val agreeButton: Button = findViewById(R.id.allow)
         agreeButton.setOnClickListener {
             //probably have logic here to handle notifications
             val intent = Intent(this, PhotoUploadActivity::class.java)
             startActivity(intent)
         }
-        val signUpButton: Button = findViewById(R.id.notAllow)
+        val signUpButton: Button = findViewById(R.id.dont_allow)
         signUpButton.setOnClickListener{
             val intent = Intent(this, PhotoUploadActivity::class.java)
             startActivity(intent)

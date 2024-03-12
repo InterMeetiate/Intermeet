@@ -86,6 +86,12 @@
         <item name="android:calendarViewShown">false</item>
         <item name="android:datePickerMode">spinner</item>
     </style>
+    <style name="talk_a_little">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+    <style name="make_your_personality">
+        <item name="android:textSize">15sp</item>
     <style name="never_miss_">
         <item name="android:textSize"> 35sp</item>
         <item name="android:textColor">#000000</item>
@@ -94,5 +100,4 @@
         <item name="android:textSize"> 15sp</item>
         <item name="android:textColor">#000000</item>
     </style>
-
 </resources>

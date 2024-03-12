@@ -31,4 +31,12 @@
     <string name="email_hint">e.g.contact@intermediate.com</string>
     <string name="delete">Delete</string>
     <string name="checkmark">Checkmark</string>
+    <string-array name="prompt_options">
+        <item>I\'m known for…</item>
+        <item>I would love to go to…</item>
+        <item>I guarantee that…</item>
+        <item>I\'m a regular at…</item>
+        <item>I\'m obsessed with…</item>
+    </string-array>
+
 </resources>

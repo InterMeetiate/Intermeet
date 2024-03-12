@@ -8,12 +8,14 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.Spinner
 import android.widget.Toast
 
 class PromptsActivity : AppCompatActivity() {
     lateinit var listView: ListView
     lateinit var promptTextbox: EditText
     lateinit var enter: ImageView
+    lateinit var promptDropdown: Spinner
     lateinit var promptList: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,7 @@ class PromptsActivity : AppCompatActivity() {
         listView = findViewById(R.id.listView)
         promptTextbox = findViewById(R.id.enter_prompt)
         enter = findViewById(R.id.add)
+        promptDropdown = findViewById(R.id.prompt_spinner)
 
         promptList = ArrayList()
 
@@ -30,15 +33,19 @@ class PromptsActivity : AppCompatActivity() {
         listView.adapter = adapter
 
         enter.setOnClickListener {
+            // Get the prompt selection and the user entered text
             val text = promptTextbox.text.toString()
+            val selectedPrompt = promptDropdown.selectedItem.toString()
+            val combinedText = "$selectedPrompt\n$text"
+
             if (text.isEmpty()) {
                 Toast.makeText(this, "Please fill in the prompt.", Toast.LENGTH_SHORT).show()
             } else {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(promptTextbox.windowToken, 0)
 
-                // Adds textbox to list
-                promptList.add(text)
+                // Adds text to list
+                promptList.add(combinedText)
                 adapter.notifyDataSetChanged()
 
                 // Clear textbox after adding it to the list

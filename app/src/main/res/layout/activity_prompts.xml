@@ -37,22 +37,37 @@
         app:layout_constraintTop_toBottomOf="@+id/talk_a_little"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Spinner
+        android:id="@+id/prompt_spinner"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="13dp"
+        android:spinnerMode="dropdown"
+        android:entries="@array/prompt_options"
+        app:layout_constraintBottom_toTopOf="@+id/enter_prompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/make_your_personality" />
+
     <EditText
         android:id="@+id/enter_prompt"
         android:layout_width="309dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="48dp"
         android:background="@drawable/prompt_rectangle"
+        android:gravity="top|start"
         android:imeOptions="actionDone"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
-        android:importantForAutofill="no"
-        android:gravity="top|start"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintHorizontal_bias="0.156"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/make_your_personality"
         tools:ignore="RtlSymmetry" />

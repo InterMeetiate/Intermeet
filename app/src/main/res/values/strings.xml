@@ -12,13 +12,30 @@
     <string name="what_email">
         Whats your email?
     </string>
+    <string name="what_birthday">
+        Whats your birthday?
+    </string>
+    <string name="what_school">
+        Are you in school?
+    </string>
+    <string name="location_access">
+        Can we introduce you to people nearby?
+    </string>
+    <string name="location_subtext">
+        Location is a must - its how we set you up with the real people you can meet
+    </string>
     <string name="just_incase">
         Just incase we need to reach out to you !
     </string>
     <string name="you_should_">
         You should get to know each others names first.
     </string>
+    <string name="allow_notif">
+        Allow notifications so we can let you know when you have a match and messages
+    </string>
     <string name="next">Next</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
     <string name="make_a_pass">Make a password!</string>
     <string name="we_want_to_">We want to make sure your account stays safe and secure!</string>
     <string name="textview_email">Email</string>
@@ -26,4 +43,6 @@
     <string name="login">Login</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="no_account_sign_up">Don\'t have an account? Signup</string>
+    <string name="never_miss_">Never miss a message</string>
+    <string name="Agree">Agree</string>
 </resources>

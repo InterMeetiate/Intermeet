@@ -2,19 +2,19 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/birthdayLayout"
+    android:id="@+id/schoolLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".BirthdayActivity">
+    tools:context=".SchoolActivity">
 
     <TextView
-        android:id="@+id/what_s_your"
+        android:id="@+id/what_s_school"
         android:layout_width="383dp"
         android:layout_height="53dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="top"
-        android:text="@string/what_birthday"
+        android:text="@string/what_school"
         android:textAppearance="@style/email_up"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -24,44 +24,49 @@
         app:layout_constraintVertical_bias="0.186" />
 
     <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="103dp"
-        android:layout_height="37dp"
-        android:text="00-00-0000"
-        android:textAlignment="center"
-        android:textColor="#000"
-        android:textSize="18sp"
+        android:id="@+id/school_subtext"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="top"
+        android:text="Showing people you may go to the same school can open up many opportunities!"
+        android:textAppearance="@style/sign_up_p1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.354" />
+        app:layout_constraintVertical_bias="0.26999998" />
 
-    <Button
-        android:id="@+id/btSelectDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/black_button"
-        android:text="Select Date"
-        android:textColor="@android:color/white"
+    <EditText
+        android:id="@+id/enter_school"
+        android:layout_width="374dp"
+        android:layout_height="43dp"
+        android:background="@drawable/edittext_border"
+        android:backgroundTint="@color/gray"
+        android:hint="Enter School"
+        android:padding="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/dark_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.378"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.454" />
+        app:layout_constraintVertical_bias="0.386" />
 
     <Button
         android:id="@+id/next_button"
-        android:layout_width="138dp"
-        android:layout_height="47dp"
+        android:layout_width="96dp"
+        android:layout_height="45dp"
         android:background="@drawable/black_button"
-        android:text="Next"
+        android:text="@string/next"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.926"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

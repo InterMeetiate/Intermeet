@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -16,12 +17,15 @@ class BirthdayActivity : AppCompatActivity(){
 
         datePicker = DatePickerHelper(this, true)
 
+        var birthday = ""
         val selectDate: Button = findViewById(R.id.btSelectDate)
         selectDate.setOnClickListener {
-            showDatePickerDialog()
+            birthday = showDatePickerDialog()
         }
+
+        ButtonFunc()
     }
-    private fun showDatePickerDialog() {
+    private fun showDatePickerDialog() :String {
         val cal = Calendar.getInstance()
         val d = cal.get(Calendar.DAY_OF_MONTH)
         val m = cal.get(Calendar.MONTH)
@@ -31,9 +35,20 @@ class BirthdayActivity : AppCompatActivity(){
                 val dayStr = if (dayofMonth < 10) "0${dayofMonth}" else "${dayofMonth}"
                 val mon = month + 1
                 val monthStr = if (mon < 10) "0${mon}" else "${mon}"
-                val tvDate : TextView = findViewById(R.id.tvDate)
-                tvDate.text = "${dayStr}-${monthStr}-${year}"
+                val tvDate: TextView = findViewById(R.id.tvDate)
+                val date = "${dayStr}-${monthStr}-${year}"
+                tvDate.text = date
             }
         })
+        val birthdayDate : TextView = findViewById(R.id.tvDate)
+        return birthdayDate.text.toString()
+    }
+    private fun ButtonFunc()
+    {
+        val nextButton: Button = findViewById(R.id.next_button)
+        nextButton.setOnClickListener{
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

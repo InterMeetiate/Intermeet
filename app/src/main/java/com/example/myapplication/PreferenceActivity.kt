@@ -2,6 +2,8 @@ package com.example.myapplication
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.view.View
+import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelectedListener,
     AgeFragment.OnAgeSelectedListener {
+    private lateinit var backButton: Button
     private lateinit var tvDistance: TextView
     private lateinit var tvAge: TextView
     private var selectedDistance: Int = 0 // Variable to hold the selected distance
@@ -61,7 +64,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preference)
-
+        backButton = findViewById(R.id.next_button)
         tvInterest = findViewById(R.id.tvInterested)
         tvInterest.setOnClickListener {
             showInterestedPicker()
@@ -71,6 +74,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         tvDistance.setOnClickListener {
             val fragment = DistanceFragment().also {
                 it.setDistanceListener(this)
+                backButton.visibility = View.GONE
+
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container1, fragment)
@@ -89,6 +94,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         tvAge.setOnClickListener {
             val fragment = AgeFragment().also {
                 it.setAgeListener(this)
+                backButton.visibility = View.GONE
+
             }
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container2, fragment)
@@ -128,6 +135,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user religious input*/
                 selectedReligion = religion[numberPicker.value]
                 tvReligion.text = "${religion[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -147,6 +156,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedInterested = interested[numberPicker.value]
                 tvInterest.text = "${interested[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -166,6 +177,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedEthnicity = ethnicity[numberPicker.value]
                 tvEthnicity.text = "${ethnicity[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -185,6 +198,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedDrink = drinking[numberPicker.value]
                 tvDrink.text = "${drinking[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -204,6 +219,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedDrugs = drugs[numberPicker.value]
                 tvDrugs.text = "${drugs[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -223,6 +240,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedSmoking = smoking[numberPicker.value]
                 tvSmoking.text = "${smoking[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -242,6 +261,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 /*Updates user Ethnicity input*/
                 selectedPolitics = politics[numberPicker.value]
                 tvPolitics.text = "${politics[numberPicker.value]} >"
+                backButton.visibility = View.VISIBLE
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -251,6 +272,8 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
     override fun onDistanceSelected(distance: Int) {
         selectedDistance = distance  // Save the selected distance to the variable
         tvDistance.text = getString(R.string.selected_distance, distance)
+        backButton.visibility = View.VISIBLE
+
     }
     override fun onAgeSelected(minAge: Int, maxAge: Int) {
         // Update the TextView to show the selected age range
@@ -259,6 +282,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         // If you need to save the age range for later use, you can assign it to variables
         selectedMinAge = minAge
         selectedMaxAge = maxAge
+        backButton.visibility = View.VISIBLE
 
         // Use selectedMinAge and selectedMaxAge as needed in your activity
     }

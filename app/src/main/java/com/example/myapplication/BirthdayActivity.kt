@@ -50,12 +50,4 @@ class BirthdayActivity : AppCompatActivity(){
             startActivity(intent)
         }
     }
-    private fun ButtonFunc()
-    {
-        val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener{
-            val intent = Intent(this, LocationActivity::class.java)
-            startActivity(intent)
-        }
-    }
 }

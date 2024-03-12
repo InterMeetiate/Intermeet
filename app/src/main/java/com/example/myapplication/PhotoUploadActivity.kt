@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
@@ -50,8 +51,8 @@ class PhotoUploadActivity : AppCompatActivity() {
 
         val nextButton: Button = findViewById(R.id.nextButton)
         nextButton.setOnClickListener {
-            // Handle the click event for the Next button
-            // For example, transition to another activity or start the image upload process
+            val intent = Intent(this, SchoolActivity::class.java)
+            startActivity(intent)
         }
     }
 

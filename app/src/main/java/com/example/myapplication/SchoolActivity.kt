@@ -22,7 +22,7 @@ class SchoolActivity : AppCompatActivity(){
     {
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
-            val intent = Intent(this, SchoolActivity::class.java)
+            val intent = Intent(this, UserInfoActivity::class.java)
             startActivity(intent)
         }
     }

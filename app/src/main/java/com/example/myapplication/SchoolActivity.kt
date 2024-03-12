@@ -6,24 +6,23 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 
-class PasswordActivity : AppCompatActivity(){
+class SchoolActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_password)
+        setContentView(R.layout.activity_school)
 
-        val passwordEdit :EditText = findViewById(R.id.password)
-        val password = passwordEdit.text.toString()
+        val schoolEdit : EditText = findViewById(R.id.enter_school)
+        val school = schoolEdit.text.toString()
 
         ButtonFunc()
     }
 
-    private
-    fun ButtonFunc()
+    private fun ButtonFunc()
     {
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
-            val intent = Intent(this, PromptsActivity::class.java)
+            val intent = Intent(this, SchoolActivity::class.java)
             startActivity(intent)
         }
     }

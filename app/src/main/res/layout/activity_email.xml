@@ -44,7 +44,7 @@
         app:layout_constraintVertical_bias="0.325" />
 
     <EditText
-        android:id="@+id/username_input"
+        android:id="@+id/email_input"
         android:layout_width="352dp"
         android:layout_height="43dp"
         android:background="@drawable/rounded_corners"

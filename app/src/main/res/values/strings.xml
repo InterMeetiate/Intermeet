@@ -6,6 +6,15 @@
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
     <string name="i_am">I am...</string>
+    <string name="forgot_password_email">Enter your email associated with your account. We will send you a reset link</string>
+    <string name="forgot_password_title">Forgot Password?</string>
+    <string name="forgot_password_button">Recover Password</string>
+    <string name="reset_password_title">Create a new Password</string>
+    <string name="password_description">Your new password must be different from previously used passwords</string>
+    <string name="new_password">Password</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="password_match">Both passwords must match</string>
     <string name="what_s_your">
         Whats your name?
     </string>

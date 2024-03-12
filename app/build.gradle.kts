@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.intermeet.android"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.intermeet.android"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -20,14 +20,27 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    signingConfigs {
+        create("release") {
+            keyAlias = "key1"
+            keyPassword = "111234"
+            storeFile = file("C:\\Users\\spenc\\intermeetSprint1Key.jks")
+            storePassword = "111234"
+        }
+    }
 
     buildTypes {
         release {
+            isDebuggable = false
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            // Other release configurations...
         }
     }
     compileOptions {

@@ -15,6 +15,9 @@
     <string name="what_birthday">
         Whats your birthday?
     </string>
+    <string name="what_school">
+        Are you in school?
+    </string>
     <string name="location_access">
         Can we introduce you to people nearby?
     </string>
@@ -26,6 +29,9 @@
     </string>
     <string name="you_should_">
         You should get to know each others names first.
+    </string>
+    <string name="allow_notif">
+        Allow notifications so we can let you know when you have a match and messages
     </string>
     <string name="next">Next</string>
     <string name="accept">Accept</string>
@@ -215,4 +221,46 @@
         <item>Humorous</item>
         <item>Socially Aware</item>
     </string-array>
+    <string name="preferencePage">
+        Lets see who oyu want to meet
+    </string>
+    <string name="people_filter">
+        I\'m interested in…
+    </string>
+    <string name="distance">
+        Maximum Distance
+    </string>
+    <string name="drink">
+        Drinking
+    </string>
+    <string name="smoke">
+        Smoking
+    </string>
+    <string name="drug">
+        Drugs
+    </string>
+    <string name="politics">
+        Politics
+    </string>
+    <string name="distanceset">
+        Distance
+    </string>
+    <string name="distancemessage">
+        How far are you willing to go?
+    </string>
+    <string name="distanceinfo">
+        Set a distance on how far do you want to meet people
+    </string>
+    <string name="age">
+        Ages
+    </string>
+    <string name="ageSelect">
+        Age Range
+    </string>
+    <string name="selected_distance">%1$d miles></string>
+    <string name="selected_distance_initial">Selected distance: 1 mile</string>
+
+    <string name="never_miss_">Never miss a message</string>
+    <string name="Agree">Agree</string>
+
 </resources>

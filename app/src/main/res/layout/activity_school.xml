@@ -2,64 +2,59 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/schoolLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
-
-
-    <!--        android:textColor="@color/black"-->
-    <!--        android:textColorHint="@color/black"-->
+    tools:context=".SchoolActivity">
 
     <TextView
-        android:id="@+id/what_s_your"
+        android:id="@+id/what_s_school"
         android:layout_width="383dp"
         android:layout_height="53dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="top"
-        android:text="@string/what_email"
+        android:text="@string/what_school"
         android:textAppearance="@style/email_up"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.251" />
+        app:layout_constraintVertical_bias="0.186" />
 
     <TextView
-        android:id="@+id/just_incase"
-        android:layout_width="377dp"
-        android:layout_height="39dp"
+        android:id="@+id/school_subtext"
+        android:layout_width="320dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="top"
-        android:text="@string/just_incase"
-        android:textAppearance="@style/just_incase"
+        android:text="Showing people you may go to the same school can open up many opportunities!"
+        android:textAppearance="@style/sign_up_p1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.823"
+        app:layout_constraintHorizontal_bias="0.17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.325" />
+        app:layout_constraintVertical_bias="0.26999998" />
 
     <EditText
-        android:id="@+id/email_input"
-        android:layout_width="352dp"
+        android:id="@+id/enter_school"
+        android:layout_width="374dp"
         android:layout_height="43dp"
-        android:background="@drawable/rounded_corners"
-        android:hint="e.g.contact@intermediate.com"
-        android:inputType="text"
-        android:padding="10dp"
+        android:background="@drawable/edittext_border"
+        android:backgroundTint="@color/gray"
+        android:hint="Enter School"
+        android:padding="12dp"
         android:textColor="@color/black"
         android:textColorHint="@color/dark_gray"
-        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.474"
+        app:layout_constraintHorizontal_bias="0.378"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.408" />
+        app:layout_constraintVertical_bias="0.386" />
 
     <Button
         android:id="@+id/next_button"
@@ -70,10 +65,8 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.834"
+        app:layout_constraintHorizontal_bias="0.926"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.52" />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

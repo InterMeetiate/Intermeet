@@ -15,7 +15,6 @@ class LocationActivity : AppCompatActivity() {
     private fun ButtonFunc() {
         val agreeButton: Button = findViewById(R.id.accept)
         agreeButton.setOnClickListener {
-            //probably have logic here to handle notifications
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }

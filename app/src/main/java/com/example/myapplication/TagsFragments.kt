@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -23,6 +24,7 @@ import androidx.fragment.app.activityViewModels
 class TagsFragment : Fragment() {
     val sharedViewModel: SharedViewModel by activityViewModels()
     private val selectedTags = mutableListOf<String>()
+
 
     private var tagsSelectedListener: OnTagsSelectedListener? = null
 
@@ -92,6 +94,9 @@ class TagsFragment : Fragment() {
                 false  // Let the system handle the event
             }
         }
+
+
+
 
         // Handle 'Done' button logic
         // Return the selected tags to UserInfoActivity

@@ -23,7 +23,7 @@ class PasswordActivity : AppCompatActivity(){
     {
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
-            val intent = Intent(this, BirthdayActivity::class.java)
+            val intent = Intent(this, ResetPasswordActivity::class.java)
             startActivity(intent)
         }
     }

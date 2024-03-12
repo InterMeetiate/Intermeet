@@ -39,9 +39,6 @@
     <string name="you_should_">
         You should get to know each others names first.
     </string>
-    <string name="allow_notif">
-        Allow notifications so we can let you know when you have a match and messages
-    </string>
     <string name="next">Next</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
@@ -281,7 +278,6 @@
     <string name="selected_distance">%1$d miles></string>
     <string name="selected_distance_initial">Selected distance: 1 mile</string>
 
-    <string name="never_miss_">Never miss a message</string>
     <string name="Agree">Agree</string>
 
 </resources>

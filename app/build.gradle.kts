@@ -32,11 +32,15 @@ android {
     buildTypes {
         release {
             isDebuggable = false
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        debug {
+            isDebuggable = true
         }
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
@@ -69,4 +73,3 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
 }
-

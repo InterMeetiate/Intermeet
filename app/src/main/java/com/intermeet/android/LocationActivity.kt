@@ -13,12 +13,12 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun ButtonFunc() {
-        val agreeButton: Button = findViewById(R.id.accept)
+        val agreeButton: Button = findViewById(R.id.allow)
         agreeButton.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)
         }
-        val signUpButton: Button = findViewById(R.id.decline)
+        val signUpButton: Button = findViewById(R.id.dont_allow)
         signUpButton.setOnClickListener {
             val intent = Intent(this, NotificationActivity::class.java)
             startActivity(intent)

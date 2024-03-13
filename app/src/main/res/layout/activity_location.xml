@@ -7,29 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".LocationActivity">
 
-    <TextView
-        android:id="@+id/location_subtext"
-        android:layout_width="347dp"
-        android:layout_height="59dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="top"
-        android:text="@string/location_subtext"
-        android:textAppearance="@style/location_subtext"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="334dp"
+        android:layout_height="270dp"
+        android:src="@drawable/location_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintHorizontal_bias="0.35"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.253" />
+        app:layout_constraintVertical_bias="0.195" />
 
     <TextView
         android:id="@+id/location_text"
-        android:layout_width="344dp"
-        android:layout_height="77dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:gravity="top"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal|top"
         android:text="@string/location_access"
         android:textAppearance="@style/location_access"
         android:textStyle="bold"
@@ -37,46 +34,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.134" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.029999971" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="214dp"
-        android:layout_height="226dp"
-        android:src="@drawable/location_icon"
+    <TextView
+        android:id="@+id/location_subtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/location_subtext"
+        android:textAppearance="@style/location_subtext"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/location_text"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <Button
-        android:id="@+id/accept"
-        android:layout_width="102dp"
-        android:layout_height="57dp"
+        android:id="@+id/allow"
+        android:layout_width="148dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/black_button"
-        android:text="@string/accept"
-        android:textColor="@android:color/white"
+        android:text="@string/allow_button"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.258"
+        app:layout_constraintHorizontal_bias="0.102"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.737" />
+        app:layout_constraintTop_toBottomOf="@+id/location_subtext"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/decline"
-        android:layout_width="102dp"
-        android:layout_height="57dp"
+        android:id="@+id/dont_allow"
+        android:layout_width="148dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/black_button"
-        android:text="@string/decline"
-        android:textColor="@android:color/white"
+        android:text="@string/dont_allow_button"
+        android:textColor="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.747"
+        app:layout_constraintHorizontal_bias="0.897"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.736" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/location_subtext"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

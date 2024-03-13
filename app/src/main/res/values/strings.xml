@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Intermeet</string>
     <string name="logo">LOGO</string>
     <string name="give_an_intro">Give an intro about yourself</string>
@@ -40,8 +40,6 @@
         You should get to know each others names first.
     </string>
     <string name="next">Next</string>
-    <string name="accept">Accept</string>
-    <string name="decline">Decline</string>
     <string name="make_a_pass">Make a password!</string>
     <string name="we_want_to_">We want to make sure your account stays safe and secure!</string>
     <string name="textview_email">Email</string>
@@ -91,7 +89,6 @@
     <string name="input_default">
         >
     </string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="food">
         Food
@@ -278,7 +275,8 @@
     <string name="selected_distance">%1$d miles></string>
     <string name="selected_distance_initial">Selected distance: 1 mile</string>
 
-    <string name="Agree">Agree</string>
+    <string name="allow_button">Allow</string>
+    <string name="dont_allow_button">Don\'t Allow</string>
     <string name="homePageIndicator">This is the home page!</string>
 
 </resources>

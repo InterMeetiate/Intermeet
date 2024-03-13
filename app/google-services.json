@@ -29,7 +29,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1019373308805:android:8774a158216f00151112ec",
         "android_client_info": {
-          "package_name": "com.example.signuploginfirebase"
+          "package_name": "com.intermeet.signuploginfirebase"
         }
       },
       "oauth_client": [],

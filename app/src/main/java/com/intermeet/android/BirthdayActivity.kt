@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 //import kotlinx.android.synthetic.main.activity_main.*
 import com.intermeet.android.helperFunc.DatePickerHelper
+import com.intermeet.android.helperFunc.getUserDataRepository
 import java.util.*
 
 class BirthdayActivity : AppCompatActivity(){
@@ -17,11 +18,7 @@ class BirthdayActivity : AppCompatActivity(){
 
         datePicker = DatePickerHelper(this, true)
 
-        var birthday = ""
-        val selectDate: Button = findViewById(R.id.btSelectDate)
-        selectDate.setOnClickListener {
-            birthday = showDatePickerDialog()
-        }
+
         ButtonFunc()
     }
     private fun showDatePickerDialog() :String {
@@ -44,6 +41,18 @@ class BirthdayActivity : AppCompatActivity(){
     }
     private fun ButtonFunc()
     {
+        var birthday = ""
+        val selectDate: Button = findViewById(R.id.btSelectDate)
+        selectDate.setOnClickListener {
+            birthday = showDatePickerDialog()
+        }
+
+        // Retrieve userDataRepository
+        val userDataRepository = getUserDataRepository()
+        val userData = userDataRepository.userData ?: UserDataModel()
+
+        userData.birthday = birthday
+
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
             val intent = Intent(this, LocationActivity::class.java)

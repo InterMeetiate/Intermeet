@@ -72,4 +72,5 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }

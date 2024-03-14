@@ -22,17 +22,17 @@ class EmailActivity : AppCompatActivity(){
     private
     fun ButtonFunc()
     {
-        val emailEdit : EditText = findViewById(R.id.email_input)
-        val email = emailEdit.text.toString()
-
-        // Retrieve userDataRepository
-        val userDataRepository = getUserDataRepository()
-        val userData = userDataRepository.userData ?: UserDataModel()
-
-        userData.email = email
 
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener{
+            val emailEdit : EditText = findViewById(R.id.email_input)
+            val email = emailEdit.text.toString()
+
+            // Retrieve userDataRepository
+            val userDataRepository = getUserDataRepository()
+            val userData = userDataRepository.userData ?: UserDataModel()
+
+            userData.email = email
             val intent = Intent(this, PasswordActivity::class.java)
             startActivity(intent)
         }

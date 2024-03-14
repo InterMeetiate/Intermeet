@@ -7,9 +7,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.intermeet.android.helperFunc.getUserDataRepository
 
-class PasswordActivity : AppCompatActivity(){
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+class PasswordActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_password)
 
@@ -17,19 +16,20 @@ class PasswordActivity : AppCompatActivity(){
     }
 
     private
-    fun ButtonFunc()
-    {
-        val passwordEdit :EditText = findViewById(R.id.password)
-        val password = passwordEdit.text.toString()
+    fun ButtonFunc() {
 
-        // Retrieve userDataRepository
-        val userDataRepository = getUserDataRepository()
-        val userData = userDataRepository.userData ?: UserDataModel()
-
-        userData.password = password
 
         val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener{
+        nextButton.setOnClickListener {
+            val passwordEdit: EditText = findViewById(R.id.password)
+            val password = passwordEdit.text.toString()
+
+            // Retrieve userDataRepository
+            val userDataRepository = getUserDataRepository()
+            val userData = userDataRepository.userData ?: UserDataModel()
+
+            userData.password = password
+
             val intent = Intent(this, BirthdayActivity::class.java)
             startActivity(intent)
         }

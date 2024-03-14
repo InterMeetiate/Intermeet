@@ -67,7 +67,7 @@ class LocationActivity : AppCompatActivity() {
 
     private fun requestLocationUpdates() {
         val locationRequest = LocationRequest.Builder(10000L)
-            .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY) // Suitable for coarse location
+            .setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
             .setMaxUpdateDelayMillis(10000L)
             .build()
 
@@ -82,10 +82,7 @@ class LocationActivity : AppCompatActivity() {
             }
         }
 
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, mainLooper)
         }
     }

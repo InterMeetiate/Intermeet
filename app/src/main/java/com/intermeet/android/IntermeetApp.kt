@@ -1,6 +1,7 @@
 package com.intermeet.android
 
 import android.app.Application
+import android.net.Uri
 
 class IntermeetApp : Application() {
     val userDataRepository = UserDataRepository
@@ -26,6 +27,7 @@ data class UserDataModel(
     var longitude: Double? = null,
     var notificationPreferences: Boolean? = null,
     var photoDownloadUrls: MutableList<String> = mutableListOf(),
+    var photoUris: MutableList<Uri>,
     // User preferences
     var maxDistancePreference: Int? = null,
     var religionPreference: String? = null,

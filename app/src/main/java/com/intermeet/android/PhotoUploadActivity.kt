@@ -1,6 +1,5 @@
 package com.intermeet.android
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
@@ -8,11 +7,12 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PhotoUploadActivity : AppCompatActivity() {
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
-    private val imageUris = arrayOfNulls<Uri>(5)  // Assuming 5 ImageViews
+    private val imageUris = mutableListOf<Uri?>()  // Dynamic list to hold selected image URIs
     private lateinit var imageViews: List<ImageView>
     private var currentImageIndex = 0  // Track which ImageView is being updated
 
@@ -22,17 +22,32 @@ class PhotoUploadActivity : AppCompatActivity() {
 
         initializeImagePickerLauncher()
         setupImageViewsAndNextButton()
+        initializeImageViewList()
     }
 
     private fun initializeImagePickerLauncher() {
-        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                updateSelectedImage(it)
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let {
+                    updateSelectedImage(it)
+                }
             }
-        }
     }
 
     private fun setupImageViewsAndNextButton() {
+        // Assuming button and image view setup remains the same
+        // ...
+
+        val nextButton: Button = findViewById(R.id.nextButton)
+        nextButton.setOnClickListener {
+            // Here, you simply store the selected URIs in your user data repository instead of uploading
+            storeSelectedUris()
+            // Navigate to the next part of your sign-up process
+            // ...
+        }
+    }
+
+    private fun initializeImageViewList() {
         imageViews = listOf(
             findViewById(R.id.imageView1),
             findViewById(R.id.imageView2),
@@ -41,24 +56,23 @@ class PhotoUploadActivity : AppCompatActivity() {
             findViewById(R.id.imageView5)
         )
 
-        imageViews.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
-                currentImageIndex = index  // Remember which ImageView was clicked
-                imagePickerLauncher.launch("image/*")  // Launch the image picker
-
-            }
-        }
-
-        val nextButton: Button = findViewById(R.id.nextButton)
-        nextButton.setOnClickListener {
-            val intent = Intent(this, SchoolActivity::class.java)
-            startActivity(intent)
+        // Initialize imageUris list with nulls to match imageViews size
+        for (imageView in imageViews) {
+            imageUris.add(null)
         }
     }
 
     private fun updateSelectedImage(uri: Uri) {
-        // Update the ImageView and store the Uri
-        imageUris[currentImageIndex] = uri
+        // Update the ImageView with the selected image URI
         imageViews[currentImageIndex].setImageURI(uri)
+        // Store the selected URI in the list
+        imageUris[currentImageIndex] = uri
+    }
+
+    private fun storeSelectedUris() {
+        val userDataRepository = getUserDataRepository()
+        // Filter out null URIs and store the list in your userData repository
+        userDataRepository.userData?.photoUris = imageUris.filterNotNull().toMutableList()
+        // Log or handle the stored URIs as needed
     }
 }

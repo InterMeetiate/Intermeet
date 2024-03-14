@@ -3,6 +3,7 @@ package com.intermeet.android
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import com.intermeet.android.helperFunc.getUserDataRepository
@@ -31,21 +32,25 @@ class SignupActivity : AppCompatActivity() {
 
     private
     fun ButtonFunc() {
-        val firstEdit: EditText = findViewById(R.id.signupUsername)
-        val lastEdit: EditText = findViewById(R.id.signupUsername2)
-
-        val firstName = firstEdit.text.toString()
-        val lastName = lastEdit.text.toString()
-
-        // Retrieve userDataRepository
-        val userDataRepository = getUserDataRepository()
-        val userData = userDataRepository.userData ?: UserDataModel()
-
-        userData.firstName = firstName
-        userData.lastName = lastName
-
         val nextButton: Button = findViewById(R.id.next_button)
         nextButton.setOnClickListener {
+            val firstEdit: EditText = findViewById(R.id.signupUsername)
+            val lastEdit: EditText = findViewById(R.id.signupUsername2)
+
+            val firstName = firstEdit.text.toString()
+            val lastName = lastEdit.text.toString()
+
+            // Retrieve userDataRepository
+            val userDataRepository = getUserDataRepository()
+            if (userDataRepository.userData == null) {
+                userDataRepository.userData = UserDataModel()
+            }
+
+            userDataRepository.userData?.let { userData ->
+                userData.firstName = firstName
+                userData.lastName = lastName
+            }
+
             val intent = Intent(this, EmailActivity::class.java)
             startActivity(intent)
         }

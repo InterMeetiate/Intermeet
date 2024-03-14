@@ -27,7 +27,7 @@ data class UserDataModel(
     var longitude: Double? = null,
     var notificationPreferences: Boolean? = null,
     var photoDownloadUrls: MutableList<String> = mutableListOf(),
-    var photoUris: MutableList<Uri>,
+    var photoUris: MutableList<Uri> = mutableListOf(),
     // User preferences
     var maxDistancePreference: Int? = null,
     var religionPreference: String? = null,

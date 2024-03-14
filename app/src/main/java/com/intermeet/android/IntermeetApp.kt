@@ -36,6 +36,7 @@ data class UserDataModel(
     var smokingPreference: String? = null,
     var politicsPreference: String? = null,
     // Additional user-related information
+    var school: String? = null,
     var gender: String? = null,
     var height: String? = null,
     var religion: String? = null,

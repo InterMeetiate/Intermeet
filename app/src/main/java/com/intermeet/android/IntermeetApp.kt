@@ -29,12 +29,16 @@ data class UserDataModel(
     var photoDownloadUrls: MutableList<String> = mutableListOf(),
     var photoUris: MutableList<Uri> = mutableListOf(),
     // User preferences
+    var genderPreference: String? = null,
     var maxDistancePreference: Int? = null,
     var religionPreference: String? = null,
     var ethnicityPreference: String? = null,
     var drinkingPreference: String? = null,
     var smokingPreference: String? = null,
     var politicsPreference: String? = null,
+    var drugsPreference: String? = null,
+    var minAgePreference: Int? = null,
+    var maxAgePreference: Int? = null,
     // Additional user-related information
     var school: String? = null,
     var gender: String? = null,

@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.helperFunc.getUserDataRepository
 
 // Define the PreferenceActivity class that extends AppCompatActivity and implements listener interfaces.
 class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelectedListener, AgeFragment.OnAgeSelectedListener {
@@ -25,6 +26,9 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
     private lateinit var tvDrugs: TextView
     private lateinit var tvSmoking: TextView
     private lateinit var tvPolitics: TextView
+
+    // Declare UserDataRespository
+    private lateinit var userDataRepository: UserDataRepository
 
     // Initialize arrays to hold the selection options.
     private val religion = arrayOf("Agnostic", "Atheist", "Buddhist", "Catholic", "Christian", "Hindu", "Jewish", "Muslim", "Sikh", "Spiritual", "Other", "Open to all")
@@ -51,6 +55,9 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preference) // Sets the UI layout for this Activity.
+
+        userDataRepository = getUserDataRepository()
+
 
         // Linking variables with their respective view components in the layout.
         backButton = findViewById(R.id.next_button)
@@ -130,7 +137,12 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedReligion = religion[numberPicker.value]
                 tvReligion.text = "${religion[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.religionPreference = selectedReligion
             }
+
             setNegativeButton("Cancel", null)
         }.show()
     }
@@ -151,6 +163,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedInterested = interested[numberPicker.value]
                 tvInterest.text = "${interested[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.genderPreference = selectedInterested
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -172,6 +188,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedEthnicity = ethnicity[numberPicker.value]
                 tvEthnicity.text = "${ethnicity[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.ethnicityPreference = selectedEthnicity
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -193,6 +213,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedDrink = drinking[numberPicker.value]
                 tvDrink.text = "${drinking[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.drinkingPreference = selectedDrink
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -214,6 +238,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedDrugs = drugs[numberPicker.value]
                 tvDrugs.text = "${drugs[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.drugsPreference = selectedDrugs
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -235,6 +263,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedSmoking = smoking[numberPicker.value]
                 tvSmoking.text = "${smoking[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.drugsPreference = selectedDrugs
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -256,6 +288,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 selectedPolitics = politics[numberPicker.value]
                 tvPolitics.text = "${politics[numberPicker.value]} >"
                 backButton.visibility = View.VISIBLE
+
+                // Update preference
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.politicsPreference = selectedPolitics
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -266,6 +302,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         selectedDistance = distance  // Assign the selected distance to the variable.
         tvDistance.text = getString(R.string.selected_distance, distance)  // Update the TextView to display the selected distance.
         backButton.visibility = View.VISIBLE  // Make the back button visible again.
+
+        // Update preference
+        val userData = userDataRepository.userData ?: UserDataModel()
+        userData.maxDistancePreference = selectedDistance
     }
 
     // Implementation of the OnAgeSelectedListener interface.
@@ -274,5 +314,10 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         selectedMinAge = minAge  // Assign the selected minimum age to the variable.
         selectedMaxAge = maxAge  // Assign the selected maximum age to the variable.
         backButton.visibility = View.VISIBLE  // Make the back button visible again.
+
+        // Update preference
+        val userData = userDataRepository.userData ?: UserDataModel()
+        userData.minAgePreference = selectedMinAge
+        userData.maxAgePreference = selectedMaxAge
     }
 }

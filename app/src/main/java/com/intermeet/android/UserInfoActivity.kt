@@ -1,13 +1,13 @@
+// Define the package name of the application.
 package com.intermeet.android
 
+// Import necessary classes and packages for the activity.
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.NumberPicker
@@ -16,58 +16,36 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.activity.viewModels
 
+// UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.
 class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListener,
     PronounFragment.PronounListener, TagsFragment.OnTagsSelectedListener {
+
+    // ViewModel instance for shared data across the app's components.
     val sharedViewModel: SharedViewModel by viewModels()
+
+    // UI components declared to be initialized later.
     private lateinit var backButton: Button
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
     private lateinit var tvEthnicity: TextView
-    private lateinit var tvJob: TextView // TextView for occupation
+    private lateinit var tvJob: TextView
     private lateinit var tvSex: TextView
     private lateinit var tvPronoun: TextView
-    private lateinit var tvOccupation: TextView
-    private lateinit var tagsDisplay: TextView // TextView to display selected tags
+    private lateinit var tagsDisplay: TextView
     private lateinit var tvDrink: TextView
     private lateinit var tvDrugs: TextView
     private lateinit var tvSmoking: TextView
     private lateinit var tvPolitics: TextView
     private lateinit var btnNavigateFragment: TextView
-    private var selectedTags: List<String> = listOf()
-    private val genders = arrayOf("Male", "Female", "Nonbinary", "Trans", "Other")
-    private val heights = arrayOf(
-        "3'0","3'1","3'2","3'3","3'4","3'5","3'6","3'7","3'8","3'9","3'10","3'11",
-        "4'0","4'1","4'2","4'3","4'4","4'5","4'6","4'7","4'8","4'9","4'10","4'11",
-        "5'0","5'1","5'2","5'3","5'4","5'5","5'6","5'7","5'8","5'9","5'10","5'11",
-        "6'0","6'1","6'2","6'3","6'4","6'5","6'6","6'7","6'8","6'9","6'10","6'11",
-        "7'0")
-    private val religion = arrayOf(
-        "Agnostic", "Atheist", "Buddhist", "Catholic", "Christian", "Hindu", "Jewish", "Muslim",
-        "Sikh", "Spiritual", "Other", "Prefer not to say")
-    private val ethnicity = arrayOf(
-        "Black/African Descent", "East Asian", "Hispanic/Latino", "Middle Eastern", "Native American",
-        "Pacific Islander", "South Asian", "Southeast Asian", "White/Caucasian", "Other", "Prefer not to say")
-    private val sexuality = arrayOf(
-        "Straight", "Gay", "Lesbian", "Bisexual", "Asexual", "Pansexual", "Queer", "Other", "Figuring it out", "Prefer not to say")
-    private val drinking = arrayOf(
-        "Yes", "No", "Prefer not to say"
-    )
-    private val drugs = arrayOf(
-        "Yes", "No", "Prefer not to say"
-    )
-    private val smoking = arrayOf(
-        "Yes", "No", "Prefer not to say"
-    )
-    private val politics = arrayOf(
-        "Liberal", "Moderate", "Conservative", "Not Political", "Other", "Prefer not to say"
-    )
 
+    // Variables to store user-selected values.
+    private var selectedTags: List<String> = listOf()
     private var selectedGender: String? = null
     private var selectedHeight: String? = null
     private var selectedReligion: String? = null
     private var selectedEthnicity: String? = null
-    private var selectedJob: String? = null // Variable to store the occupation
+    private var selectedJob: String? = null
     private var selectedSex: String? = null
     private var selectedPronoun: String? = null
     private var selectedDrink: String? = null
@@ -75,156 +53,107 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
     private var selectedSmoking: String? = null
     private var selectedPolitics: String? = null
 
+    // Arrays containing options for various user attributes.
+    private val genders = arrayOf("Male", "Female", "Nonbinary", "Trans", "Other")
+    // Array containing height options. Each element represents a possible height value the user can pick.
+    private val heights = arrayOf(
+        "3'0\"", "3'1\"", "3'2\"", "3'3\"", "3'4\"", "3'5\"", "3'6\"",
+        "3'7\"", "3'8\"", "3'9\"", "3'10\"", "3'11\"", "4'0\"", "4'1\"",
+        "4'2\"", "4'3\"", "4'4\"", "4'5\"", "4'6\"", "4'7\"", "4'8\"",
+        "4'9\"", "4'10\"", "4'11\"", "5'0\"", "5'1\"", "5'2\"", "5'3\"",
+        "5'4\"", "5'5\"", "5'6\"", "5'7\"", "5'8\"", "5'9\"", "5'10\"",
+        "5'11\"", "6'0\"", "6'1\"", "6'2\"", "6'3\"", "6'4\"", "6'5\"",
+        "6'6\"", "6'7\"", "6'8\"", "6'9\"", "6'10\"", "6'11\"", "7'0\""
+    ) // These values are typically used in a picker to allow the user to select their height.
+
+    // Array containing religion options. Each element is a string representing a religious affiliation or lack thereof.
+    private val religion = arrayOf(
+        "Agnostic", "Atheist", "Buddhist", "Catholic", "Christian",
+        "Hindu", "Jewish", "Muslim", "Sikh", "Spiritual", "Other",
+        "Prefer not to say"
+    ) // The user can select their religion or spiritual belief from these options, or choose to not specify.
+
+    // Array containing ethnicity options. Each string represents a different ethnic group the user can identify with.
+    private val ethnicity = arrayOf(
+        "Black/African Descent", "East Asian", "Hispanic/Latino",
+        "Middle Eastern", "Native American", "Pacific Islander",
+        "South Asian", "Southeast Asian", "White/Caucasian", "Other",
+        "Prefer not to say"
+    ) // Users can select from these options to indicate their ethnicity, providing an option for those who prefer not to say or identify as 'Other'.
+
+    // Array containing sexuality options. It represents various sexual orientations a user can identify with.
+    private val sexuality = arrayOf(
+        "Straight", "Gay", "Lesbian", "Bisexual", "Asexual",
+        "Pansexual", "Queer", "Other", "Figuring it out", "Prefer not to say"
+    ) // This array allows users to pick a label that best fits their sexual orientation, including an option for those who are still exploring or prefer not to disclose this information.
+
+    private val drinking = arrayOf("Yes", "No", "Prefer not to say")
+    private val drugs = arrayOf("Yes", "No", "Prefer not to say")
+    private val smoking = arrayOf("Yes", "No", "Prefer not to say")
+    private val politics = arrayOf("Liberal", "Moderate", "Conservative", "Not Political", "Other", "Prefer not to say")
+
+    // The onCreate method is called when the activity is starting.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_user_info)
+        setContentView(R.layout.activity_user_info) // Sets the UI layout for this Activity.
+        btnNavigateFragment = findViewById(R.id.addTagButton)
+        // Linking variables with their respective view components in the layout.
         backButton = findViewById(R.id.next_button)
-
-
         tvGender = findViewById(R.id.tvGender)
-        tvGender.setOnClickListener {
-            showGenderPicker()
-        }
         tvHeight = findViewById(R.id.tvHeight)
-        tvHeight.setOnClickListener {
-            showHeightPicker()
-        }
         tvReligion = findViewById(R.id.tvReligion)
-        tvReligion.setOnClickListener {
-            showReligionPicker()
-        }
         tvEthnicity = findViewById(R.id.tvEthnicity)
-        tvEthnicity.setOnClickListener {
-            showEthnicityPicker()
-        }
-        tvJob= findViewById(R.id.tvJob)
-        tvJob.setOnClickListener {
-            tvJob.visibility = View.GONE
-            val occupationFragment = OccupationFragment().also {
-                // "this" is UserInfoActivity which implements OccupationListener
-                it.setOccupationListener(this)
-                backButton.visibility = View.GONE
-            }
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container1, occupationFragment)
-                .addToBackStack(null)
-                .commit()
-        }
+        tvJob = findViewById(R.id.tvJob)
         tvSex = findViewById(R.id.tvSex)
-        tvSex.setOnClickListener {
-            showSexualityPicker()
-        }
-        tvPronoun= findViewById(R.id.tvPronoun)
-        tvPronoun.setOnClickListener {
-            tvPronoun.visibility = View.GONE
-            val pronounFragment = PronounFragment().also {
-                it.setPronounListener(this)
-                backButton.visibility = View.GONE
-
-            }
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container2, pronounFragment)
-                .addToBackStack(null)
-                .commit()
-        }
+        tvPronoun = findViewById(R.id.tvPronoun)
         tvDrink = findViewById(R.id.tvDrink)
-        tvDrink.setOnClickListener {
-            showDrinkPicker()
-        }
-        tvSmoking = findViewById(R.id.tvSmoking)
-        tvSmoking.setOnClickListener {
-            showSmokingPicker()
-        }
         tvDrugs = findViewById(R.id.tvDrugs)
-        tvDrugs.setOnClickListener {
-            showDrugsPicker()
-        }
+        tvSmoking = findViewById(R.id.tvSmoking)
         tvPolitics = findViewById(R.id.tvPolitics)
-        tvPolitics.setOnClickListener {
-            showPoliticsPicker()
-        }
+        btnNavigateFragment = findViewById(R.id.addTagButton)
 
-        btnNavigateFragment = findViewById(R.id.addTagButton) // Replace with your actual button ID
-        btnNavigateFragment.setOnClickListener {
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container3, TagsFragment())
-            transaction.addToBackStack(null) // Add this transaction to the back stack (optional)
-            transaction.commit()
-            backButton.visibility = View.GONE
+        // Setting onClick listeners to show dialogs for selecting user attributes.
+        tvGender.setOnClickListener { showGenderPicker() }
+        tvHeight.setOnClickListener { showHeightPicker() }
+        tvReligion.setOnClickListener { showReligionPicker() }
+        tvEthnicity.setOnClickListener { showEthnicityPicker() }
+        tvJob.setOnClickListener { navigateToOccupationFragment() }
+        tvSex.setOnClickListener { showSexualityPicker() }
+        tvPronoun.setOnClickListener { navigateToPronounFragment() }
+        tvDrink.setOnClickListener { showDrinkPicker() }
+        tvDrugs.setOnClickListener { showDrugsPicker() }
+        tvSmoking.setOnClickListener { showSmokingPicker() }
+        tvPolitics.setOnClickListener { showPoliticsPicker() }
 
-
-        }
-
+        // Setting an onClick listener for the button to navigate to the PreferenceActivity.
         backButton.setOnClickListener {
-            // Intent to navigate to the SecondActivity
             val intent = Intent(this, PreferenceActivity::class.java)
             startActivity(intent)
         }
 
-
-
-    }
-
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
+        // Setting an onClick listener for navigating to the TagsFragment.
+        btnNavigateFragment.setOnClickListener {
+            navigateToTagsFragment()
+            backButton.visibility = View.GONE // Hide the back button when navigating to the fragment.
         }
     }
+
+    // Implementing the method from OccupationListener to handle the occupation entered in the fragment.
     override fun onOccupationEntered(occupation: String) {
-        tvJob.text = "$occupation >"
-        selectedJob = occupation
-        tvJob.visibility = View.VISIBLE
-        backButton.visibility = View.VISIBLE
-
+        updateOccupationUI(occupation)
     }
+
+    // Implementing the method from PronounListener to handle the pronoun entered in the fragment.
     override fun onPronounEntered(pronoun: String) {
-        tvPronoun.text = "$pronoun >"
-        selectedPronoun = pronoun
-        tvPronoun.visibility = View.VISIBLE
-        backButton.visibility = View.VISIBLE
-
+        updatePronounUI(pronoun)
     }
+
+    // Implementing the method from TagsSelectionListener to handle the tags selected in the fragment.
     override fun onTagsSelected(tags: List<String>) {
-        selectedTags = tags
-        // Assuming you have a LinearLayout (tagsContainer) to add tags TextViews
-        val tagsContainer: GridLayout = findViewById(R.id.customTagsContainer)
-        tagsContainer.removeAllViews() // Clear previous tags if any
-
-        tags.forEach { tag ->
-            val textView = TextView(this).apply {
-                text = tag
-                gravity = Gravity.CENTER
-                textSize = 14f // Set the text size or use resources
-                setTextColor(Color.BLACK)
-                background = ContextCompat.getDrawable(context, R.drawable.tag_background)
-                setPadding(10, 10, 10, 10) // Set padding (left, top, right, bottom)
-
-                layoutParams = GridLayout.LayoutParams().apply {
-                    // Add layout parameters if necessary, e.g., margins
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        setMargins(20, 20, 20, 20) // Set margins (left, top, right, bottom)
-                    }
-                }
-                // Add styling here if needed
-            }
-            tagsContainer.addView(textView)
-            sharedViewModel.setSelectedTags(tags)
-        }
-        val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton)
-        btnNavigateFragment.visibility = View.VISIBLE
-        tagsContainer.visibility = View.VISIBLE
-        backButton.visibility = View.VISIBLE
-
-        Log.d("UserInfoActivity", "Tags received: $tags")
+        updateTagsUI(tags)
     }
 
-
-
+    // Method for showing a dialog to pick gender.
     private fun showGenderPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -237,13 +166,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Select Your Gender")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user gender input*/
                 selectedGender = genders[numberPicker.value]
                 tvGender.text = "${genders[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick height.
     private fun showHeightPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -256,7 +186,6 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Select Your Height")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user height input*/
                 selectedHeight = heights[numberPicker.value]
                 tvHeight.text = "${heights[numberPicker.value]} >"
             }
@@ -264,6 +193,7 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }.show()
     }
 
+    // Method for showing a dialog to pick religion.
     private fun showReligionPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -273,16 +203,17 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }
 
         AlertDialog.Builder(this).apply {
-            setTitle("Select Your Religious Belief")
+            setTitle("Select Your Religion")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user religious input*/
                 selectedReligion = religion[numberPicker.value]
                 tvReligion.text = "${religion[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick ethnicity.
     private fun showEthnicityPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -295,13 +226,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Select Your Ethnicity")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Ethnicity input*/
                 selectedEthnicity = ethnicity[numberPicker.value]
                 tvEthnicity.text = "${ethnicity[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick sexual orientation.
     private fun showSexualityPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -314,13 +246,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Select Your Sexuality")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Sexuality input*/
                 selectedSex = sexuality[numberPicker.value]
                 tvSex.text = "${sexuality[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick drinking preference.
     private fun showDrinkPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -333,13 +266,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Do you drink?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Ethnicity input*/
                 selectedDrink = drinking[numberPicker.value]
                 tvDrink.text = "${drinking[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick drug usage preference.
     private fun showDrugsPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -349,16 +283,17 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }
 
         AlertDialog.Builder(this).apply {
-            setTitle("Do you take anything interesting?")
+            setTitle("Do you use recreational drugs?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Ethnicity input*/
                 selectedDrugs = drugs[numberPicker.value]
                 tvDrugs.text = "${drugs[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick smoking preference.
     private fun showSmokingPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -371,13 +306,14 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
             setTitle("Do you smoke?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Ethnicity input*/
                 selectedSmoking = smoking[numberPicker.value]
                 tvSmoking.text = "${smoking[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
+
+    // Method for showing a dialog to pick political views.
     private fun showPoliticsPicker() {
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
@@ -387,39 +323,112 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }
 
         AlertDialog.Builder(this).apply {
-            setTitle("What side on the political spectrum you on?")
+            setTitle("What are your political views?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
-                /*Updates user Ethnicity input*/
                 selectedPolitics = politics[numberPicker.value]
                 tvPolitics.text = "${politics[numberPicker.value]} >"
             }
             setNegativeButton("Cancel", null)
         }.show()
     }
-    override fun onResume() {
-        super.onResume()
-        backButton.visibility = View.VISIBLE
-        tvJob.visibility = View.VISIBLE
-        tvPronoun.visibility = View.VISIBLE
-        println("here")
-        val btnNavigateFragment = findViewById<TextView>(R.id.addTagButton) // Adjust ID as needed
-        btnNavigateFragment.visibility = View.VISIBLE // Make the button visible again
-        // similarly for the button if it's a separate view
 
+    // Navigate to the OccupationFragment and set up necessary listeners.
+    private fun navigateToOccupationFragment() {
+        val occupationFragment = OccupationFragment().also {
+            it.setOccupationListener(this)  // Setting the current activity as the listener for the fragment.
+            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container1, occupationFragment)  // Replaces the content of the container with the OccupationFragment.
+            .addToBackStack(null)  // Adds the transaction to the back stack, allowing user navigation back.
+            .commit()  // Commits the transaction.
     }
 
+    // Navigate to the PronounFragment and set up necessary listeners.
+    private fun navigateToPronounFragment() {
+        val pronounFragment = PronounFragment().also {
+            it.setPronounListener(this)  // Setting the current activity as the listener for the fragment.
+            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+        }
 
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container2, pronounFragment)  // Replaces the content of the container with the PronounFragment.
+            .addToBackStack(null)  // Adds the transaction to the back stack.
+            .commit()  // Commits the transaction.
+    }
+
+    // Navigate to the TagsFragment.
+    private fun navigateToTagsFragment() {
+        val tagsFragment = TagsFragment().also {
+            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container3, tagsFragment)  // Replaces the content of the container with the TagsFragment.
+            .addToBackStack(null)  // Adds the transaction to the back stack.
+            .commit()  // Commits the transaction.
+    }
+
+    // Updates the UI based on the selected occupation.
+    private fun updateOccupationUI(occupation: String) {
+        tvJob.text = "$occupation >"  // Sets the text of the job TextView to the selected occupation.
+        selectedJob = occupation  // Updates the selectedJob variable with the chosen occupation.
+        tvJob.visibility = View.VISIBLE  // Makes the job TextView visible.
+        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+    }
+
+    // Updates the UI based on the entered pronoun.
+    private fun updatePronounUI(pronoun: String) {
+        tvPronoun.text = "$pronoun >"  // Sets the text of the pronoun TextView to the selected pronoun.
+        selectedPronoun = pronoun  // Updates the selectedPronoun variable with the chosen pronoun.
+        tvPronoun.visibility = View.VISIBLE  // Makes the pronoun TextView visible.
+        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+    }
+
+    // Updates the UI to display the selected tags.
+    private fun updateTagsUI(tags: List<String>) {
+        selectedTags = tags
+        val tagsContainer: GridLayout = findViewById(R.id.customTagsContainer)  // Retrieves the GridLayout where tags will be displayed.
+        tagsContainer.removeAllViews()  // Clears any existing views (tags) in the container.
+
+        // Iterates over the list of selected tags and creates TextViews for each.
+        tags.forEach { tag ->
+            val textView = TextView(this).apply {
+                text = tag  // Sets the text of the TextView to the current tag.
+                gravity = Gravity.CENTER  // Centers the text within the TextView.
+                textSize = 14f  // Sets the text size.
+                setTextColor(Color.BLACK)  // Sets the text color.
+                background = ContextCompat.getDrawable(context, R.drawable.tag_background)  // Sets the background drawable.
+                setPadding(10, 10, 10, 10)  // Adds padding inside the TextView.
+
+                layoutParams = GridLayout.LayoutParams().apply {
+                    setMargins(20, 20, 20, 20)  // Sets margins around the TextView.
+                }
+            }
+            tagsContainer.addView(textView)  // Adds the TextView to the GridLayout.
+        }
+        sharedViewModel.setSelectedTags(tags)  // Updates the ViewModel with the selected tags.
+        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+    }
+
+    // Callback method triggered when the activity resumes from the paused state.
+    override fun onResume() {
+        super.onResume()
+        backButton.visibility = View.VISIBLE  // Ensures the back button is visible when the activity resumes.
+    }
 }
+
+// Interfaces for fragment-to-activity communication.
 interface OccupationListener {
-    fun onOccupationEntered(occupation: String)
+    fun onOccupationEntered(occupation: String)  // Callback for when an occupation is entered.
 }
+
 interface PronounListener {
-    fun onPronounEntered(pronoun: String)
+    fun onPronounEntered(pronoun: String)  // Callback for when a pronoun is entered.
 }
+
 interface OnTagsSelectedListener {
-    fun onTagsSelected(tags: List<String>)
+    fun onTagsSelected(tags: List<String>)  // Callback for when tags are selected.
 }
-
-// In your fragment
-

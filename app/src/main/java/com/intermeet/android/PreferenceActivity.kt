@@ -266,7 +266,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
 
                 // Update preference
                 val userData = userDataRepository.userData ?: UserDataModel()
-                userData.drugsPreference = selectedDrugs
+                userData.smokingPreference = selectedDrugs
             }
             setNegativeButton("Cancel", null)
         }.show()

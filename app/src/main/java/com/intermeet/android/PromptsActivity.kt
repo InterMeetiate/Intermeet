@@ -4,6 +4,7 @@ import CustomAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +12,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
+import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PromptsActivity : AppCompatActivity() {
     lateinit var listView: ListView
@@ -34,6 +36,9 @@ class PromptsActivity : AppCompatActivity() {
 
         promptList = ArrayList()
 
+        val userDataRepository = getUserDataRepository()
+        promptList.addAll(userDataRepository.userData?.prompts ?: listOf())
+
         val adapter = CustomAdapter(this, promptList)
         listView.adapter = adapter
 
@@ -49,8 +54,9 @@ class PromptsActivity : AppCompatActivity() {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(promptTextbox.windowToken, 0)
 
-                // Adds text to list
+                // Adds text to list and userDataRepository
                 promptList.add(combinedText)
+                userDataRepository.userData?.prompts?.add(combinedText)
                 adapter.notifyDataSetChanged()
 
                 // Clear textbox after adding it to the list
@@ -59,6 +65,7 @@ class PromptsActivity : AppCompatActivity() {
         }
         backButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
+            Log.d("PhotoActivity", "Current userData: ${userDataRepository.userData}")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

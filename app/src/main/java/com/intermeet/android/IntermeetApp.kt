@@ -55,7 +55,5 @@ data class UserDataModel(
     var interests: List<String> = listOf(),
     // About me section
     var aboutMeIntro: String? = null,
-    var aboutMePrompt1: String? = null,
-    var aboutMePrompt2: String? = null,
-    var aboutMePrompt3: String? = null
+    var prompts: MutableList<String> = mutableListOf()
 )

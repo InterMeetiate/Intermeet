@@ -418,6 +418,10 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         selectedJob = occupation  // Updates the selectedJob variable with the chosen occupation.
         tvJob.visibility = View.VISIBLE  // Makes the job TextView visible.
         backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        // Update user data
+        val userData = userDataRepository.userData ?: UserDataModel()
+        userData.occupation = selectedJob
     }
 
     // Updates the UI based on the entered pronoun.
@@ -426,6 +430,10 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         selectedPronoun = pronoun  // Updates the selectedPronoun variable with the chosen pronoun.
         tvPronoun.visibility = View.VISIBLE  // Makes the pronoun TextView visible.
         backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        // Update user data
+        val userData = userDataRepository.userData ?: UserDataModel()
+        userData.pronouns = selectedPronoun
     }
 
     // Updates the UI to display the selected tags.
@@ -452,6 +460,10 @@ class UserInfoActivity : AppCompatActivity(), OccupationFragment.OccupationListe
         }
         sharedViewModel.setSelectedTags(tags)  // Updates the ViewModel with the selected tags.
         backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        // Update user data
+        val userData = userDataRepository.userData ?: UserDataModel()
+        userData.interests = selectedTags
     }
 
     // Callback method triggered when the activity resumes from the paused state.

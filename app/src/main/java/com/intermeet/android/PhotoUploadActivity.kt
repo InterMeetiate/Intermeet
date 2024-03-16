@@ -61,6 +61,7 @@ class PhotoUploadActivity : AppCompatActivity() {
         // Update the ImageView and store the Uri
         imageUris[currentImageIndex] = uri
         imageViews[currentImageIndex].setImageURI(uri)
+        storeSelectedUris()
     }
 
     private fun storeSelectedUris() {

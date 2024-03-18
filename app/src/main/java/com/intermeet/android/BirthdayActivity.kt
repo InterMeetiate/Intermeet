@@ -7,9 +7,10 @@ import android.widget.Button
 import android.widget.TextView
 //import kotlinx.android.synthetic.main.activity_main.*
 import com.intermeet.android.helperFunc.DatePickerHelper
+import com.intermeet.android.helperFunc.getUserDataRepository
 import java.util.*
 
-class BirthdayActivity : AppCompatActivity(){
+class BirthdayActivity : AppCompatActivity() {
     lateinit var datePicker: DatePickerHelper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,14 +18,11 @@ class BirthdayActivity : AppCompatActivity(){
 
         datePicker = DatePickerHelper(this, true)
 
-        var birthday = ""
-        val selectDate: Button = findViewById(R.id.btSelectDate)
-        selectDate.setOnClickListener {
-            birthday = showDatePickerDialog()
-        }
+
         ButtonFunc()
     }
-    private fun showDatePickerDialog() :String {
+
+    private fun showDatePickerDialog(): String {
         val cal = Calendar.getInstance()
         val d = cal.get(Calendar.DAY_OF_MONTH)
         val m = cal.get(Calendar.MONTH)
@@ -37,15 +35,27 @@ class BirthdayActivity : AppCompatActivity(){
                 val tvDate: TextView = findViewById(R.id.tvDate)
                 val date = "${dayStr}-${monthStr}-${year}"
                 tvDate.text = date
+
+                // Retrieve userDataRepository
+                val userDataRepository = getUserDataRepository()
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.birthday = date
             }
         })
-        val birthdayDate : TextView = findViewById(R.id.tvDate)
+        val birthdayDate: TextView = findViewById(R.id.tvDate)
         return birthdayDate.text.toString()
     }
-    private fun ButtonFunc()
-    {
+
+    private fun ButtonFunc() {
+        var birthday = ""
+        val selectDate: Button = findViewById(R.id.btSelectDate)
+        selectDate.setOnClickListener {
+            birthday = showDatePickerDialog()
+
+        }
+
         val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener{
+        nextButton.setOnClickListener {
             val intent = Intent(this, LocationActivity::class.java)
             startActivity(intent)
         }

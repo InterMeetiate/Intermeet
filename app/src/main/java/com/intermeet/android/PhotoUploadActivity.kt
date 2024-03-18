@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PhotoUploadActivity : AppCompatActivity() {
 
@@ -60,5 +61,12 @@ class PhotoUploadActivity : AppCompatActivity() {
         // Update the ImageView and store the Uri
         imageUris[currentImageIndex] = uri
         imageViews[currentImageIndex].setImageURI(uri)
+        storeSelectedUris()
+    }
+
+    private fun storeSelectedUris() {
+        val userDataRepository = getUserDataRepository()
+        // Filter out null URIs and store the list in userData repository
+        userDataRepository.userData?.photoUris = imageUris.filterNotNull().toMutableList()
     }
 }

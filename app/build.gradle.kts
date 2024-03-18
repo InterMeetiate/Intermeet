@@ -57,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity:1.8.0")
     val lifecycle_version = "2.3.1"
     val fragment_version = "1.6.2"
     implementation("androidx.core:core-ktx:1.12.0")
@@ -72,4 +73,5 @@ dependencies {
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }

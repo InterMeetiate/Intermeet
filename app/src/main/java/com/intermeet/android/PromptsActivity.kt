@@ -66,7 +66,7 @@ class PromptsActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
             Log.d("PhotoActivity", "Current userData: ${userDataRepository.userData}")
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, AccountCreationActivity::class.java)
             startActivity(intent)
         }
     }

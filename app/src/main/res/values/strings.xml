@@ -15,6 +15,24 @@
     <string name="password_confirm">Confirm Password</string>
     <string name="reset_password">Reset Password</string>
     <string name="password_match">Both passwords must match</string>
+    <string name="setting_title">Settings</string>
+    <string name="account_title">Account</string>
+    <string name="email">Email</string>
+    <string name="payments">Payments</string>
+    <string name="verification">Verification</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="pause_account">Pause Account</string>
+    <string name="notifications">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="App_title">App</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="safety_title">Safety</string>
+    <string name="block_list">Block List</string>
+    <string name="legal_title">Legal</string>
+    <string name="TOS">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="logout">Logout</string>
     <string name="what_s_your">
         Whats your name?
     </string>

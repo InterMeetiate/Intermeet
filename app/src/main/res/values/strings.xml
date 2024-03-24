@@ -278,5 +278,10 @@
     <string name="allow_button">Allow</string>
     <string name="dont_allow_button">Don\'t Allow</string>
     <string name="homePageIndicator">This is the home page!</string>
+    <string name="events">Events</string>
+    <string name="worth_to_meet">Worth To Meet</string>
+    <string name="discover">Discover</string>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
 
 </resources>

@@ -1,6 +1,5 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
-import CustomAdapter
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PromptsActivity : AppCompatActivity() {
@@ -37,7 +37,7 @@ class PromptsActivity : AppCompatActivity() {
         promptList = ArrayList()
 
         val userDataRepository = getUserDataRepository()
-        promptList.addAll(userDataRepository.userData?.prompts ?: listOf())
+        promptList.addAll(UserDataRepository.userData?.prompts ?: listOf())
 
         val adapter = CustomAdapter(this, promptList)
         listView.adapter = adapter
@@ -56,7 +56,7 @@ class PromptsActivity : AppCompatActivity() {
 
                 // Adds text to list and userDataRepository
                 promptList.add(combinedText)
-                userDataRepository.userData?.prompts?.add(combinedText)
+                UserDataRepository.userData?.prompts?.add(combinedText)
                 adapter.notifyDataSetChanged()
 
                 // Clear textbox after adding it to the list
@@ -65,7 +65,7 @@ class PromptsActivity : AppCompatActivity() {
         }
         backButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
-            Log.d("PhotoActivity", "Current userData: ${userDataRepository.userData}")
+            Log.d("PhotoActivity", "Current userData: ${UserDataRepository.userData}")
             val intent = Intent(this, AccountCreationActivity::class.java)
             startActivity(intent)
         }

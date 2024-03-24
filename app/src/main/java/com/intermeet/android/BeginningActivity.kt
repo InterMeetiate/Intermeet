@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.intermeet.android.SignUp_SignIn.LoginActivity
+import com.intermeet.android.SignUp_SignIn.SignupActivity
+
 //hihihi
 class BeginningActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

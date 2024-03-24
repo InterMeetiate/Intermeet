@@ -1,11 +1,11 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 import java.lang.StringBuilder
 
@@ -42,11 +42,11 @@ class SignupActivity : AppCompatActivity() {
 
             // Retrieve userDataRepository
             val userDataRepository = getUserDataRepository()
-            if (userDataRepository.userData == null) {
-                userDataRepository.userData = UserDataModel()
+            if (UserDataRepository.userData == null) {
+                UserDataRepository.userData = UserDataModel()
             }
 
-            userDataRepository.userData?.let { userData ->
+            UserDataRepository.userData?.let { userData ->
                 userData.firstName = firstName
                 userData.lastName = lastName
             }

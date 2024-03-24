@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".IntermeetApp"
+        android:name=".SignUp_SignIn.IntermeetApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:debuggable="false"
@@ -19,43 +19,46 @@
         tools:ignore="HardcodedDebugMode"
         tools:targetApi="31">
         <activity
-            android:name=".AccountCreationActivity"
+            android:name=".HomePage_Test"
             android:exported="false" />
         <activity
-            android:name=".PromptsActivity"
+            android:name=".SignUp_SignIn.AccountCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".SignUp_SignIn.PromptsActivity"
             android:exported="false" />
         <activity
-            android:name=".SchoolActivity"
+            android:name=".SignUp_SignIn.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".SignUp_SignIn.SchoolActivity"
             android:exported="false" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".SignUp_SignIn.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".DescriptionActivity"
+            android:name=".SignUp_SignIn.SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".PasswordActivity"
+            android:name=".SignUp_SignIn.DescriptionActivity"
             android:exported="false" />
         <activity
-            android:name=".EmailActivity"
+            android:name=".SignUp_SignIn.PasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".BirthdayActivity"
+            android:name=".SignUp_SignIn.EmailActivity"
             android:exported="false" />
         <activity
-            android:name=".LocationActivity"
+            android:name=".SignUp_SignIn.BirthdayActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationActivity"
+            android:name=".SignUp_SignIn.LocationActivity"
             android:exported="false" />
         <activity
-            android:name=".PhotoUploadActivity"
+            android:name=".SignUp_SignIn.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignUp_SignIn.PhotoUploadActivity"
             android:exported="false" />
         <activity
             android:name=".BeginningActivity"
@@ -67,15 +70,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UserInfoActivity"
+            android:name=".SignUp_SignIn.UserInfoActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false"></activity>
+            android:name=".SignUp_SignIn.MainActivity"
+            android:exported="false" />
         <activity
-            android:name=".PreferenceActivity"
-            android:exported="false"></activity>
+            android:name=".SignUp_SignIn.PreferenceActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

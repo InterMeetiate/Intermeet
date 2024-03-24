@@ -1,11 +1,9 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 
@@ -73,7 +72,7 @@ class LocationActivity : AppCompatActivity() {
                 if (location != null) {
                     // Logic to handle location object
                     val userDataRepository = getUserDataRepository()
-                    val userData = userDataRepository.userData ?: UserDataModel()
+                    val userData = UserDataRepository.userData ?: UserDataModel()
                     userData.latitude = location.latitude
                     userData.longitude = location.longitude
 

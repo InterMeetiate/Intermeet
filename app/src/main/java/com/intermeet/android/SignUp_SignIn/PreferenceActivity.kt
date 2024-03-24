@@ -1,5 +1,5 @@
 // Specify the package name for the class.
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 // Import necessary Android and Kotlin libraries.
 import android.app.AlertDialog
@@ -10,10 +10,12 @@ import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 // Define the PreferenceActivity class that extends AppCompatActivity and implements listener interfaces.
-class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelectedListener, AgeFragment.OnAgeSelectedListener {
+class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelectedListener,
+    AgeFragment.OnAgeSelectedListener {
 
     // Declare UI elements that will be initialized later.
     private lateinit var backButton: Button
@@ -139,7 +141,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.religionPreference = selectedReligion
             }
 
@@ -165,7 +167,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.genderPreference = selectedInterested
             }
             setNegativeButton("Cancel", null)
@@ -190,7 +192,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.ethnicityPreference = selectedEthnicity
             }
             setNegativeButton("Cancel", null)
@@ -215,7 +217,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.drinkingPreference = selectedDrink
             }
             setNegativeButton("Cancel", null)
@@ -240,7 +242,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.drugsPreference = selectedDrugs
             }
             setNegativeButton("Cancel", null)
@@ -265,7 +267,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.smokingPreference = selectedDrugs
             }
             setNegativeButton("Cancel", null)
@@ -290,7 +292,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
                 backButton.visibility = View.VISIBLE
 
                 // Update preference
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.politicsPreference = selectedPolitics
             }
             setNegativeButton("Cancel", null)
@@ -304,7 +306,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         backButton.visibility = View.VISIBLE  // Make the back button visible again.
 
         // Update preference
-        val userData = userDataRepository.userData ?: UserDataModel()
+        val userData = UserDataRepository.userData ?: UserDataModel()
         userData.maxDistancePreference = selectedDistance
     }
 
@@ -316,7 +318,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         backButton.visibility = View.VISIBLE  // Make the back button visible again.
 
         // Update preference
-        val userData = userDataRepository.userData ?: UserDataModel()
+        val userData = UserDataRepository.userData ?: UserDataModel()
         userData.minAgePreference = selectedMinAge
         userData.maxAgePreference = selectedMaxAge
     }

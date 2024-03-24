@@ -1,8 +1,8 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import com.intermeet.android.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

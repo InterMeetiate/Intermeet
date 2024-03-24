@@ -1,10 +1,11 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class DescriptionActivity : AppCompatActivity() {
@@ -25,7 +26,7 @@ class DescriptionActivity : AppCompatActivity() {
 
             // Retrieve userDataRepository
             val userDataRepository = getUserDataRepository()
-            val userData = userDataRepository.userData ?: UserDataModel()
+            val userData = UserDataRepository.userData ?: UserDataModel()
 
             userData.aboutMeIntro = description
 

@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class AccountCreationActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class AccountCreationActivity : AppCompatActivity() {
 
     private fun registerUser() {
 
-        val userData = userDataRepository.userData
+        val userData = UserDataRepository.userData
         val email = userData?.email ?: ""
         val password = userData?.password ?: ""
 
@@ -55,7 +56,7 @@ class AccountCreationActivity : AppCompatActivity() {
     }
 
     private fun uploadImagesToFirebaseStorage(userId: String, onCompletion: (Boolean) -> Unit) {
-        val imageUris = userDataRepository.userData?.photoUris ?: listOf()
+        val imageUris = UserDataRepository.userData?.photoUris ?: listOf()
         val storageRef = FirebaseStorage.getInstance().reference.child("users/$userId/images")
         val imageDownloadUrls = mutableListOf<String>()
 
@@ -80,7 +81,7 @@ class AccountCreationActivity : AppCompatActivity() {
             Tasks.whenAll(uploadTasks).addOnCompleteListener {
                 if (it.isSuccessful) {
                     // Update UserDataModel with the download URLs
-                    userDataRepository.userData?.photoDownloadUrls = imageDownloadUrls
+                    UserDataRepository.userData?.photoDownloadUrls = imageDownloadUrls
                     onCompletion(true)
                 } else {
                     // Handle failure
@@ -95,12 +96,14 @@ class AccountCreationActivity : AppCompatActivity() {
 
 
     private fun storeUserDataToFirebaseDatabase(userId: String) {
-            val userData = userDataRepository.userData?.apply {
+            val userData = UserDataRepository.userData?.apply {
             // Clear sensitive information before storing in the database
             email = null
             password = null
-            userDataRepository.userData?.photoUris?.clear()
+            UserDataRepository.userData?.photoUris?.clear()
         }
+
+        Log.d("UserData", "${UserDataRepository.userData.toString()}")
 
         userData?.let {
             FirebaseDatabase.getInstance().getReference("users/$userId")

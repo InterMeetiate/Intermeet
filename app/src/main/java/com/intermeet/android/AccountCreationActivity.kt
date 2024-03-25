@@ -115,7 +115,7 @@ class AccountCreationActivity : AppCompatActivity() {
         }
     }
     private fun navigateToNextActivity() {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, Homepage::class.java)
         startActivity(intent)
         finish()
     }

@@ -7,54 +7,125 @@
     android:layout_height="match_parent"
     tools:context=".Homepage">
 
+    <TextView
+        android:id="@+id/frame_2"
+        android:layout_width="177dp"
+        android:layout_height="38dp"
+        android:background="@drawable/discover_bar"
+        android:clipToOutline="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/discover_homepage"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06999999" />
+
+    <View
+        android:id="@+id/return_button"
+        android:layout_width="40dp"
+        android:layout_height="38dp"
+        android:background="@drawable/resource_return"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/frame_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06999999" />
+
+    <View
+        android:id="@+id/ellipse_9"
+        android:layout_width="34.24dp"
+        android:layout_height="35dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="36dp"
+        android:background="@drawable/homepage_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/frame_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06999999" />
+
+    <View
+        android:id="@+id/inner"
+        android:layout_width="14.38dp"
+        android:layout_height="14.36dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/homepage_groups_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/ellipse_9"
+        app:layout_constraintEnd_toEndOf="@+id/ellipse_9"
+        app:layout_constraintStart_toStartOf="@+id/ellipse_9"
+        app:layout_constraintTop_toTopOf="@+id/ellipse_9" />
+
     <ImageView
         android:id="@+id/photo1"
-        android:layout_width="382dp"
-        android:layout_height="631dp"
+        android:layout_width="320dp"
+        android:layout_height="507dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/photo2"
-        android:layout_width="382dp"
-        android:layout_height="631dp"
+        android:layout_width="320dp"
+        android:layout_height="507dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/photo3"
-        android:layout_width="382dp"
-        android:layout_height="631dp"
+        android:layout_width="320dp"
+        android:layout_height="507dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/photo4"
-        android:layout_width="382dp"
-        android:layout_height="631dp"
+        android:layout_width="320dp"
+        android:layout_height="507dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/photo5"
-        android:layout_width="382dp"
-        android:layout_height="631dp"
+        android:layout_width="320dp"
+        android:layout_height="507dp"
         android:layout_centerInParent="true"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="112dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/userNameAge"
+        android:layout_width="197.97dp"
+        android:layout_height="48.49dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="top"
+        android:elevation="1dp"
+        android:textColor="@color/yellow"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/photo1"
+        app:layout_constraintEnd_toEndOf="@+id/photo1"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toStartOf="@+id/photo1"
+        app:layout_constraintTop_toTopOf="@+id/photo1"
+        app:layout_constraintVertical_bias="0.97" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

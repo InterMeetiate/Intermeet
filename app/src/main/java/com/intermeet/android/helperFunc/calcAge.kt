@@ -2,7 +2,7 @@ package com.intermeet.android.helperFunc
 
 import java.text.SimpleDateFormat
 import java.util.*
-fun calculateAgeWithCalendar(birthDateString: String): Int {
+fun calculateAgeWithCalendar(birthDateString: String?): Int {
     val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
     // Parse the birthdate string into a Date object
     val birthDate = dateFormat.parse(birthDateString)

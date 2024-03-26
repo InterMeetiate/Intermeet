@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DiscoverFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_margin="23dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="match_parent"
+                android:layout_height="550dp"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start"
+                android:layout_margin="9dp"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                />
+        </FrameLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Repeat for other CardViews if needed -->
 
 </FrameLayout>

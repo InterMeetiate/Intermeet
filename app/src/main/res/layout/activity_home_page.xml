@@ -25,7 +25,7 @@
         app:layout_constraintVertical_bias="0.085" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/location"
         android:layout_width="73dp"
         android:layout_height="79dp"
         android:src="@drawable/ic_launcher_foreground"
@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/star"
         android:layout_width="83dp"
         android:layout_height="76dp"
         android:src="@drawable/star"
@@ -49,7 +49,7 @@
         app:layout_constraintVertical_bias="0.996" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/cards"
         android:layout_width="83dp"
         android:layout_height="77dp"
         android:src="@drawable/playing_cards"
@@ -61,7 +61,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/chat"
         android:layout_width="83dp"
         android:layout_height="74dp"
         android:src="@drawable/chat_foreground"
@@ -73,7 +73,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile"
         android:layout_width="84dp"
         android:layout_height="74dp"
         android:src="@drawable/profile_foreground"
@@ -85,19 +85,19 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/backarrow"
         android:layout_width="42dp"
         android:layout_height="59dp"
         android:src="@drawable/arrow_foreground"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.732" />
+        app:layout_constraintVertical_bias="0.077" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profilebutton"
         android:layout_width="57dp"
         android:layout_height="72dp"
         android:src="@drawable/pfp_foreground"

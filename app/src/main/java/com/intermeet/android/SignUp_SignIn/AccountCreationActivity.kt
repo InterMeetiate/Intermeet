@@ -120,6 +120,6 @@ class AccountCreationActivity : AppCompatActivity() {
     private fun navigateToNextActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
+        //finish()
     }
 }

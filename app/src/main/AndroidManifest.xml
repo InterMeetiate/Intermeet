@@ -19,8 +19,11 @@
         tools:ignore="HardcodedDebugMode"
         tools:targetApi="31">
         <activity
-            android:name=".HomePage_Test"
+
+            android:name=".Home_Page.HomePage_Test2"
             android:exported="false" />
+        <activity android:name=".Home_Page.Test_to_home"
+            android:exported="false"/>
         <activity
             android:name=".SignUp_SignIn.AccountCreationActivity"
             android:exported="false" />

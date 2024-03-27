@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
+import com.intermeet.android.Home_Page.Test_to_home
 import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
@@ -66,7 +67,7 @@ class PromptsActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
             Log.d("PhotoActivity", "Current userData: ${UserDataRepository.userData}")
-            val intent = Intent(this, AccountCreationActivity::class.java)
+            val intent = Intent(this, Test_to_home::class.java)
             startActivity(intent)
         }
     }

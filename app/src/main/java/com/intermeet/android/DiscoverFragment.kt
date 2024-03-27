@@ -106,6 +106,32 @@ class DiscoverFragment : Fragment() {
         return cardView
     }
 
+    private fun createTextCardView(prompt: String): CardView {
+        val cardView = CardView(requireContext()).apply {
+            radius = resources.getDimension(R.dimen.card_corner_radius)
+            cardElevation = resources.getDimension(R.dimen.card_elevation)
+            layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(resources.getDimensionPixelSize(R.dimen.card_margin))
+            }
+        }
+
+        val textView = TextView(requireContext()).apply {
+            text = prompt
+            layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+            }
+        }
+
+        cardView.addView(textView)
+
+        return cardView
+    }
+
 
     private fun fetchDataFromFirebase() {
         val userId = "a6TWxI1076ahgLhZFOaHmNPRbom2" // Replace with dynamic user ID as needed
@@ -135,7 +161,7 @@ class DiscoverFragment : Fragment() {
 
                     var belowId = R.id.cardView2 // Initialize with cardView2's ID
 
-                    imageUrls.forEach { imageUrl ->
+                    imageUrls.forEachIndexed { index, imageUrl ->
                         val newCardView = createCardView(imageUrl)
                         val layoutParams = RelativeLayout.LayoutParams(
                             RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -149,6 +175,20 @@ class DiscoverFragment : Fragment() {
 
                         belowId = View.generateViewId()
                         newCardView.id = belowId
+
+                        if (it.prompts.size > index) {
+                            val textCardView = createTextCardView(it.prompts[index])
+                            relativeLayout.addView(textCardView)
+
+                            // Set positioning for the text CardView
+                            val textLayoutParams = textCardView.layoutParams as RelativeLayout.LayoutParams
+                            textLayoutParams.addRule(RelativeLayout.BELOW, belowId)
+                            textCardView.layoutParams = textLayoutParams
+
+                            // Update belowId for the next CardView
+                            belowId = View.generateViewId()
+                            textCardView.id = belowId
+                        }
                     }
                 }
             }

@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.intermeet.android.Home_Page.MainPage_Test
+import com.intermeet.android.Home_Page.Test_to_home
 import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
@@ -119,7 +119,7 @@ class AccountCreationActivity : AppCompatActivity() {
         }
     }
     private fun navigateToNextActivity() {
-        val intent = Intent(this, MainPage_Test::class.java)
+        val intent = Intent(this, Test_to_home::class.java)
         startActivity(intent)
         //finish()
     }

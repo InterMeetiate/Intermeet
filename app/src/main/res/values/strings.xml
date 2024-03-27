@@ -280,5 +280,6 @@
     <string name="homePageIndicator">This is the home page!</string>
     <string name="error_loading_data">Error loading data.</string>
     <string name="user_profile_photo">Where photo is at</string>
+    <string name="discover_homepage">Discover</string>
 
 </resources>

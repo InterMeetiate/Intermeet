@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePage_Test">
+    tools:context=".Home_Page.HomePage_Test">
 
     
 

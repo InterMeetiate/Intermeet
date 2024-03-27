@@ -122,4 +122,3 @@ class Homepage : AppCompatActivity() {
         return currentAge
     }
 }
-

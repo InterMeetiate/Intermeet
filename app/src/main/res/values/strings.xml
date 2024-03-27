@@ -278,9 +278,8 @@
     <string name="allow_button">Allow</string>
     <string name="dont_allow_button">Don\'t Allow</string>
     <string name="homePageIndicator">This is the home page!</string>
-
-    <string name="Discover">Discover</string>
     <string name="error_loading_data">Error loading data.</string>
     <string name="user_profile_photo">Where photo is at</string>
     <string name="discover_homepage">Discover</string>
+
 </resources>

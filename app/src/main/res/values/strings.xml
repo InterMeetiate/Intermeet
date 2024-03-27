@@ -33,6 +33,10 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="delete_account">Delete Account</string>
     <string name="logout">Logout</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="settings_emailTitle">Email</string>
+    <string name="promotion_slider">Promotions</string>
+    <string name="payments_title">Payments</string>
     <string name="what_s_your">
         Whats your name?
     </string>
@@ -296,5 +300,10 @@
     <string name="allow_button">Allow</string>
     <string name="dont_allow_button">Don\'t Allow</string>
     <string name="homePageIndicator">This is the home page!</string>
+    <string name="payment_methods">Payment Methods</string>
+    <string name="if_you_have_any_questions_or_need_help_please_reach_out_to_us_at">If you have any questions or need help, please reach out to us at</string>
+    <string name="reach_out_to_support">Reach out to Support</string>
+    <string name="add_credit_or_debit_card">Add Credit or Debit Card</string>
+    <string name="update_phone_number">Update Phone Number</string>
 
 </resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_events"
+        android:icon="@drawable/ic_location"
+        android:title="@string/events" />
+
+    <item
+        android:id="@+id/navigation_worth"
+        android:icon="@drawable/ic_star"
+        android:title="@string/worth_to_meet" />
+
+    <item
+        android:id="@+id/navigation_discover"
+        android:icon="@drawable/ic_cards"
+        android:title="@string/discover" />
+
+    <item
+        android:id="@+id/navigation_chat"
+        android:icon="@drawable/ic_chat"
+        android:title="@string/chats" />
+
+    <item
+        android:id="@+id/navigation_account"
+        android:icon="@drawable/ic_account"
+        android:title="@string/profile" />
+</menu>

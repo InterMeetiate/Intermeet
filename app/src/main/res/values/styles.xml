@@ -3,4 +3,8 @@
     <style name="RoundedCorners">
         <item name="cornerSize">20dp</item>
     </style>
+    <style name="BottomNavTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/app_gradient</item>
+    </style>
+
 </resources>

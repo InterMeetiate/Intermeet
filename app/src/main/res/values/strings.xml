@@ -307,6 +307,13 @@
     <string name="update_phone_number">Update Phone Number</string>
     <string name="back" />
     <string name="settings">Settings</string>
+    <string name="events">Events</string>
+    <string name="worth_to_meet">Worth To Meet</string>
+    <string name="discover">Discover</string>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
+    <string name="about_me">About Me</string>
+    <string name="interests">Interests</string>
 
     <string name="Discover">Discover</string>
     <string name="error_loading_data">Error loading data.</string>

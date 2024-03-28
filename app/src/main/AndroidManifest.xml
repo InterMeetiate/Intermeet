@@ -66,6 +66,14 @@
             android:exported="false">
         </activity>
         <activity
+            android:name=".PaymentsActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".UserInfoActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan"/>

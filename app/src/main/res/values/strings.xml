@@ -305,5 +305,7 @@
     <string name="reach_out_to_support">Reach out to Support</string>
     <string name="add_credit_or_debit_card">Add Credit or Debit Card</string>
     <string name="update_phone_number">Update Phone Number</string>
+    <string name="back" />
+    <string name="settings">Settings</string>
 
 </resources>

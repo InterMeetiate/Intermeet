@@ -13,6 +13,10 @@ object UserDataRepository {
     fun clearUserData() {
         userData = null
     }
+
+    fun getUserEmail(userId: String): Any {
+        return ""
+    }
 }
 
 

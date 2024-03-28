@@ -19,6 +19,10 @@
         tools:ignore="HardcodedDebugMode"
         tools:targetApi="31">
         <activity
+            android:name=".Homepage"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".AccountCreationActivity"
             android:exported="false" />
         <activity
@@ -62,15 +66,25 @@
             android:exported="false">
         </activity>
         <activity
-            android:name=".ProfileEmailActivity"
-            android:exported="false">
-        </activity>
-        <activity
             android:name=".PaymentsActivity"
             android:exported="false">
         </activity>
         <activity
             android:name=".SettingsActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".UserInfoActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".PreferenceActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".ProfileActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -78,16 +92,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".UserInfoActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan"></activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"></activity>
-        <activity
-            android:name=".PreferenceActivity"
-            android:exported="false"></activity>
     </application>
 
 </manifest>

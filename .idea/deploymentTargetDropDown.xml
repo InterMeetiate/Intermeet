@@ -2,15 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="PaymentsActivity">
-        <State />
-      </entry>
-      <entry key="ProfileEmailActivity">
-        <State />
-      </entry>
-      <entry key="SettingsActivity">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>

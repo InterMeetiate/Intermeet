@@ -55,15 +55,7 @@ class DiscoverFragment : Fragment() {
 
 
         cardView.setOnClickListener {
-            if (cardView2.visibility == View.GONE) {
-                val slideIn = AnimationUtils.loadAnimation(context, R.anim.slide_out)
-                cardView2.startAnimation(slideIn)
-                cardView2.visibility = View.VISIBLE
-            } else {
-                val slideOut = AnimationUtils.loadAnimation(context, R.anim.slide_in)
-                cardView2.startAnimation(slideOut)
-                cardView2.visibility = View.GONE
-            }
+            toggleCardViewsVisibility()
         }
 
         fetchDataFromFirebase()
@@ -198,6 +190,30 @@ class DiscoverFragment : Fragment() {
             }
         })
     }
+
+    private fun toggleCardViewsVisibility() {
+        var delayIncrement = 50L // Increment delay by 50ms for each card
+        var delay = 0L // Initial delay for the first card
+
+        for (i in 1 until relativeLayout.childCount) {
+            val child = relativeLayout.getChildAt(i)
+            if (child is CardView) {
+                if (child.visibility == View.VISIBLE) {
+                    child.postDelayed({
+                        val slideOut = AnimationUtils.loadAnimation(context, R.anim.slide_out)
+                        child.startAnimation(slideOut)
+                        child.visibility = View.GONE
+                    }, delay)
+                    delay += delayIncrement // Increment delay for the next card
+                } else {
+                    child.visibility = View.VISIBLE
+                    val slideIn = AnimationUtils.loadAnimation(context, R.anim.slide_in)
+                    child.startAnimation(slideIn)
+                }
+            }
+        }
+    }
+
 
     companion object {
         @JvmStatic

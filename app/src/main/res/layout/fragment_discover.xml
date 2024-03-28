@@ -49,7 +49,8 @@
             android:layout_below="@id/cardView"
             android:layout_margin="23dp"
             app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="wrap_content"

@@ -58,13 +58,14 @@ android {
 
 dependencies {
     implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.fragment:fragment:1.6.2")
     val lifecycle_version = "2.3.1"
     val fragment_version = "1.6.2"
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.firebase:firebase-database:20.3.0")
+    implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     testImplementation("junit:junit:4.13.2")
@@ -74,6 +75,7 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
     implementation("com.google.android.gms:play-services-location:21.2.0")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("com.github.bumptech.glide:glide:4.13.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.google.android.material:material:1.11.0")
 }

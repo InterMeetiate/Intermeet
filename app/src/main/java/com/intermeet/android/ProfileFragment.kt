@@ -1,96 +1,98 @@
 package com.intermeet.android
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
+import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.database.*
+import androidx.navigation.fragment.findNavController
 
-class ProfileActivity : AppCompatActivity() {
+
+class ProfileFragment : Fragment() {
     companion object {
-        private const val TAG = "ProfileActivity"
+        private const val TAG = "ProfileFragment"
+        fun newInstance(): ProfileFragment {
+            return ProfileFragment()
+        }
     }
 
     private lateinit var ivUserProfilePhoto: ImageView
     private lateinit var tvUserFirstName: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        ivUserProfilePhoto = view.findViewById(R.id.ivUserProfilePhoto)
+        tvUserFirstName = view.findViewById(R.id.tvUserFirstName)
+
+
         val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
         val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
 
-        ivUserProfilePhoto = findViewById(R.id.ivUserProfilePhoto)
-        tvUserFirstName = findViewById(R.id.tvUserFirstName)
-
-        val userNameRef = database.getReference("users").child(userId)
-
-        // Reference to the user's "photoDownloadURLs" node
-        val userPhotosRef = database.getReference("users").child(userId)
-
-
-        // ValueEventListener to read the "firstName" data
-        userNameRef.addValueEventListener(object : ValueEventListener {
+        // ValueEventListener to read the "firstName" and "photoDownloadURLs" data
+        userRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
 
                 userData?.let { user ->
+                    // Setting firstName and calculating age
                     val firstName = user.firstName
                     val birthday = user.birthday
                     val age = calculateAge(birthday)
-
                     tvUserFirstName.text = "$firstName, $age"
 
-
+                    // Setting profile photo if available
+                    user.photoDownloadUrls?.firstOrNull()?.let { url ->
+                        Glide.with(this@ProfileFragment)
+                            .load(url)
+                            .circleCrop()
+                            .into(ivUserProfilePhoto)
                     }
                 }
-
-
-
+            }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Log any errors
-                Log.w(TAG, "loadUserName:onCancelled", databaseError.toException())
+                Log.w(TAG, "loadUserData:onCancelled", databaseError.toException())
                 // Handle error case, perhaps set TextView to an error message
                 tvUserFirstName.text = getString(R.string.error_loading_data)
             }
         })
 
-        // ValueEventListener to read the "photoDownloadURLs" data
-        // ValueEventListener to read the "photoDownloadURLs" data
-        userPhotosRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val userData = dataSnapshot.getValue(UserData::class.java)
-                userData?.photoDownloadUrls?.firstOrNull()?.let { url ->
-                    Glide.with(this@ProfileActivity)
-                        .load(url)
-                        .circleCrop()
-                        .into(ivUserProfilePhoto)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Log any errors
-                Log.w(TAG, "loadUserPhotos:onCancelled", databaseError.toException())
-            }
-        })
-
-        val settingButton: View = findViewById(R.id.setting)
-        settingButton.setOnClickListener {
-            // Intent to navigate to the SecondActivity
-            val intent = Intent(this, SettingsActivity::class.java)
+        val settingsButton: Button = view.findViewById(R.id.settingButton)
+        settingsButton.setOnClickListener {
+            // Start an Intent to open the SettingsActivity
+            val intent = Intent(activity, SettingsActivity::class.java)
             startActivity(intent)
         }
-
     }
+
+    private fun navigateToSettings() {
+        // Implementation depends on your navigation setup.
+        // This could be using findNavController().navigate() if using Navigation Component
+        // or activity supportFragmentManager for manual transactions
+    }
+
     private fun calculateAge(birthday: String?): Int {
         // Implement logic to calculate age based on birthday
         // Example: Parse birthday string, calculate age based on current date, and return age
@@ -130,5 +132,4 @@ class ProfileActivity : AppCompatActivity() {
 
         return currentAge
     }
-
 }

@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:ignore="HardcodedDebugMode"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".Homepage"
             android:exported="false">
@@ -63,7 +64,11 @@
             android:exported="false" />
         <activity
             android:name=".BeginningActivity"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".PaymentsActivity"
@@ -78,18 +83,22 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan"/>
         <activity
+            android:name=".ProfileEmailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="true">
+        </activity>
         <activity
             android:name=".PreferenceActivity"
             android:exported="false"/>
         <activity
+            android:name=".PhoneNumberActivity"
+            android:exported="false"/>
+        <activity
             android:name=".ProfileActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
 
     </application>

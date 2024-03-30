@@ -160,7 +160,7 @@
         android:id="@+id/cards"
         android:layout_width="83dp"
         android:layout_height="77dp"
-        android:src="@drawable/playing_cards"
+        android:src="@drawable/playing_card"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.475"

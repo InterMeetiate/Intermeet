@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/discoverFragment">
+    <fragment
+        android:id="@+id/profileEmailFragment"
+        android:name="com.intermeet.android.ProfileEmailFragment"
+        android:label="fragment_profile_email"
+        tools:layout="@layout/fragment_profile_email" >
+        <action
+            android:id="@+id/action_profileEmailFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.intermeet.android.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_settingsFragment_to_profileEmailFragment"
+            app:destination="@id/profileEmailFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_paymentsFragment"
+            app:destination="@id/paymentsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_phoneNumberFragment"
+            app:destination="@id/phoneNumberFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/paymentsFragment"
+        android:name="com.intermeet.android.PaymentsFragment"
+        android:label="fragment_payments"
+        tools:layout="@layout/fragment_payments" >
+        <action
+            android:id="@+id/action_paymentsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneNumberFragment"
+        android:name="com.intermeet.android.PhoneNumberFragment"
+        android:label="fragment_phone_number"
+        tools:layout="@layout/fragment_phone_number" >
+        <action
+            android:id="@+id/action_phoneNumberFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.intermeet.android.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.intermeet.android.DiscoverFragment"
+        android:label="fragment_discover"
+        tools:layout="@layout/fragment_discover" />
+
+</navigation>

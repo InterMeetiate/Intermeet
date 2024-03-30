@@ -9,6 +9,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.EditText
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.Toolbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -59,6 +60,14 @@ class ProfileEmailActivity : AppCompatActivity() {
             startActivity(intent)
             finish() // Finish the current activity to prevent going back to it when pressing back
         }
+        // Handle back pressed logic
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // Handle the back button event
+                finish() // Finishes EmailActivity, returns to previous activity
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     private fun verifyEmail(email: String) {
@@ -83,8 +92,11 @@ class ProfileEmailActivity : AppCompatActivity() {
                 // Handle error
                 Log.e(TAG, "Error reading user data", error.toException())
             }
+
         })
     }
+
+
 
     companion object {
         private const val TAG = "ProfileEmailActivity"

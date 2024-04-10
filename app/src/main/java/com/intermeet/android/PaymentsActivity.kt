@@ -1,14 +1,10 @@
 package com.intermeet.android
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.widget.TextView
-import com.intermeet.android.R
-import com.intermeet.android.SettingsActivity
 
 class PaymentsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

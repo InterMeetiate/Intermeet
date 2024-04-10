@@ -4,6 +4,8 @@
     package="com.intermeet.android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".IntermeetApp"
@@ -19,6 +21,11 @@
         tools:ignore="HardcodedDebugMode"
         tools:targetApi="31"
         android:enableOnBackInvokedCallback="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".Homepage"
             android:exported="false">

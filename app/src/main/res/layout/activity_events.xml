@@ -6,9 +6,6 @@
     android:layout_height="match_parent">
 
     <!-- Add MapView element -->
-
-    <!-- Your existing UI elements -->
-
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -19,6 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <!-- Your existing UI elements -->
 
     <View
         android:id="@+id/topBar"

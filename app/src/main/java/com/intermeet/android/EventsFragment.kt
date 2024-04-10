@@ -1,18 +1,30 @@
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.intermeet.android.R
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -27,22 +39,36 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.activity_events, container, false)
 
-        // Initialize views
+        val placesClient = Places.createClient(activity?.applicationContext)
+        val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
+            .setQuery("Restaurant")
+            .build()
+
+        placesClient.findAutocompletePredictions(autocompleteRequest)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+                for (prediction in response.autocompletePredictions) {
+                    Log.i("Places", prediction.getPrimaryText(null).toString())
+                }
+            }
+            .addOnFailureListener { exception: Exception ->
+                if (exception is ApiException) {
+                    Log.e("Places", "Place not found: " + exception.statusCode)
+                }
+            }
+
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
 
-        // Set click listener for menu bar button
         eventsMenuBarButton.setOnClickListener {
             // Handle menu bar button click here
+            getDirectionsAndDrawRoute()
         }
 
-        // Initialize the map asynchronously
         mapView.onCreate(savedInstanceState)
-        mapView.onResume() // needed to get the map to display immediately
+        mapView.onResume()
 
         try {
             mapView.getMapAsync(this)
@@ -62,24 +88,32 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
 
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
+    // Other lifecycle methods...
 
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
-    }
+    // Method to perform Directions API request and draw route on the map
+    private fun getDirectionsAndDrawRoute() {
+        // Construct Directions API request URL
+        val apiKey = "AIzaSyAMETBx1WnhS1PwIcGbtRkJNIjUN7f61jg"
+        val origin = "origin=41.43206,-81.38992" // Example origin coordinates
+        val destination = "destination=41.43206,-81.38992" // Example destination coordinates
+        val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView.onDestroy()
-    }
+        // Make HTTP request
+        val connection = URL(url).openConnection() as HttpURLConnection
+        val responseCode = connection.responseCode
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        mapView.onSaveInstanceState(outState)
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            val inputStream = connection.inputStream
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val response = reader.readText()
+
+            // Parse JSON response
+            // Extract route points, distance, and duration
+
+            // Draw route on the map using Polyline
+        } else {
+            // Handle error
+        }
     }
 
     companion object {
@@ -87,6 +121,4 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             return EventsFragment()
         }
     }
-
-    // Optionally, you can add methods to update UI elements or handle events within the fragment
 }

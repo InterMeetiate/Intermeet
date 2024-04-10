@@ -28,6 +28,14 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+                // set navigation for events fragment
+                R.id.navigation_events -> {
+                    val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, eventsFragment)
+                        .commit()
+                    true
+                }
                 // Handle other navigation items if you have more
                 else -> false
             }

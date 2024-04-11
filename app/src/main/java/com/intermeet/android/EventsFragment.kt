@@ -1,11 +1,9 @@
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -21,10 +19,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.intermeet.android.R
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import java.io.IOException
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -33,6 +28,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var eventsMenuBarButton: Button
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
+    private lateinit var geocoder: Geocoder
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +60,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
         eventsMenuBarButton.setOnClickListener {
             // Handle menu bar button click here
-            getDirectionsAndDrawRoute()
+            // Example: Perform geocoding and reverse geocoding
+            performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
+            performReverseGeocoding(LatLng(37.423021, -122.083739))
         }
 
         mapView.onCreate(savedInstanceState)
@@ -75,6 +73,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        // Initialize Geocoder
+        geocoder = Geocoder(requireContext())
 
         return view
     }
@@ -88,31 +89,40 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
 
-    // Other lifecycle methods...
+    // Method to perform geocoding
+    private fun performGeocoding(address: String) {
+        try {
+            val addresses = geocoder.getFromLocationName(address, 1)
+            if (addresses != null) {
+                if (addresses.isNotEmpty()) {
+                    val location = addresses[0]
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
+                } else {
+                    Log.e("Geocoding", "Address not found")
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("Geocoding", "Geocoding failed: ${e.message}")
+        }
+    }
 
-    // Method to perform Directions API request and draw route on the map
-    private fun getDirectionsAndDrawRoute() {
-        // Construct Directions API request URL
-        val apiKey = "AIzaSyAMETBx1WnhS1PwIcGbtRkJNIjUN7f61jg"
-        val origin = "origin=41.43206,-81.38992" // Example origin coordinates
-        val destination = "destination=41.43206,-81.38992" // Example destination coordinates
-        val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
-
-        // Make HTTP request
-        val connection = URL(url).openConnection() as HttpURLConnection
-        val responseCode = connection.responseCode
-
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            val inputStream = connection.inputStream
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val response = reader.readText()
-
-            // Parse JSON response
-            // Extract route points, distance, and duration
-
-            // Draw route on the map using Polyline
-        } else {
-            // Handle error
+    // Method to perform reverse geocoding
+    private fun performReverseGeocoding(latLng: LatLng) {
+        try {
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null) {
+                if (addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val fullAddress = address.getAddressLine(0)
+                    Log.d("Reverse Geocoding", "Address: $fullAddress")
+                } else {
+                    Log.e("Reverse Geocoding", "No address found for the given coordinates")
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
         }
     }
 

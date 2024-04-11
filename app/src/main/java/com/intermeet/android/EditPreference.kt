@@ -1,7 +1,6 @@
-// Specify the package name for the class.
 package com.intermeet.android
 
-// Import necessary Android and Kotlin libraries.
+
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent

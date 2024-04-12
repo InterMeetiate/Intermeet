@@ -45,22 +45,24 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val view = inflater.inflate(R.layout.activity_events, container, false)
 
-        val placesClient = Places.createClient(activity?.applicationContext)
+        // Initialize Places API client
+        val placesClient = activity?.applicationContext?.let { Places.createClient(it) }
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
             .setQuery("Restaurant")
             .build()
 
-        placesClient.findAutocompletePredictions(autocompleteRequest)
-            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+        // Perform autocomplete request
+        placesClient?.findAutocompletePredictions(autocompleteRequest)
+            ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
                 for (prediction in response.autocompletePredictions) {
                     Log.i("Places", prediction.getPrimaryText(null).toString())
                 }
+                // Handle successful response
+            }?.addOnFailureListener { exception: Exception ->
+            if (exception is ApiException) {
+                Log.e("Places", "Place not found: " + exception.statusCode)
             }
-            .addOnFailureListener { exception: Exception ->
-                if (exception is ApiException) {
-                    Log.e("Places", "Place not found: " + exception.statusCode)
-                }
-            }
+        }
 
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
@@ -88,19 +90,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         return view
     }
 
-    override fun onMapReady(gMap: GoogleMap) {
-        googleMap = gMap
-
-        // Add a marker in a default location and move the camera
-        val defaultLocation = LatLng(0.0, 0.0)
-        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
-    }
-
     // Method to perform Directions API request and draw route on the map
     private fun getDirectionsAndDrawRoute() {
         // Construct Directions API request URL
-        val apiKey = "YOUR_API_KEY"
+        val apiKey = "@string/google_maps_key"
         val origin = "origin=41.43206,-81.38992" // Example origin coordinates
         val destination = "destination=41.43206,-81.38992" // Example destination coordinates
         val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
@@ -148,6 +141,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             // Handle HTTP error
             Log.e("Directions", "HTTP error: $responseCode")
         }
+    }
+
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
+
+        // Add a marker in a default location and move the camera
+        val defaultLocation = LatLng(0.0, 0.0)
+        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
 
 

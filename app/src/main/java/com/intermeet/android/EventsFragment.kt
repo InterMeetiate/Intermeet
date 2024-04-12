@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.api.ApiException
@@ -21,6 +22,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.maps.android.PolyUtil
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intermeet.android.R
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -29,7 +31,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class EventsFragment : Fragment(), OnMapReadyCallback {
+class EventsFragment : Fragment(), OnMapReadyCallback{
 
     private lateinit var eventsTitleTextView: TextView
     private lateinit var searchEditText: EditText
@@ -37,6 +39,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
+    private lateinit var eventSheet: FrameLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +50,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
         // Initialize Places API client
         val placesClient = activity?.applicationContext?.let { Places.createClient(it) }
+
+        eventSheet = view.findViewById(R.id.eventSheet)
+        BottomSheetBehavior.from(eventSheet).apply {
+            peekHeight=300
+            this.state=BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        val placesClient = Places.createClient(activity?.applicationContext)
+
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
             .setQuery("Restaurant")
             .build()
@@ -83,10 +95,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
+        
         // Initialize Geocoder
         geocoder = Geocoder(requireContext())
+        return view
+    }
 
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
         return view
     }
 

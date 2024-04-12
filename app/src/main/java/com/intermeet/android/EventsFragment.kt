@@ -76,6 +76,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             e.printStackTrace()
         }
 
+
         return view
     }
 

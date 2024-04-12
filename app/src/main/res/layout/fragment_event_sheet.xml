@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <FrameLayout
+        android:id="@+id/eventSheet"
+        android:layout_width="match_parent"
+        android:layout_height="750dp"
+        android:background="@drawable/rounded_event_list"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+
+            <ImageView
+                android:layout_width="34dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|top"
+                android:contentDescription="@string/handle_bar"
+                android:paddingTop="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/handle_bar" />
+
+            <RelativeLayout
+                android:id="@+id/search_bar_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp">
+
+                <EditText
+                    android:id="@+id/search_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corners"
+                    android:hint="@string/search_maps"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:importantForAutofill="no"
+                    android:inputType="textAutoCorrect" />
+            </RelativeLayout>
+
+            <ListView
+                android:id="@+id/eventList"
+                android:layout_width="match_parent"
+                android:layout_height="462dp"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,3 +1,4 @@
+import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -15,11 +16,18 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.maps.android.PolyUtil
 import com.intermeet.android.R
+import org.json.JSONObject
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -88,6 +96,60 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
+
+    // Method to perform Directions API request and draw route on the map
+    private fun getDirectionsAndDrawRoute() {
+        // Construct Directions API request URL
+        val apiKey = "YOUR_API_KEY"
+        val origin = "origin=41.43206,-81.38992" // Example origin coordinates
+        val destination = "destination=41.43206,-81.38992" // Example destination coordinates
+        val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
+
+        // Make HTTP request
+        val connection = URL(url).openConnection() as HttpURLConnection
+        val responseCode = connection.responseCode
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            val inputStream = connection.inputStream
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val response = reader.readText()
+
+            // Parse JSON response
+            val jsonResponse = JSONObject(response)
+            val routes = jsonResponse.getJSONArray("routes")
+            if (routes.length() > 0) {
+                val route = routes.getJSONObject(0)
+                val legs = route.getJSONArray("legs")
+                if (legs.length() > 0) {
+                    val leg = legs.getJSONObject(0)
+                    val distance = leg.getJSONObject("distance").getString("text")
+                    val duration = leg.getJSONObject("duration").getString("text")
+
+                    // Extract route points
+                    val points = route.getJSONObject("overview_polyline").getString("points")
+                    val polylineOptions = PolylineOptions()
+                    val decodedPath = PolyUtil.decode(points)
+                    for (point in decodedPath) {
+                        polylineOptions.add(point)
+                    }
+                    polylineOptions.color(Color.BLUE)
+
+                    // Draw route on the map using Polyline
+                    googleMap.addPolyline(polylineOptions)
+
+                    // Log distance and duration
+                    Log.d("Directions", "Distance: $distance, Duration: $duration")
+                }
+            } else {
+                // No routes found
+                Log.e("Directions", "No routes found")
+            }
+        } else {
+            // Handle HTTP error
+            Log.e("Directions", "HTTP error: $responseCode")
+        }
+    }
+
 
     // Method to perform geocoding
     private fun performGeocoding(address: String) {

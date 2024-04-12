@@ -57,8 +57,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
             this.state=BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        val placesClient = Places.createClient(activity?.applicationContext)
-
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
             .setQuery("Restaurant")
             .build()
@@ -98,11 +96,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         
         // Initialize Geocoder
         geocoder = Geocoder(requireContext())
-        return view
-    }
-
-    override fun onMapReady(gMap: GoogleMap) {
-        googleMap = gMap
         return view
     }
 

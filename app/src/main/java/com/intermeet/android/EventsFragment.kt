@@ -3,11 +3,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.api.ApiException
@@ -20,19 +18,22 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.intermeet.android.R
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class EventsFragment : Fragment(), OnMapReadyCallback {
+class EventsFragment : Fragment(), OnMapReadyCallback{
 
     private lateinit var eventsTitleTextView: TextView
     private lateinit var searchEditText: EditText
     private lateinit var eventsMenuBarButton: Button
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
+    private lateinit var eventSheet: FrameLayout
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +41,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_events, container, false)
+
+        eventSheet = view.findViewById(R.id.eventSheet)
+        BottomSheetBehavior.from(eventSheet).apply {
+            peekHeight=300
+            this.state=BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         val placesClient = Places.createClient(activity?.applicationContext)
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()

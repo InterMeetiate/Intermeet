@@ -1,6 +1,7 @@
 package com.intermeet.android
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,18 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.intermeet.android.helperFunc.calculateAgeWithCalendar
+import kotlinx.coroutines.launch
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
+import queryNearbyUsers
+
 
 class DiscoverFragment : Fragment() {
 
@@ -32,6 +39,7 @@ class DiscoverFragment : Fragment() {
     private lateinit var tvInterestsHeader: TextView
     private lateinit var tvEthnicity: TextView
     private lateinit var relativeLayout: RelativeLayout
+    private val viewModel: DiscoverViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,14 +62,31 @@ class DiscoverFragment : Fragment() {
         relativeLayout = view.findViewById(R.id.relativeLayout)
 
 
-        cardView.setOnClickListener {
-            toggleCardViewsVisibility()
-        }
-
-        fetchDataFromFirebase()
-
         return view
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.fetchCurrentUserLocationAndQueryNearbyUsers()
+        viewModel.nearbyUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+            // This will print the list of user IDs to Logcat
+            Log.d("DiscoverFragment", "Nearby User IDs: $userIds")
+
+            userIds.forEach { userId ->
+                viewModel.fetchUserData(userId)
+            }
+        }
+
+        setupObservers()
+    }
+
+
+    private fun setupObservers() {
+        viewModel.userData.observe(viewLifecycleOwner) { user ->
+            user?.let { updateUserUI(it) }
+        }
+    }
+
     private fun createCardView(imageUrl: String): CardView {
         val context = requireContext()
         val cardView = CardView(context).apply {
@@ -116,12 +141,64 @@ class DiscoverFragment : Fragment() {
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
             ).apply {
+
             }
         }
 
         cardView.addView(textView)
 
         return cardView
+    }
+
+    private fun updateUserUI(user: UserDataModel) {
+        textViewName.text = "${user.firstName}, ${calculateAgeWithCalendar(user.birthday)}"
+        tvEducation.text = user.school
+        tvLocation.text = "${user.latitude}, ${user.longitude}"
+        tvPronouns.text = user.pronouns
+        tvGender.text = user.gender
+        tvAboutMeHeader.visibility = if (user.aboutMeIntro?.isNotEmpty() == true) View.VISIBLE else View.GONE
+        tvAboutMe.text = user.aboutMeIntro
+        tvEthnicity.text = user.ethnicity
+
+        val imageView1 = view?.findViewById<ImageView>(R.id.imageView1)
+        Glide.with(this)
+            .load(user.photoDownloadUrls.firstOrNull())
+            .centerCrop()
+            .into(imageView1 ?: return)
+
+        val imageUrls = user.photoDownloadUrls.drop(1) // Drops the first element
+
+        var belowId = R.id.cardView2 // Initialize with cardView2's ID
+
+        imageUrls.forEachIndexed { index, imageUrl ->
+            val newCardView = createCardView(imageUrl)
+            val layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                addRule(RelativeLayout.BELOW, belowId)
+                setMargins(resources.getDimensionPixelSize(R.dimen.card_margin))
+            }
+            newCardView.layoutParams = layoutParams
+            relativeLayout.addView(newCardView)
+
+            belowId = View.generateViewId()
+            newCardView.id = belowId
+
+            if (user.prompts.size > index) {
+                val textCardView = createTextCardView(user.prompts[index])
+                relativeLayout.addView(textCardView)
+
+                // Set positioning for the text CardView
+                val textLayoutParams = textCardView.layoutParams as RelativeLayout.LayoutParams
+                textLayoutParams.addRule(RelativeLayout.BELOW, belowId)
+                textCardView.layoutParams = textLayoutParams
+
+                // Update belowId for the next CardView
+                belowId = View.generateViewId()
+                textCardView.id = belowId
+            }
+        }
     }
 
 
@@ -191,28 +268,6 @@ class DiscoverFragment : Fragment() {
         })
     }
 
-    private fun toggleCardViewsVisibility() {
-        var delayIncrement = 50L // Increment delay by 50ms for each card
-        var delay = 0L // Initial delay for the first card
-
-        for (i in 1 until relativeLayout.childCount) {
-            val child = relativeLayout.getChildAt(i)
-            if (child is CardView) {
-                if (child.visibility == View.VISIBLE) {
-                    child.postDelayed({
-                        val slideOut = AnimationUtils.loadAnimation(context, R.anim.slide_out)
-                        child.startAnimation(slideOut)
-                        child.visibility = View.GONE
-                    }, delay)
-                    delay += delayIncrement // Increment delay for the next card
-                } else {
-                    child.visibility = View.VISIBLE
-                    val slideIn = AnimationUtils.loadAnimation(context, R.anim.slide_in)
-                    child.startAnimation(slideIn)
-                }
-            }
-        }
-    }
 
 
     companion object {

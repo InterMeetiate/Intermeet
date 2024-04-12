@@ -381,7 +381,6 @@
         app:layout_constraintVertical_bias="0.976" />
 
 
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container1"
             android:layout_width="match_parent"
@@ -396,7 +395,6 @@
             android:background="@android:color/transparent"
             tools:layout_editor_absoluteX="20dp"
             tools:layout_editor_absoluteY="0dp" />
-
 
 
 

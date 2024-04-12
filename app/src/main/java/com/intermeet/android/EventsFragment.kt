@@ -1,10 +1,11 @@
-import android.graphics.Color
-import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -16,15 +17,11 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.google.maps.android.PolyUtil
 import com.intermeet.android.R
-import org.json.JSONObject
 import java.io.BufferedReader
-import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -36,7 +33,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var eventsMenuBarButton: Button
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
-    private lateinit var geocoder: Geocoder
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,24 +41,22 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val view = inflater.inflate(R.layout.activity_events, container, false)
 
-        // Initialize Places API client
-        val placesClient = activity?.applicationContext?.let { Places.createClient(it) }
+        val placesClient = Places.createClient(activity?.applicationContext)
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
             .setQuery("Restaurant")
             .build()
 
-        // Perform autocomplete request
-        placesClient?.findAutocompletePredictions(autocompleteRequest)
-            ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+        placesClient.findAutocompletePredictions(autocompleteRequest)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
                 for (prediction in response.autocompletePredictions) {
                     Log.i("Places", prediction.getPrimaryText(null).toString())
                 }
-                // Handle successful response
-            }?.addOnFailureListener { exception: Exception ->
-            if (exception is ApiException) {
-                Log.e("Places", "Place not found: " + exception.statusCode)
             }
-        }
+            .addOnFailureListener { exception: Exception ->
+                if (exception is ApiException) {
+                    Log.e("Places", "Place not found: " + exception.statusCode)
+                }
+            }
 
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
@@ -70,9 +64,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
         eventsMenuBarButton.setOnClickListener {
             // Handle menu bar button click here
-            // Example: Perform geocoding and reverse geocoding
-            performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            performReverseGeocoding(LatLng(37.423021, -122.083739))
+            getDirectionsAndDrawRoute()
         }
 
         mapView.onCreate(savedInstanceState)
@@ -84,16 +76,24 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             e.printStackTrace()
         }
 
-        // Initialize Geocoder
-        geocoder = Geocoder(requireContext())
-
         return view
     }
+
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
+
+        // Add a marker in a default location and move the camera
+        val defaultLocation = LatLng(0.0, 0.0)
+        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
+    }
+
+    // Other lifecycle methods...
 
     // Method to perform Directions API request and draw route on the map
     private fun getDirectionsAndDrawRoute() {
         // Construct Directions API request URL
-        val apiKey = "@string/google_maps_key"
+        val apiKey = "AIzaSyAMETBx1WnhS1PwIcGbtRkJNIjUN7f61jg"
         val origin = "origin=41.43206,-81.38992" // Example origin coordinates
         val destination = "destination=41.43206,-81.38992" // Example destination coordinates
         val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
@@ -108,85 +108,11 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             val response = reader.readText()
 
             // Parse JSON response
-            val jsonResponse = JSONObject(response)
-            val routes = jsonResponse.getJSONArray("routes")
-            if (routes.length() > 0) {
-                val route = routes.getJSONObject(0)
-                val legs = route.getJSONArray("legs")
-                if (legs.length() > 0) {
-                    val leg = legs.getJSONObject(0)
-                    val distance = leg.getJSONObject("distance").getString("text")
-                    val duration = leg.getJSONObject("duration").getString("text")
+            // Extract route points, distance, and duration
 
-                    // Extract route points
-                    val points = route.getJSONObject("overview_polyline").getString("points")
-                    val polylineOptions = PolylineOptions()
-                    val decodedPath = PolyUtil.decode(points)
-                    for (point in decodedPath) {
-                        polylineOptions.add(point)
-                    }
-                    polylineOptions.color(Color.BLUE)
-
-                    // Draw route on the map using Polyline
-                    googleMap.addPolyline(polylineOptions)
-
-                    // Log distance and duration
-                    Log.d("Directions", "Distance: $distance, Duration: $duration")
-                }
-            } else {
-                // No routes found
-                Log.e("Directions", "No routes found")
-            }
+            // Draw route on the map using Polyline
         } else {
-            // Handle HTTP error
-            Log.e("Directions", "HTTP error: $responseCode")
-        }
-    }
-
-    override fun onMapReady(gMap: GoogleMap) {
-        googleMap = gMap
-
-        // Add a marker in a default location and move the camera
-        val defaultLocation = LatLng(0.0, 0.0)
-        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
-    }
-
-
-    // Method to perform geocoding
-    private fun performGeocoding(address: String) {
-        try {
-            val addresses = geocoder.getFromLocationName(address, 1)
-            if (addresses != null) {
-                if (addresses.isNotEmpty()) {
-                    val location = addresses[0]
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
-                } else {
-                    Log.e("Geocoding", "Address not found")
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("Geocoding", "Geocoding failed: ${e.message}")
-        }
-    }
-
-    // Method to perform reverse geocoding
-    private fun performReverseGeocoding(latLng: LatLng) {
-        try {
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            if (addresses != null) {
-                if (addresses.isNotEmpty()) {
-                    val address = addresses[0]
-                    val fullAddress = address.getAddressLine(0)
-                    Log.d("Reverse Geocoding", "Address: $fullAddress")
-                } else {
-                    Log.e("Reverse Geocoding", "No address found for the given coordinates")
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
+            // Handle error
         }
     }
 

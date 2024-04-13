@@ -11,14 +11,20 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import queryNearbyUsers
+import java.time.LocalDate
+import java.time.Period
+import java.time.format.DateTimeFormatter
 
 class DiscoverViewModel : ViewModel() {
     val nearbyUserIdsLiveData = MutableLiveData<List<String>>()
+    private val _nearbyUserIdsLiveData = MutableLiveData<List<String>>()
 
     private val _userData = MutableLiveData<UserDataModel?>()
     val userData: MutableLiveData<UserDataModel?> = _userData
 
+    val filteredUserIdsLiveData = MutableLiveData<List<String>>()
 
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
@@ -32,6 +38,13 @@ class DiscoverViewModel : ViewModel() {
                     Log.e("DiscoverViewModel", "Failed to read user data", error.toException())
                 }
             })
+        }
+    }
+
+    fun fetchAndFilterUsers() {
+        fetchCurrentUserLocationAndQueryNearbyUsers()  // Fetch nearby users first
+        _nearbyUserIdsLiveData.observeForever { userIds ->
+            filterUserIdsByPreference(userIds)  // Filter them once fetched
         }
     }
 
@@ -55,7 +68,7 @@ class DiscoverViewModel : ViewModel() {
                     viewModelScope.launch {
                         try {
                             val nearbyUserIds = queryNearbyUsers(latitude, longitude, maxDistancePreference)
-                            nearbyUserIdsLiveData.postValue(nearbyUserIds)
+                            _nearbyUserIdsLiveData.postValue(nearbyUserIds)
                         } catch (e: Exception) {
                             Log.e("DiscoverViewModel", "Error querying nearby users", e)
                         }
@@ -73,5 +86,55 @@ class DiscoverViewModel : ViewModel() {
                 )
             }
         })
+    }
+
+    fun filterUserIdsByPreference(userIds: List<String>) {
+        viewModelScope.launch {
+            val currentUser = fetchCurrentUserPreferences()
+            val filteredIds = mutableListOf<String>()
+
+            userIds.forEach { userId ->
+                val userRef = FirebaseDatabase.getInstance().getReference("users/$userId")
+                val user = userRef.get().await().getValue(UserDataModel::class.java)
+                if (user != null && userMeetsPreferences(user, currentUser)) {
+                    filteredIds.add(userId)
+                }
+            }
+
+            filteredUserIdsLiveData.postValue(filteredIds)
+        }
+    }
+
+    private suspend fun fetchCurrentUserPreferences(): UserDataModel {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return UserDataModel()
+        val prefRef = FirebaseDatabase.getInstance().getReference("users/$userId")
+        return prefRef.get().await().getValue(UserDataModel::class.java) ?: UserDataModel()
+    }
+
+    private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
+        return (
+                (currentUser.genderPreference == null || currentUser.genderPreference == user.gender) &&
+                        (currentUser.religionPreference == null || currentUser.religionPreference == user.religion) &&
+                        (currentUser.ethnicityPreference == null || currentUser.ethnicityPreference == user.ethnicity) &&
+                        (currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
+                        (currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
+                        (currentUser.politicsPreference == null || currentUser.politicsPreference == user.politics) &&
+                        (currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
+                        ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)
+                )
+    }
+
+    private fun ageWithinRange(birthday: String?, minAge: Int?, maxAge: Int?): Boolean {
+        if (birthday == null) return false
+        try {
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+            val birthDate = LocalDate.parse(birthday, formatter)
+            val now = LocalDate.now()
+            val age = Period.between(birthDate, now).years
+            return (minAge == null || age >= minAge) && (maxAge == null || age <= maxAge)
+        } catch (e: Exception) {
+            Log.e("DiscoverViewModel", "Error parsing date: $birthday", e)
+            return false
+        }
     }
 }

@@ -1,6 +1,6 @@
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.intermeet.android.DiscoverViewModel
 import com.intermeet.android.R
-import com.intermeet.android.UserDataModel
 import com.intermeet.android.UsersPagerAdapter
 
 
@@ -37,25 +36,34 @@ class DiscoverFragment : Fragment() {
         val btnPass: Button = view.findViewById(R.id.btnPass)
 
         btnLike.setOnClickListener {
-            if (viewPager.currentItem < adapter.itemCount - 1) {
-                viewPager.currentItem += 1
-            }
+            navigateToNextUser()
         }
 
         btnPass.setOnClickListener {
-            if (viewPager.currentItem < adapter.itemCount - 1) {
-                viewPager.currentItem += 1
-            }
+            navigateToNextUser()
         }
 
-        viewModel.nearbyUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+        // Observe the filtered user IDs LiveData
+        viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
             if (userIds.isNotEmpty()) {
                 adapter.setUserIds(userIds)
                 adapter.notifyDataSetChanged()
+                // Log the filtered user IDs
+                Log.d("DiscoverFragment", "Filtered User IDs: $userIds")
+            } else {
+                // Log when no user IDs are available
+                Log.d("DiscoverFragment", "No filtered user IDs available")
             }
         }
+        // Trigger the fetching and filtering of users
+        viewModel.fetchAndFilterUsers()
+    }
 
-        viewModel.fetchCurrentUserLocationAndQueryNearbyUsers()
+
+    private fun navigateToNextUser() {
+        if (viewPager.currentItem < adapter.itemCount - 1) {
+            viewPager.currentItem += 1
+        }
     }
 
 

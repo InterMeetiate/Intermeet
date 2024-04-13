@@ -45,8 +45,8 @@
 
     <FrameLayout
         android:id="@+id/eventSheet"
-        android:layout_width="413dp"
-        android:layout_height="530dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/rounded_event_list"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
 

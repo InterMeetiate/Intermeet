@@ -5,9 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.api.ApiException
@@ -23,6 +25,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.maps.android.PolyUtil
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.intermeet.android.Event
 import com.intermeet.android.R
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -30,6 +33,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.File
+import android.widget.Toast
 
 class EventsFragment : Fragment(), OnMapReadyCallback{
 
@@ -40,6 +48,8 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
     private lateinit var eventSheet: FrameLayout
+    private lateinit var searchBar: EditText
+    private lateinit var eventList: ListView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,8 +67,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
             this.state=BottomSheetBehavior.STATE_COLLAPSED
         }
 
-        val placesClient = Places.createClient(activity?.applicationContext)
-
         val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
             .setQuery("Restaurant")
             .build()
@@ -72,19 +80,29 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
                 // Handle successful response
             }?.addOnFailureListener { exception: Exception ->
             if (exception is ApiException) {
-                Log.e("Places", "Place not found: " + exception.statusCode)
+                Log.d("Places", "Place not found: " + exception.statusCode)
             }
         }
 
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        searchBar = view.findViewById(R.id.search_edit_text)
+        eventList = view.findViewById(R.id.eventList)
+        var eventsList = mutableListOf<Event>()
 
         eventsMenuBarButton.setOnClickListener {
             // Handle menu bar button click here
             // Example: Perform geocoding and reverse geocoding
-            performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            performReverseGeocoding(LatLng(37.423021, -122.083739))
+            //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
+            //performReverseGeocoding(LatLng(33.7838, -118.1141))
+            getEventsByLocation(LatLng(33.7838, -118.1141)) { eventsList ->
+                for(event in eventsList) {
+                    Log.d("TESTING EVENTS", "Title ${event.title}")
+                }
+                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                eventList.adapter = eventAdapter
+            }
         }
 
         mapView.onCreate(savedInstanceState)
@@ -98,11 +116,21 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         
         // Initialize Geocoder
         geocoder = Geocoder(requireContext())
-        return view
-    }
 
-    override fun onMapReady(gMap: GoogleMap) {
-        googleMap = gMap
+        searchBar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Handle action here
+                val inputText = searchBar.text.toString()
+                performGeocoding(inputText)
+                true
+            } else {
+                false
+            }
+        }
+
+
+
+
         return view
     }
 
@@ -179,6 +207,8 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
                     val latitude = location.latitude
                     val longitude = location.longitude
                     Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
+                    val message = "Latitude: $latitude, Longitude: $longitude"
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("Geocoding", "Address not found")
                 }
@@ -204,6 +234,90 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         } catch (e: IOException) {
             Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
         }
+    }
+
+    private fun getEventsByLocation(location: LatLng, callback: (MutableList<Event>) -> Unit) {
+        val apiKey = resources.getString(R.string.serpapi_key)
+
+        // CURRENTLY HARD CODED TO LONG BEACH
+        val latitude = location.latitude
+        val longitude = location.longitude
+        var eventsList = mutableListOf<Event>()
+
+        val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+Long+Beach&hl=en&gl=us&api_key=${apiKey}"
+
+        var responseReceived = false // Flag to track if the response is received
+        var eventsHandled = false // Flag to track if events are handled
+
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                val responseCode = connection.responseCode
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = connection.inputStream
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    val response = reader.readText()
+
+                    // Parsing and handling events
+                    eventsList = handleEvents(response)
+                    responseReceived = true // Set the flag to true
+
+                    // Check if both response is received and events are handled
+                    if (eventsHandled) {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            callback(eventsList) // Invoke callback only when both are true
+                        }
+                    }
+                } else {
+                    // Handle HTTP error
+                    Log.e("SerpAPI", "HTTP error: $responseCode")
+                }
+            } catch (e: Exception) {
+                // Handle exception
+                Log.e("SerpApi", "Error: ${e.message}", e)
+            }
+        }
+
+        // Handle events after response is received
+        eventsHandled = true // Set the flag to true
+
+        // Check if both response is received and events are handled
+        if (responseReceived) {
+            GlobalScope.launch(Dispatchers.Main) {
+                callback(eventsList) // Invoke callback only when both are true
+            }
+        }
+    }
+
+    private fun handleEvents(response: String): MutableList<Event> {
+        // Parse the JSON response and extract event information
+        val jsonResponse = JSONObject(response)
+        val eventsArray = jsonResponse.getJSONArray("events_results")
+
+        val eventsList = mutableListOf<Event>()
+
+        for (i in 0 until eventsArray.length()) {
+            val eventObject = eventsArray.getJSONObject(i)
+
+            val title = eventObject.getString("title")
+            val startDate = eventObject.getJSONObject("date").getString("start_date")
+            val whenInfo = eventObject.getJSONObject("date").getString("when")
+            val addressArray = eventObject.getJSONArray("address")
+            val addressList = mutableListOf<String>()
+            for (j in 0 until addressArray.length()) {
+                addressList.add(addressArray.getString(j))
+            }
+            val link = eventObject.getString("link")
+            val description = eventObject.getString("description")
+            val thumbnail = eventObject.getString("thumbnail")
+
+            // Assuming you have a data class named Event
+            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail)
+            eventsList.add(event)
+            Log.d("Testing event", "Added event ${event.title} successfully")
+        }
+        return eventsList
     }
 
     companion object {

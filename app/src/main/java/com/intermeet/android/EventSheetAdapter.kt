@@ -32,7 +32,7 @@ class EventSheetAdapter(context: Context, private val eventsList: List<Event>) :
 
         // Bind data to views
         viewHolder.eventTitle.text = event.title
-        viewHolder.eventDate.text = event.startDate
+        viewHolder.eventDate.text = event.whenInfo
         viewHolder.eventDescription.text = event.description
 
         // Load image using Glide library

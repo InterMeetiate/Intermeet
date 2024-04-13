@@ -36,7 +36,6 @@ import java.net.URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.File
 import android.widget.Toast
 
 class EventsFragment : Fragment(), OnMapReadyCallback{
@@ -92,10 +91,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         var eventsList = mutableListOf<Event>()
 
         eventsMenuBarButton.setOnClickListener {
-            // Handle menu bar button click here
-            // Example: Perform geocoding and reverse geocoding
-            //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            //performReverseGeocoding(LatLng(33.7838, -118.1141))
             getEventsByLocation(LatLng(33.7838, -118.1141)) { eventsList ->
                 for(event in eventsList) {
                     Log.d("TESTING EVENTS", "Title ${event.title}")

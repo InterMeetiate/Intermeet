@@ -30,6 +30,9 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class EventsFragment : Fragment(), OnMapReadyCallback{
 
@@ -40,6 +43,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
     private lateinit var eventSheet: FrameLayout
+    private lateinit var searchBar: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,14 +81,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        searchBar = view.findViewById(R.id.search_edit_text)
 
         eventsMenuBarButton.setOnClickListener {
             // Handle menu bar button click here
             // Example: Perform geocoding and reverse geocoding
             performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            performReverseGeocoding(LatLng(37.423021, -122.083739))
+            performReverseGeocoding(LatLng(33.7838, -118.1141))
+            getEventsByLocation(LatLng(33.7838, 118.1141))
         }
-
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
 
@@ -196,6 +201,50 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
             }
         } catch (e: IOException) {
             Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
+        }
+    }
+
+    private fun getEventsByLocation(location: LatLng) {
+        val apiKey = resources.getString(R.string.eventbrite_key)
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        val url = "https://www.eventbriteapi.com/v3/events/860204714457/?expand=venue&token=$apiKey"
+
+        // Start a coroutine to perform the network operation
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                val responseCode = connection.responseCode
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    val inputStream = connection.inputStream
+                    val reader = BufferedReader(InputStreamReader(inputStream))
+                    val response = reader.readText()
+
+                    Log.d("Eventbrite", "Raw JSON Response: $response")
+
+                    // Parse JSON response
+
+                    // Process events
+//                    for (i in 0 until events.length()) {
+//                        val event = events.getJSONObject(i)
+//                        val eventName = event.getString("name")
+//                        val venue = event.getJSONObject("venue")
+//                        val venueName = venue.getString("name")
+//                        val venueLatitude = venue.getJSONObject("address").getDouble("latitude")
+//                        val venueLongitude = venue.getJSONObject("address").getDouble("longitude")
+//                        // Process other event details as needed
+//                        Log.d("Event", "Name: $eventName, Venue: $venueName, Location: ($venueLatitude, $venueLongitude)")
+//                    }
+                } else {
+                    // Handle HTTP error
+                    Log.e("Eventbrite", "HTTP error: $responseCode")
+                }
+            } catch (e: Exception) {
+                // Handle exception
+                Log.e("Eventbrite", "Error: ${e.message}", e)
+            }
         }
     }
 

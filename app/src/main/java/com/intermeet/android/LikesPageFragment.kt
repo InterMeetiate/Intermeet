@@ -17,7 +17,7 @@ class LikesPageFragment : Fragment()
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View?
     {
-        val view = inflater.inflate(R.layout.activity_events, container, false)
+        val view = inflater.inflate(R.layout.fragment_likespage1, container, false)
 
         var likeList = mutableListOf<LikeUser>()
         val likeUserAdapter = LikesPageAdapter(requireContext(), likeList)

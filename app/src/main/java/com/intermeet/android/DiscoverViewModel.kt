@@ -34,6 +34,7 @@ class DiscoverViewModel : ViewModel() {
                     val user = snapshot.getValue(UserDataModel::class.java)
                     _userData.postValue(user)
                 }
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("DiscoverViewModel", "Failed to read user data", error.toException())
                 }
@@ -67,7 +68,8 @@ class DiscoverViewModel : ViewModel() {
                     // Launch a coroutine in the ViewModelScope
                     viewModelScope.launch {
                         try {
-                            val nearbyUserIds = queryNearbyUsers(latitude, longitude, maxDistancePreference)
+                            val nearbyUserIds =
+                                queryNearbyUsers(latitude, longitude, maxDistancePreference)
                             _nearbyUserIdsLiveData.postValue(nearbyUserIds)
                         } catch (e: Exception) {
                             Log.e("DiscoverViewModel", "Error querying nearby users", e)
@@ -113,28 +115,41 @@ class DiscoverViewModel : ViewModel() {
 
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
         return (
-                (currentUser.genderPreference == null || currentUser.genderPreference == user.gender) &&
-                        (currentUser.religionPreference == null || currentUser.religionPreference == user.religion) &&
-                        (currentUser.ethnicityPreference == null || currentUser.ethnicityPreference == user.ethnicity) &&
+                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
+                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
+                        (currentUser.ethnicityPreference == "Open to all" || currentUser.ethnicityPreference == user.ethnicity) &&
                         (currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
                         (currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
-                        (currentUser.politicsPreference == null || currentUser.politicsPreference == user.politics) &&
+                        (currentUser.politicsPreference == "Open to anything" || currentUser.politicsPreference == user.politics) &&
                         (currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
-                        ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)
-                )
+                        ageWithinRange(
+                            user.birthday,
+                            currentUser.minAgePreference,
+                            currentUser.maxAgePreference
+                        )
+                        ))
+    }
+    private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
+        return when (userPreference) {
+            "Men" -> userGender == "Male"
+            "Women" -> userGender == "Female"
+            "Nonbinary" -> userGender in listOf("Nonbinary", "Trans")
+            "Everyone" -> true
+            else -> false
+        }
     }
 
     private fun ageWithinRange(birthday: String?, minAge: Int?, maxAge: Int?): Boolean {
         if (birthday == null) return false
-        try {
+        return try {
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
             val birthDate = LocalDate.parse(birthday, formatter)
             val now = LocalDate.now()
             val age = Period.between(birthDate, now).years
-            return (minAge == null || age >= minAge) && (maxAge == null || age <= maxAge)
+            (minAge == null || age >= minAge) && (maxAge == null || age <= maxAge)
         } catch (e: Exception) {
             Log.e("DiscoverViewModel", "Error parsing date: $birthday", e)
-            return false
+            false
         }
     }
 }

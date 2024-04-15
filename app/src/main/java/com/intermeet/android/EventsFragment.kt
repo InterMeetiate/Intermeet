@@ -44,6 +44,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -285,6 +286,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun getEventsByLocation(location: LatLng, callback: (MutableList<Event>) -> Unit) {
         val apiKey = resources.getString(R.string.serpapi_key)
         val latitude = location.latitude

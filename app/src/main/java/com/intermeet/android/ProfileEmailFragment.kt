@@ -39,6 +39,6 @@ class ProfileEmailFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = DiscoverFragment()
+        fun newInstance() = ProfileEmailFragment()
     }
 }

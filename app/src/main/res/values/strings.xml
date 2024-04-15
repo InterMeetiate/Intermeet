@@ -325,4 +325,5 @@
     <string name="tipCenter">Tip Center</string>
     <string name="helpCenter">Help Center</string>
     <string name="search">Search...</string>
+    <string name="no_users">No users found in your area.</string>
 </resources>

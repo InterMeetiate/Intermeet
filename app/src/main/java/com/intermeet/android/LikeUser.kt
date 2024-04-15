@@ -1,7 +1,6 @@
 package com.intermeet.android
-
-data class LikeUser(
+ class LikeUser(
     val name: String,
     val age: Int,
-    val thumbnail: String
+    val id: String
 )

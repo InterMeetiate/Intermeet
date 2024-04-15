@@ -7,16 +7,21 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class LikesPageAdapter(context: Context, private val likesuser_list: List<LikeUser>) : ArrayAdapter<LikeUser>(context, R.layout.likes_user_item, likesuser_list)
+class LikesPageAdapter(context: Context, private val likesuser_list: List<String>) : ArrayAdapter<String>(context, R.layout.likes_user_item, likesuser_list)
 {
     override fun getCount(): Int {
         return likesuser_list.size
     }
 
-    override fun getItem(position: Int): LikeUser? {
+    override fun getItem(position: Int): String? {
         return super.getItem(position)
     }
 
@@ -41,9 +46,25 @@ class LikesPageAdapter(context: Context, private val likesuser_list: List<LikeUs
 
         val likesuser = likesuser_list[position]
 
-        Glide.with(context)
-            .load(likesuser.thumbnail)
-            .into(viewHolder.likesuser_image)
+        val dbReference = FirebaseDatabase.getInstance().getReference("users/$likesuser")
+        dbReference.addValueEventListener(object : ValueEventListener
+        {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val userData = snapshot.getValue(UserData::class.java)
+
+                userData?.let{ user ->
+                    val image = user.photoDownloadUrls
+
+                    Glide.with(context)
+                        .load(image?.first())
+                        .into(viewHolder.likesuser_image)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
 
         return viewItem!!
     }

@@ -1,54 +1,63 @@
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
-import com.google.maps.android.PolyUtil
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.intermeet.android.Event
 import com.intermeet.android.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import android.widget.Toast
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.DelicateCoroutinesApi
 
-class EventsFragment : Fragment(), OnMapReadyCallback{
+class EventsFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var eventsTitleTextView: TextView
-    private lateinit var searchEditText: EditText
     private lateinit var eventsMenuBarButton: Button
     private lateinit var mapView: MapView
     private lateinit var googleMap: GoogleMap
     private lateinit var geocoder: Geocoder
-    private lateinit var eventSheet: FrameLayout
-    private lateinit var searchBar: EditText
     private lateinit var eventList: ListView
+    private lateinit var searchBar: AutoCompleteTextView
+    private lateinit var placesClient: PlacesClient
+    private lateinit var autocompleteAdapter: AutocompleteAdapter
+    private var selectedPlaceText: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,40 +66,50 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
     ): View? {
         val view = inflater.inflate(R.layout.activity_events, container, false)
 
-        // Initialize Places API client
-        val placesClient = activity?.applicationContext?.let { Places.createClient(it) }
+        // Set up bottomSheet for events
+        val bottomSheet = view.findViewById<View>(R.id.eventSheet)
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.isHideable = true
+        bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(R.dimen.peek_height)
 
-        eventSheet = view.findViewById(R.id.eventSheet)
-        BottomSheetBehavior.from(eventSheet).apply {
-            peekHeight=300
-            this.state=BottomSheetBehavior.STATE_COLLAPSED
-        }
-
-        val autocompleteRequest = FindAutocompletePredictionsRequest.builder()
-            .setQuery("Restaurant")
-            .build()
-
-        // Perform autocomplete request
-        placesClient?.findAutocompletePredictions(autocompleteRequest)
-            ?.addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
-                for (prediction in response.autocompletePredictions) {
-                    Log.i("Places", prediction.getPrimaryText(null).toString())
+        // Ensure that the bottom sheet cannot be dragged below the peek height
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    }
                 }
-                // Handle successful response
-            }?.addOnFailureListener { exception: Exception ->
-            if (exception is ApiException) {
-                Log.d("Places", "Place not found: " + exception.statusCode)
             }
-        }
 
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        // Initialize Places API client
+        Places.initialize(requireActivity().applicationContext, getString(R.string.google_maps_key))
+        placesClient = Places.createClient(requireActivity())
+
+        // Initialize UI elements
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
         searchBar = view.findViewById(R.id.search_edit_text)
         eventList = view.findViewById(R.id.eventList)
-        var eventsList = mutableListOf<Event>()
 
+        // Initialize Geocoder
+        geocoder = Geocoder(requireContext())
+
+        // Set up autocomplete for search bar
+        autocompleteAdapter = AutocompleteAdapter(requireContext())
+        searchBar.setAdapter(autocompleteAdapter)
+        searchBar.threshold = 1 // Start autocomplete after 1 character
+
+        // Set up click listener for events menu bar button
         eventsMenuBarButton.setOnClickListener {
+            // Handle menu bar button click here
+            // Example: Perform geocoding and reverse geocoding
+            //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
+            //performReverseGeocoding(LatLng(33.7838, -118.1141))
             getEventsByLocation(LatLng(33.7838, -118.1141)) { eventsList ->
                 for(event in eventsList) {
                     Log.d("TESTING EVENTS", "Title ${event.title}")
@@ -100,95 +119,131 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
             }
         }
 
+        // Initialize and set up the map
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
+        mapView.getMapAsync(this)
 
-        try {
-            mapView.getMapAsync(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        
-        // Initialize Geocoder
-        geocoder = Geocoder(requireContext())
+        // Set up text changed listener for autocomplete
+        searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-        searchBar.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // Handle action here
-                val inputText = searchBar.text.toString()
-                performGeocoding(inputText)
-                true
-            } else {
-                false
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                fetchAutocompletePredictions(s.toString())
             }
-        }
 
-
-
+            override fun afterTextChanged(s: Editable?) {}
+        })
 
         return view
     }
 
-    // Method to perform Directions API request and draw route on the map
-    private fun getDirectionsAndDrawRoute() {
-        // Construct Directions API request URL
-        val apiKey = "@string/google_maps_key"
-        val origin = "origin=41.43206,-81.38992" // Example origin coordinates
-        val destination = "destination=41.43206,-81.38992" // Example destination coordinates
-        val url = "https://maps.googleapis.com/maps/api/directions/json?$origin&$destination&key=$apiKey"
+    private fun fetchAutocompletePredictions(query: String) {
+        // Specify the search bounds
+        val bounds = RectangularBounds.newInstance(
+            LatLng(33.6717, -118.3436),
+            LatLng(34.0194, -118.1553)
+        ) // Example bounds, adjust as needed
 
-        // Make HTTP request
-        val connection = URL(url).openConnection() as HttpURLConnection
-        val responseCode = connection.responseCode
+        // Create a request
+        val request = FindAutocompletePredictionsRequest.builder()
+            .setQuery(query)
+            .setLocationBias(bounds)
+            .build()
 
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            val inputStream = connection.inputStream
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val response = reader.readText()
-
-            // Parse JSON response
-            val jsonResponse = JSONObject(response)
-            val routes = jsonResponse.getJSONArray("routes")
-            if (routes.length() > 0) {
-                val route = routes.getJSONObject(0)
-                val legs = route.getJSONArray("legs")
-                if (legs.length() > 0) {
-                    val leg = legs.getJSONObject(0)
-                    val distance = leg.getJSONObject("distance").getString("text")
-                    val duration = leg.getJSONObject("duration").getString("text")
-
-                    // Extract route points
-                    val points = route.getJSONObject("overview_polyline").getString("points")
-                    val polylineOptions = PolylineOptions()
-                    val decodedPath = PolyUtil.decode(points)
-                    for (point in decodedPath) {
-                        polylineOptions.add(point)
+        // Fetch the autocomplete predictions
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+                val predictions = response.autocompletePredictions
+                val formattedPredictions = predictions.map { prediction ->
+                    // Extract address components from the prediction
+                    val addressComponents = prediction.getFullText(null).toString().split(", ")
+                    if (addressComponents.size >= 4) {
+                        // Construct the address with street, city, state, and zip code
+                        "${addressComponents[0]}, ${addressComponents[1]}, ${addressComponents[2]}, ${addressComponents[3]}"
+                    } else {
+                        // If there are not enough components, use the default prediction text
+                        prediction.getFullText(null).toString()
                     }
-                    polylineOptions.color(Color.BLUE)
+                }.toTypedArray()
 
-                    // Draw route on the map using Polyline
-                    googleMap.addPolyline(polylineOptions)
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, formattedPredictions)
+                searchBar.setAdapter(adapter)
 
-                    // Log distance and duration
-                    Log.d("Directions", "Distance: $distance, Duration: $duration")
+                // Set up item click listener for autocomplete predictions
+                searchBar.setOnItemClickListener { parent, view, position, id ->
+                    val selectedPrediction = predictions[position]
+                    val placeId = selectedPrediction.placeId
+                    // Fetch details for the selected place
+                    fetchPlaceDetails(placeId)
                 }
-            } else {
-                // No routes found
-                Log.e("Directions", "No routes found")
             }
-        } else {
-            // Handle HTTP error
-            Log.e("Directions", "HTTP error: $responseCode")
+            .addOnFailureListener { exception: Exception ->
+                Log.e("Autocomplete", "Autocomplete prediction fetch failed: $exception")
+            }
+    }
+
+
+
+    private fun fetchPlaceDetails(placeId: String?) {
+        if (placeId != null) {
+            val placeFields = listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG)
+            val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+            placesClient.fetchPlace(request)
+                .addOnSuccessListener { response: FetchPlaceResponse ->
+                    val place = response.place
+                    val address = place.address
+                    val latLng = place.latLng
+                    if (address != null && latLng != null) {
+                        // Update the search bar text with the full address
+                        searchBar.setText(address)
+                        // Add a marker to the map at the selected location
+                        googleMap.clear() // Clear previous markers
+                        googleMap.addMarker(MarkerOptions().position(latLng).title("Selected Location"))
+                        // Move the map camera to the selected place's location
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                    }
+                }
+                .addOnFailureListener { exception: Exception ->
+                    Log.e("FetchPlaceDetails", "Failed to fetch place details: $exception")
+                }
         }
     }
 
-    override fun onMapReady(gMap: GoogleMap) {
-        googleMap = gMap
 
-        // Add a marker in a default location and move the camera
-        val defaultLocation = LatLng(0.0, 0.0)
-        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
+
+//    override fun onMapReady(gMap: GoogleMap) {
+//        googleMap = gMap
+//
+//        // Add a marker in a default location and move the camera
+//        val defaultLocation = LatLng(0.0, 0.0)
+//        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
+//    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
+
+        // Enable location tracking
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            googleMap.isMyLocationEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled = true
+            googleMap.uiSettings.isZoomControlsEnabled = true
+
+            // Get last known location
+            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            fusedLocationProviderClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        // Move the camera to the user's last known location
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
+                }
+        }
     }
 
 
@@ -231,18 +286,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun getEventsByLocation(location: LatLng, callback: (MutableList<Event>) -> Unit) {
         val apiKey = resources.getString(R.string.serpapi_key)
-
-        // CURRENTLY HARD CODED TO LONG BEACH
         val latitude = location.latitude
         val longitude = location.longitude
-        var eventsList = mutableListOf<Event>()
-
         val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+Long+Beach&hl=en&gl=us&api_key=${apiKey}"
-
-        var responseReceived = false // Flag to track if the response is received
-        var eventsHandled = false // Flag to track if events are handled
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -254,47 +303,26 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
                     val reader = BufferedReader(InputStreamReader(inputStream))
                     val response = reader.readText()
 
-                    // Parsing and handling events
-                    eventsList = handleEvents(response)
-                    responseReceived = true // Set the flag to true
-
-                    // Check if both response is received and events are handled
-                    if (eventsHandled) {
-                        GlobalScope.launch(Dispatchers.Main) {
-                            callback(eventsList) // Invoke callback only when both are true
-                        }
+                    val eventsList = handleEvents(response)
+                    GlobalScope.launch(Dispatchers.Main) {
+                        callback(eventsList)
                     }
                 } else {
-                    // Handle HTTP error
                     Log.e("SerpAPI", "HTTP error: $responseCode")
                 }
             } catch (e: Exception) {
-                // Handle exception
                 Log.e("SerpApi", "Error: ${e.message}", e)
-            }
-        }
-
-        // Handle events after response is received
-        eventsHandled = true // Set the flag to true
-
-        // Check if both response is received and events are handled
-        if (responseReceived) {
-            GlobalScope.launch(Dispatchers.Main) {
-                callback(eventsList) // Invoke callback only when both are true
             }
         }
     }
 
     private fun handleEvents(response: String): MutableList<Event> {
-        // Parse the JSON response and extract event information
         val jsonResponse = JSONObject(response)
         val eventsArray = jsonResponse.getJSONArray("events_results")
-
         val eventsList = mutableListOf<Event>()
 
         for (i in 0 until eventsArray.length()) {
             val eventObject = eventsArray.getJSONObject(i)
-
             val title = eventObject.getString("title")
             val startDate = eventObject.getJSONObject("date").getString("start_date")
             val whenInfo = eventObject.getJSONObject("date").getString("when")
@@ -306,14 +334,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback{
             val link = eventObject.getString("link")
             val description = eventObject.getString("description")
             val thumbnail = eventObject.getString("thumbnail")
-
-            // Assuming you have a data class named Event
             val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail)
             eventsList.add(event)
-            Log.d("Testing event", "Added event ${event.title} successfully")
         }
         return eventsList
     }
+
 
     companion object {
         fun newInstance(): EventsFragment {

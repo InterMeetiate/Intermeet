@@ -34,6 +34,7 @@ class DiscoverFragment : Fragment() {
 
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val btnPass: Button = view.findViewById(R.id.btnPass)
+        val returnButton: View = view.findViewById(R.id.return_button)
 
         btnLike.setOnClickListener {
             navigateToNextUser()
@@ -41,6 +42,9 @@ class DiscoverFragment : Fragment() {
 
         btnPass.setOnClickListener {
             navigateToNextUser()
+        }
+        returnButton.setOnClickListener {
+            navigateToPreviousUser()
         }
 
         // Observe the filtered user IDs LiveData
@@ -63,6 +67,12 @@ class DiscoverFragment : Fragment() {
     private fun navigateToNextUser() {
         if (viewPager.currentItem < adapter.itemCount - 1) {
             viewPager.currentItem += 1
+        }
+    }
+
+    private fun navigateToPreviousUser() {
+        if (viewPager.currentItem > 0) {
+            viewPager.currentItem -= 1
         }
     }
 

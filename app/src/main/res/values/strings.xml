@@ -327,4 +327,5 @@
     <string name="search">Search...</string>
     <string name="handle_bar" />
     <string name="search_maps" />
+    <string name="no_users">No users found in your area.</string>
 </resources>

@@ -2,14 +2,16 @@ package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.intermeet.android.helperFunc.getUserDataRepository
+
 
 class AccountCreationActivity : AppCompatActivity() {
     private lateinit var userDataRepository: UserDataRepository
@@ -27,6 +29,8 @@ class AccountCreationActivity : AppCompatActivity() {
         val userData = userDataRepository.userData
         val email = userData?.email ?: ""
         val password = userData?.password ?: ""
+        val latitude = userData?.latitude
+        val longitude = userData?.longitude
 
 
         if (email.isBlank() || password.isBlank()) {
@@ -42,6 +46,9 @@ class AccountCreationActivity : AppCompatActivity() {
                     uploadImagesToFirebaseStorage(user.uid) { isSuccess ->
                         if (isSuccess) {
                             storeUserDataToFirebaseDatabase(user.uid)
+                            if (latitude != null && longitude != null) {
+                                storeUserLocation(user.uid, latitude, longitude)
+                            }
                         } else {
                             Toast.makeText(this, "Failed to upload images.", Toast.LENGTH_SHORT).show()
                         }
@@ -114,6 +121,18 @@ class AccountCreationActivity : AppCompatActivity() {
                 }
         }
     }
+
+    private fun storeUserLocation(userId: String, latitude: Double, longitude: Double) {
+        val geoFire = GeoFire(FirebaseDatabase.getInstance().getReference("user_locations"))
+        geoFire.setLocation(userId, GeoLocation(latitude, longitude)) { key, error ->
+            if (error != null) {
+                println("Error saving location for user $key")
+            } else {
+                println("Location saved for user $key")
+            }
+        }
+    }
+
     private fun navigateToNextActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)

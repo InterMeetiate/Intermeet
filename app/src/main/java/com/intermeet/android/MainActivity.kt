@@ -28,6 +28,13 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+                R.id.navigation_worth -> {
+                    val likesFragment = LikesPageFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, likesFragment)
+                        .commit()
+                    true
+                }
                 // Handle other navigation items if you have more
                 else -> false
             }

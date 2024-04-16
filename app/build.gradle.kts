@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
     id ("androidx.navigation.safeargs.kotlin")
+    id("kotlin-android-extensions")
     // Other plugins
 
 }
@@ -86,5 +87,10 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     // AndroidX Navigation UI
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation ("com.google.android.libraries.places:places:3.4.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+
+
 }
 

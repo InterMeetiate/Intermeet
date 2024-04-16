@@ -22,6 +22,7 @@ class EventSheetAdapter(context: Context, private val eventsList: List<Event>) :
             viewHolder.eventImage = itemView.findViewById(R.id.event_image)
             viewHolder.eventTitle = itemView.findViewById(R.id.events_title)
             viewHolder.eventDate = itemView.findViewById(R.id.event_date)
+            viewHolder.eventAddress = itemView.findViewById(R.id.event_address)
             viewHolder.eventDescription = itemView.findViewById(R.id.event_description)
             itemView.tag = viewHolder
         } else {
@@ -32,7 +33,8 @@ class EventSheetAdapter(context: Context, private val eventsList: List<Event>) :
 
         // Bind data to views
         viewHolder.eventTitle.text = event.title
-        viewHolder.eventDate.text = event.whenInfo
+        viewHolder.eventDate.text = event.whenInfo.dropLast(4)
+        viewHolder.eventAddress.text = event.addressList[1]
         viewHolder.eventDescription.text = event.description
 
         // Load image using Glide library
@@ -48,6 +50,7 @@ class EventSheetAdapter(context: Context, private val eventsList: List<Event>) :
         lateinit var eventImage: ImageView
         lateinit var eventTitle: TextView
         lateinit var eventDate: TextView
+        lateinit var eventAddress: TextView
         lateinit var eventDescription: TextView
     }
 }

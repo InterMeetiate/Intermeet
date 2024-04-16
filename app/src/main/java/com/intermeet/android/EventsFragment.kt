@@ -1,4 +1,5 @@
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
@@ -12,11 +13,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -45,6 +48,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.DelicateCoroutinesApi
+import org.w3c.dom.Text
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -106,6 +110,38 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                 eventList.adapter = eventAdapter
             }
         }
+
+        eventList.setOnItemClickListener { parent, view, position, _ ->
+            val event = parent.adapter.getItem(position) as Event
+            Toast.makeText(requireContext(), "Clicked on event: ${event.title}", Toast.LENGTH_SHORT).show()
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.event_details_card)
+
+            val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
+            Glide.with(requireContext())
+                .load(event.thumbnail)
+                .into(eventCardImage)
+
+            val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
+            eventCardTitle.text = event.title
+
+            val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
+            eventCardDate.text = event.whenInfo.dropLast(4)
+
+            val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
+            eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
+
+            val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
+            eventCardDescription.text = event.description
+
+            // Hard coded to 1 person going until we figure out how to keep track of that
+            val amountGoing = 1
+            val goingText = dialog.findViewById<TextView>(R.id.going_text)
+            goingText.text = "Going (${amountGoing})"
+
+            dialog.show()
+        }
+
 
         // Initialize and set up the map
         mapView.onCreate(savedInstanceState)

@@ -68,22 +68,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.isHideable = true
-        bottomSheetBehavior.peekHeight = resources.getDimensionPixelSize(R.dimen.peek_height)
-
-        // Ensure that the bottom sheet cannot be dragged below the peek height
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
+        BottomSheetBehavior.from(bottomSheet).apply {
+            peekHeight = 320
+            this.state=BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         // Initialize Places API client
         Places.initialize(requireActivity().applicationContext, getString(R.string.google_maps_key))

@@ -31,11 +31,11 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
-                // set navigation for events fragment
-                R.id.navigation_events -> {
-                    val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
+                R.id.navigation_worth -> {
+                    val likesFragment = LikesPageFragment.newInstance()
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, eventsFragment)
+                        .replace(R.id.fragmentContainer, likesFragment)
+
                         .commit()
                     true
                 }

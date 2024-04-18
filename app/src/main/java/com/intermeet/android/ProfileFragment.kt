@@ -16,6 +16,7 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 
 
 class ProfileFragment : Fragment() {
@@ -44,7 +45,8 @@ class ProfileFragment : Fragment() {
         tvUserFirstName = view.findViewById(R.id.tvUserFirstName)
 
 
-        val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val database = Firebase.database
         val userRef = database.getReference("users").child(userId)
 

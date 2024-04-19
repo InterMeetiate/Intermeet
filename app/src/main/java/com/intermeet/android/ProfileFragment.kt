@@ -103,6 +103,7 @@ class ProfileFragment : Fragment() {
             }
             startActivity(intent)
         }
+
     }
 
     private fun navigateToSettings() {
@@ -110,6 +111,19 @@ class ProfileFragment : Fragment() {
         // This could be using findNavController().navigate() if using Navigation Component
         // or activity supportFragmentManager for manual transactions
     }
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "${this::class.java.simpleName} resumed")
+        Log.d("NavigationStatus", "${this::class.java.simpleName} is now visible")
+
+        //view?.findViewById<View>(R.id.main_content)?.visibility = View.VISIBLE
+        //view?.findViewById<View>(R.id.nested_nav_host_fragment)?.visibility = View.GONE
+    }
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "${this::class.java.simpleName} paused")
+    }
+
 
     private fun calculateAge(birthday: String?): Int {
         // Implement logic to calculate age based on birthday

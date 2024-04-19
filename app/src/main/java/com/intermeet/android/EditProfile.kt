@@ -16,7 +16,12 @@ import androidx.core.content.ContextCompat
 import androidx.activity.viewModels
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.GenericTypeIndicator
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.database.getValue
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 // UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.
@@ -143,8 +148,54 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
         // Setting an onClick listener for the button to navigate to the PreferenceActivity.
         backButton.setOnClickListener {
-            val intent = Intent(this, PreferenceActivity::class.java)
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+
+            val database = Firebase.database
+            val userRef = database.getReference("users").child(userId)
+            val userData = userDataRepository.userData ?: UserDataModel().apply{
+                gender = selectedGender
+                pronouns = selectedPronoun
+                ethnicity = selectedEthnicity
+                height = selectedHeight
+                drugs = selectedDrugs
+                smoking = selectedSmoking
+                occupation = selectedJob
+                politics = selectedPolitics
+                religion = selectedReligion
+                interests = selectedTags
+                sexuality = selectedSex
+
+
+            }
+            val userDataMap = mapOf(
+                "gender" to userData.gender,
+                "pronouns" to userData.pronouns,
+                "ethnicity" to userData.ethnicity,
+                "height" to userData.height,
+                "drugs" to userData.drugs,
+                "smoking" to userData.smoking,
+                "occupation" to userData.occupation,
+                "politics" to userData.politics,
+                "religion" to userData.religion,
+                "interests" to userData.interests,
+                "sexuality" to userData.sexuality
+            )
+            // Update Firebase with the new userData
+            userRef.updateChildren(userDataMap)
+                .addOnSuccessListener {
+                    Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                    // Handle success, perhaps by showing a toast or navigating
+                }
+                .addOnFailureListener { e ->
+                    Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                    // Handle failure, perhaps by showing an error message
+                }
+            val intent = Intent(this, MainActivity::class.java).apply {
+                // Clear all activities on top of MainActivity and bring it to the top
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
             startActivity(intent)
+
         }
 
         // Setting an onClick listener for navigating to the TagsFragment.
@@ -156,6 +207,189 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private fun loadUserPreferences() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val database = Firebase.database
+        val userGenderRef = database.getReference("users").child(userId).child("gender")
+        userGenderRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedGender = dataSnapshot.getValue<String>()
+                tvGender.text = "${selectedGender} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userHeightRef = database.getReference("users").child(userId).child("height")
+        userHeightRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedHeight = dataSnapshot.getValue<String>()
+                tvHeight.text = "${selectedHeight} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userReligionRef = database.getReference("users").child(userId).child("religion")
+        userReligionRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedReligion = dataSnapshot.getValue<String>()
+                tvReligion.text = "${selectedReligion} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userEthnicityRef = database.getReference("users").child(userId).child("ethnicity")
+        userEthnicityRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedEthnicity = dataSnapshot.getValue<String>()
+                tvEthnicity.text = "${selectedEthnicity} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userOccupationRef = database.getReference("users").child(userId).child("occupation")
+        userOccupationRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedJob = dataSnapshot.getValue<String>()
+                tvJob.text = "${selectedJob} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userSexualityRef = database.getReference("users").child(userId).child("sexuality")
+        userSexualityRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedSex = dataSnapshot.getValue<String>()
+                tvSex.text = "${selectedSex} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userPronounRef = database.getReference("users").child(userId).child("pronouns")
+        userPronounRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedPronoun = dataSnapshot.getValue<String>()
+                tvPronoun.text = "${selectedPronoun} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userDrinkingRef = database.getReference("users").child(userId).child("drinking")
+        userDrinkingRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedDrink = dataSnapshot.getValue<String>()
+                tvDrink.text = "${selectedDrink} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userDrugsRef = database.getReference("users").child(userId).child("drugs")
+        userDrugsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedDrugs = dataSnapshot.getValue<String>()
+                tvDrugs.text = "${selectedDrugs} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userSmokingRef = database.getReference("users").child(userId).child("smoking")
+        userSmokingRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedSmoking = dataSnapshot.getValue<String>()
+                tvSmoking.text = "${selectedSmoking} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userPoliticsRef = database.getReference("users").child(userId).child("politics")
+        userPoliticsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                selectedPolitics = dataSnapshot.getValue<String>()
+                tvPolitics.text = "${selectedPolitics} >"
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+        val userInterestRef = database.getReference("users").child(userId).child("interests")
+        userInterestRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Here, you just get the value of "drinking"
+                val selectedTags: List<String>? = dataSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                if (selectedTags != null) {
+                    updateTagsUI(selectedTags)
+                }
+
+
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("EditPreferenceActivity", "loadPost:onCancelled", databaseError.toException())
+            }
+
+        })
+
 
     }
 
@@ -480,8 +714,8 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
         backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
 
         // Update user data
-        val userData = userDataRepository.userData ?: UserDataModel()
-        userData.interests = selectedTags
+        //val userData = userDataRepository.userData ?: UserDataModel()
+        //userData.interests = selectedTags
     }
 
     // Callback method triggered when the activity resumes from the paused state.

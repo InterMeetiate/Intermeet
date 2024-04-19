@@ -23,6 +23,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 import com.intermeet.android.helperFunc.getUserDataRepository
+import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.ListView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.
 class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListener,

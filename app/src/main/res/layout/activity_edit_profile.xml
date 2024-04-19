@@ -13,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -46,15 +47,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <View
+                android:id="@+id/view4"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="168dp"
                 android:background="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.448"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/gender" />
 
             <TextView
                 android:id="@+id/height"
@@ -66,7 +66,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.08"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gender" />
+                app:layout_constraintTop_toBottomOf="@+id/view4" />
 
             <TextView
                 android:id="@+id/tvHeight"
@@ -82,19 +82,18 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/height"
-                app:layout_constraintTop_toBottomOf="@+id/tvGender" />
+                app:layout_constraintTop_toBottomOf="@+id/view4" />
 
             <View
                 android:id="@+id/view2"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="204dp"
                 android:background="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.448"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/height" />
 
             <TextView
                 android:id="@+id/religion"
@@ -105,7 +104,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.08"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/height" />
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
 
             <TextView
                 android:id="@+id/tvReligion"
@@ -120,18 +119,18 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/religion"
-                app:layout_constraintTop_toBottomOf="@+id/tvHeight" />
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
 
             <View
+                android:id="@+id/view5"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="240dp"
                 android:background="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.482"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/religion" />
 
             <TextView
                 android:id="@+id/ethnicity"
@@ -142,7 +141,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.085"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/religion" />
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
 
 
             <TextView
@@ -158,18 +157,18 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/ethnicity"
-                app:layout_constraintTop_toBottomOf="@+id/tvReligion" />
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
 
             <View
+                android:id="@+id/view6"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="276dp"
                 android:background="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.431"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/ethnicity" />
 
             <TextView
                 android:id="@+id/occupation"
@@ -180,7 +179,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.09"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ethnicity" />
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
 
             <TextView
                 android:id="@+id/tvJob"
@@ -195,18 +194,18 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/occupation"
-                app:layout_constraintTop_toBottomOf="@+id/tvEthnicity" />
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
 
             <View
+                android:id="@+id/view7"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="312dp"
                 android:background="#000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.448"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/occupation" />
 
             <TextView
                 android:id="@+id/sexuality"
@@ -218,7 +217,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.085"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/occupation" />
+                app:layout_constraintTop_toBottomOf="@+id/view7" />
 
             <TextView
                 android:id="@+id/tvSex"
@@ -233,9 +232,10 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/sexuality"
-                app:layout_constraintTop_toBottomOf="@+id/tvJob" />
+                app:layout_constraintTop_toBottomOf="@+id/view7" />
 
             <View
+                android:id="@+id/view8"
                 android:layout_width="353dp"
                 android:layout_height="1dp"
                 android:layout_centerHorizontal="true"
@@ -255,7 +255,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.085"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sexuality" />
+                app:layout_constraintTop_toBottomOf="@+id/view8" />
 
             <TextView
                 android:id="@+id/tvPronoun"
@@ -270,18 +270,9 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/pronoun"
-                app:layout_constraintTop_toBottomOf="@+id/tvSex" />
+                app:layout_constraintTop_toBottomOf="@+id/view8" />
 
-            <View
-                android:layout_width="353dp"
-                android:layout_height="1dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="168dp"
-                android:background="#000000"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.448"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
 
             <View
@@ -503,7 +494,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976" />
-
+<!--
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container1"
         android:layout_width="match_parent"
@@ -519,6 +510,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
+        -->
 
 
 

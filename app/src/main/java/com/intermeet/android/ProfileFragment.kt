@@ -95,6 +95,14 @@ class ProfileFragment : Fragment() {
             }
             startActivity(intent)
         }
+        val editUserInfo : Button = view.findViewById(R.id.editProfileButton)
+        editUserInfo.setOnClickListener {
+            // In the calling Activity
+            val intent = Intent(activity, EditProfile::class.java).apply {
+                putExtra("isEditMode", true) // true if editing, false or absent if signing up
+            }
+            startActivity(intent)
+        }
     }
 
     private fun navigateToSettings() {

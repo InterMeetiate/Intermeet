@@ -111,6 +111,10 @@
             android:name=".EditPreference"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".EditProfile"
+            android:exported="false">
+        </activity>
 
     </application>
 

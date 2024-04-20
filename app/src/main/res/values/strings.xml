@@ -328,4 +328,6 @@
     <string name="handle_bar" />
     <string name="search_maps" />
     <string name="no_users">No users found in your area.</string>
+    <string name="likes_page">Likes Page</string>
+    <string name="see_who_lik">See who liked your profile!</string>
 </resources>

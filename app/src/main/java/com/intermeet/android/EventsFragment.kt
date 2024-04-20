@@ -47,6 +47,10 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.DelicateCoroutinesApi
 import org.w3c.dom.Text
 
@@ -328,9 +332,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                     val response = reader.readText()
 
                     val eventsList = handleEvents(response)
-                    GlobalScope.launch(Dispatchers.Main) {
-                        callback(eventsList)
-                    }
+//                    GlobalScope.launch(Dispatchers.Main) {
+//                        callback(eventsList)
+//                    }
                 } else {
                     Log.e("SerpAPI", "HTTP error: $responseCode")
                 }
@@ -348,6 +352,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         for (i in 0 until eventsArray.length()) {
             val eventObject = eventsArray.getJSONObject(i)
             val title = eventObject.getString("title")
+            Log.d("SerpAPI", "Event found: ${title}")
             val startDate = eventObject.getJSONObject("date").getString("start_date")
             val whenInfo = eventObject.getJSONObject("date").getString("when")
             val addressArray = eventObject.getJSONArray("address")
@@ -358,10 +363,40 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             val link = eventObject.getString("link")
             val description = eventObject.getString("description")
             val thumbnail = eventObject.getString("thumbnail")
-            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail)
+            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail, 0)
+            uploadEvent(event)
             eventsList.add(event)
         }
         return eventsList
+    }
+
+    private fun uploadEvent(event: Event) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        // Query to check if the event already exists
+        databaseReference.orderByChild("title").equalTo(event.title).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Event already exists, do not add it again
+                    Log.d("Add Event", "Event already exists in database")
+                } else {
+                    // Event does not exist, add it
+                    val eventRef = databaseReference.push()
+                    eventRef.setValue(event)
+                        .addOnSuccessListener {
+                            Log.d("Add Event", "Event added successfully with key: ${eventRef.key}")
+                        }
+                        .addOnFailureListener {
+                            Log.d("Add Event", "Could not add event")
+                        }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("Add Event", "Database query cancelled: ${databaseError.message}")
+            }
+        })
     }
 
 

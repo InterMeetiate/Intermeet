@@ -1,3 +1,6 @@
+
+//import androidx.core.content.ContextCompat.startActivity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,19 +12,26 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.intermeet.android.DiscoverActivity
 import com.intermeet.android.R
 import com.intermeet.android.UserData
 import com.squareup.picasso.Picasso
 
 class RecyclerViewAdapter(
     private val courseDataArrayList: ArrayList<String>,
-    private val mcontext: LikesPageFragment
+    private val mcontext: LikesPageFragment,
+    private val disccontext: DiscoverActivity
 ) : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder>() {
 
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         // Inflate Layout
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
+        view.setOnClickListener{
+            val intent = Intent(disccontext, DiscoverActivity::class.java)
+            disccontext.startActivity(intent)
+        }
+        //mcontext.startActivity()
         return RecyclerViewHolder(view)
     }
 
@@ -57,7 +67,6 @@ class RecyclerViewAdapter(
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
         })
     }
 

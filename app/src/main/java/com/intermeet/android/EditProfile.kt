@@ -1,5 +1,6 @@
 package com.intermeet.android
 
+import CustomAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.GridLayout
 import android.widget.NumberPicker
@@ -25,7 +27,10 @@ import com.google.firebase.database.getValue
 import com.intermeet.android.helperFunc.getUserDataRepository
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ListView
+import android.widget.Spinner
+import android.widget.Toast
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 // UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.
@@ -56,6 +61,14 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private lateinit var tvPolitics: TextView
     private lateinit var btnNavigateFragment: TextView
     private lateinit var userDataRepository: UserDataRepository
+    private lateinit var promptsListView: ListView
+    private lateinit var promptsCustomAdapter: CustomAdapter
+    private var promptsList: ArrayList<String> = arrayListOf()
+    private var userPrompts: MutableList<String> = mutableListOf()
+    private lateinit var promptTextbox: EditText
+    private lateinit var enterPromptImage: ImageView
+    private lateinit var promptDropdown: Spinner
+    private lateinit var  deleteButton: Button
 
     // Variables to store user-selected values.
     private var selectedTags: List<String> = listOf()
@@ -117,6 +130,12 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
         btnNavigateFragment = findViewById(R.id.addTagButton)
         // Linking variables with their respective view components in the layout.
         backButton = findViewById(R.id.next_button)
+        promptTextbox = findViewById(R.id.enter_prompt)
+        enterPromptImage = findViewById(R.id.add)
+        promptDropdown = findViewById(R.id.prompt_spinner)
+        promptsListView = findViewById(R.id.listView)
+
+
 
         userDataRepository = getUserDataRepository()
 
@@ -145,10 +164,49 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
         tvDrugs.setOnClickListener { showDrugsPicker() }
         tvSmoking.setOnClickListener { showSmokingPicker() }
         tvPolitics.setOnClickListener { showPoliticsPicker() }
+        promptsListView = findViewById(R.id.listView) // Replace with your actual ListView ID
+        promptsCustomAdapter = CustomAdapter(this, promptsList, promptsListView)
+
+        promptsListView.adapter = promptsCustomAdapter
+
         val isEditMode = intent.getBooleanExtra("isEditMode", false)
         if (isEditMode) {
+            loadUserPrompts()
+
+            promptsListView.setOnItemClickListener { _, _, position, _ ->
+                val promptWithResponse = userPrompts[position]
+                val parts = promptWithResponse.split("... ")
+                val prompt = parts[0] + "..."
+                val response = parts.getOrElse(1) { "" }
+
+                showEditPromptDialog(prompt, response, position)
+
+            }
             loadUserPreferences()
         }
+        enterPromptImage.setOnClickListener {
+            val text = promptTextbox.text.toString()
+            val selectedPrompt = promptDropdown.selectedItem.toString()
+            val combinedText = "$selectedPrompt $text"
+
+            if (text.isEmpty()) {
+                Toast.makeText(this, "Please fill in the prompt.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Hide the keyboard
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(promptTextbox.windowToken, 0)
+
+                // Add the combined text to your list and update the adapter
+                promptsList.add(combinedText)
+                promptsCustomAdapter.notifyDataSetChanged()
+                setListViewHeightBasedOnChildren(promptsListView)
+
+                // Clear the text box for the next entry
+                promptTextbox.setText("")
+            }
+        }
+
+
 
         // Setting an onClick listener for the button to navigate to the PreferenceActivity.
         backButton.setOnClickListener {
@@ -182,7 +240,8 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 "politics" to userData.politics,
                 "religion" to userData.religion,
                 "interests" to userData.interests,
-                "sexuality" to userData.sexuality
+                "sexuality" to userData.sexuality,
+                "prompts" to promptsList  // Update the entire list of prompts
             )
             // Update Firebase with the new userData
             userRef.updateChildren(userDataMap)
@@ -198,6 +257,14 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Clear all activities on top of MainActivity and bring it to the top
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
+            val text = promptTextbox.text.toString()
+            val selectedPrompt = promptDropdown.selectedItem.toString()
+
+            val combinedText = "$selectedPrompt\n$text"
+
+            val promptsRef = database.getReference("users").child(userId).child("prompts")
+
+
             startActivity(intent)
 
         }
@@ -208,6 +275,75 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             backButton.visibility = View.GONE // Hide the back button when navigating to the fragment.
         }
     }
+    private fun loadUserPrompts() {
+        // Retrieve prompts from Firebase
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userPromptsRef = Firebase.database.getReference("users").child(userId).child("prompts")
+        userPromptsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                promptsList.clear()
+                for (promptSnapshot in dataSnapshot.children) {
+                    val prompt = promptSnapshot.getValue<String>()
+                    if (prompt != null) {
+                        promptsList.add(prompt)
+                    }
+                }
+                promptsCustomAdapter.notifyDataSetChanged()
+                setListViewHeightBasedOnChildren(promptsListView)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadUserPrompts:onCancelled", databaseError.toException())
+            }
+        })
+    }
+    private fun showEditPromptDialog(prompt: String, response: String, position: Int) {
+        val input = EditText(this).apply {
+            setText(response)
+        }
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Edit Prompt")
+            .setView(input)
+            .setPositiveButton("Save") { _, _ ->
+                val newResponse = "$prompt ${input.text.toString()}"
+                userPrompts[position] = newResponse
+                promptsCustomAdapter.notifyDataSetChanged()
+                updatePromptInFirebase(position, newResponse)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    fun setListViewHeightBasedOnChildren(listView: ListView) {
+        val listAdapter = listView.adapter ?: return
+        var totalHeight = 0
+        val desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.width, View.MeasureSpec.AT_MOST)
+
+        for (i in 0 until listAdapter.count) {
+            val listItem = listAdapter.getView(i, null, listView)
+            listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED)
+            totalHeight += listItem.measuredHeight
+        }
+
+        val layoutParams = listView.layoutParams
+        layoutParams.height = totalHeight + (listView.dividerHeight * (listAdapter.count - 1))
+        listView.layoutParams = layoutParams
+        listView.requestLayout()
+    }
+
+
+    private fun updatePromptInFirebase(position: Int, newResponse: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val promptRef = Firebase.database.getReference("users").child(userId).child("prompts").child(position.toString())
+        promptRef.setValue(newResponse)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Prompt updated successfully.", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to update prompt.", Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun loadUserPreferences() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val database = Firebase.database

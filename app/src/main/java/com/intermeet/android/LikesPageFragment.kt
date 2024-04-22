@@ -45,7 +45,7 @@ class LikesPageFragment : Fragment() {
                 override fun onClickDetect(position : Int, model : String)
                 {
                     val discoverFragment = DiscoverFragment.newInstance()
-                    (discoverFragment as FragmentActivity).supportFragmentManager.be
+                    (discoverFragment as FragmentActivity).supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, discoverFragment)
                         .commit()
                     true

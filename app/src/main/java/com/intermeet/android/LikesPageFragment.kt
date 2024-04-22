@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intermeet.android.DiscoverActivity
+import com.intermeet.android.DiscoverFragment
 import com.intermeet.android.R
 
 class LikesPageFragment : Fragment() {
@@ -38,7 +40,18 @@ class LikesPageFragment : Fragment() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
-        recyclerView
+        adapter.setOnClickListener(object :
+            RecyclerViewAdapter.OnClickDetect{
+                override fun onClickDetect(position : Int, model : String)
+                {
+                    val discoverFragment = DiscoverFragment.newInstance()
+                    (discoverFragment as FragmentActivity).supportFragmentManager.be
+                        .replace(R.id.fragmentContainer, discoverFragment)
+                        .commit()
+                    true
+                }
+            }
+        )
 
         return view
     }

@@ -37,6 +37,8 @@ class DiscoverFragment : Fragment() {
         val returnButton: View = view.findViewById(R.id.return_button)
 
         btnLike.setOnClickListener {
+            val likedUserId = adapter.getUserId(viewPager.currentItem)
+            viewModel.likeUser(likedUserId)
             navigateToNextUser()
         }
 

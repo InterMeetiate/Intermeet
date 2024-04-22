@@ -3,7 +3,6 @@
 //import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -26,7 +25,7 @@ class RecyclerViewAdapter(
 ) : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder>() {
 
     //private var OnClickListener: View.OnClickListener
-    private var onClickListener: OnClickListener? = null
+    private var onClickListener: OnClickDetect? = null
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         // Inflate Layout
@@ -77,18 +76,21 @@ class RecyclerViewAdapter(
         })
 
         holder.itemView.setOnClickListener{
-            //.onNext(recyclerData)
+            if(onClickListener != null)
+            {
+                onClickListener!!.onClickDetect(position, recyclerData)
+            }
         }
     }
 
-    fun setOnClickListener(OnCLickListener : OnClickListener)
+    fun setOnClickListener(OnClickListener : OnClickDetect)
     {
-        this.onClickListener = OnCLickListener
+        this.onClickListener = OnClickListener
     }
 
-    interface OnCickListener
+    public interface OnClickDetect
     {
-        fun onClick(position : Int, model : String)
+        fun onClickDetect(position : Int, model : String)
     }
 
     override fun getItemCount(): Int {

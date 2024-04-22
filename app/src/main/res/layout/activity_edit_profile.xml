@@ -19,6 +19,20 @@
             android:layout_height="wrap_content">
 
 
+
+            <EditText
+                android:id="@+id/IntroText"
+                android:layout_width="370dp"
+                android:layout_height="360dp"
+                android:background="@drawable/bold_border"
+                android:gravity="top|start"
+                android:hint="@string/i_am"
+                android:padding="12dp"
+                android:textSize="30sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
             <Spinner
                 android:id="@+id/prompt_spinner"
                 android:layout_width="250dp"
@@ -26,10 +40,9 @@
                 android:layout_marginTop="16dp"
                 android:entries="@array/prompt_options"
                 android:spinnerMode="dropdown"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.099"
+                app:layout_constraintTop_toBottomOf="@+id/IntroText"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <EditText
                 android:id="@+id/enter_prompt"

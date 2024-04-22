@@ -159,7 +159,7 @@ class DiscoverViewModel : ViewModel() {
         val database = FirebaseDatabase.getInstance().getReference()
         viewModelScope.launch {
             // Store the current user ID as a string under the liked user's likes
-            database.child("users/$likedUserId/likes/$currentUserId").setValue(currentUserId)
+            database.child("users/$likedUserId/likes/$currentUserId").setValue(true)
                 .addOnSuccessListener {
                     Log.d("DiscoverViewModel", "User $currentUserId liked $likedUserId successfully")
                 }

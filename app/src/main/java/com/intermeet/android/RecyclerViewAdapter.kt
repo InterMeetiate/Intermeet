@@ -1,12 +1,14 @@
 
 //import androidx.core.content.ContextCompat.startActivity
-import android.content.Intent
+//import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -23,14 +25,19 @@ class RecyclerViewAdapter(
     private val disccontext: DiscoverActivity
 ) : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder>() {
 
+    //private var OnClickListener: View.OnClickListener
+    private var onClickListener: OnClickListener? = null
     @NonNull
     override fun onCreateViewHolder(@NonNull parent: ViewGroup, viewType: Int): RecyclerViewHolder {
         // Inflate Layout
         val view = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
-        view.setOnClickListener{
-            val intent = Intent(disccontext, DiscoverActivity::class.java)
-            disccontext.startActivity(intent)
-        }
+        /*view.setOnClickListener{
+            val viewUser = DiscoverFragment.newInstance()
+            (viewUser as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, viewUser)
+                .commit()
+            true
+        }*/
         //mcontext.startActivity()
         return RecyclerViewHolder(view)
     }
@@ -68,6 +75,20 @@ class RecyclerViewAdapter(
                 TODO("Not yet implemented")
             }
         })
+
+        holder.itemView.setOnClickListener{
+            //.onNext(recyclerData)
+        }
+    }
+
+    fun setOnClickListener(OnCLickListener : OnClickListener)
+    {
+        this.onClickListener = OnCLickListener
+    }
+
+    interface OnCickListener
+    {
+        fun onClick(position : Int, model : String)
     }
 
     override fun getItemCount(): Int {
@@ -117,6 +138,7 @@ class RecyclerViewAdapter(
 
     // View Holder Class to handle Recycler View.
     inner class RecyclerViewHolder(@NonNull itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val likesCard : CardView = itemView.findViewById(R.id.newCard)
         val likesText: TextView = itemView.findViewById(R.id.idTVCourse)
         val likesImage: ImageView = itemView.findViewById(R.id.likespage_image)
     }

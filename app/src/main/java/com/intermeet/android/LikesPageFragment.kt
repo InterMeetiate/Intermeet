@@ -38,6 +38,8 @@ class LikesPageFragment : Fragment() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
+        recyclerView
+
         return view
     }
 

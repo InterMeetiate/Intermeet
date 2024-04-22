@@ -152,4 +152,20 @@ class DiscoverViewModel : ViewModel() {
             false
         }
     }
+
+    fun likeUser(likedUserId: String) {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = FirebaseDatabase.getInstance().getReference()
+        viewModelScope.launch {
+            // Store the current user ID as a string under the liked user's likes
+            database.child("users/$likedUserId/likes/$currentUserId").setValue(currentUserId)
+                .addOnSuccessListener {
+                    Log.d("DiscoverViewModel", "User $currentUserId liked $likedUserId successfully")
+                }
+                .addOnFailureListener {
+                    Log.e("DiscoverViewModel", "Failed to like user $likedUserId", it)
+                }
+        }
+    }
 }

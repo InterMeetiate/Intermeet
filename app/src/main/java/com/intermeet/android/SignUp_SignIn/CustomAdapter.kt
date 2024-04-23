@@ -1,3 +1,5 @@
+package com.intermeet.android.SignUp_SignIn
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

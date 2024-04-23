@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.intermeet.android.R
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth

@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,21 +7,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import com.intermeet.android.R
 
 /**
- * A simple [Fragment] subclass that allows the user to input their occupation.
+ * A simple [Fragment] subclass.
+ * Use the [PronounFragment.newInstance] factory method to
+ * create an instance of this fragment.
  */
-class OccupationFragment : Fragment() {
-    private var listener: OccupationListener? = null
+class PronounFragment : Fragment() {
+    private var listener: PronounListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_occupation, container, false)
-        val editText = view.findViewById<EditText>(R.id.editTextOccupation)
+        val view = inflater.inflate(R.layout.fragment_pronoun, container, false)
+        val editText = view.findViewById<EditText>(R.id.editTextPronoun)
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // When the 'Done' button on the keyboard is pressed
-                listener?.onOccupationEntered(editText.text.toString())
+                listener?.onPronounEntered(editText.text.toString())
                 parentFragmentManager.popBackStack() // Return to the previous fragment/activity
                 true // Indicate that the event has been handled
             } else {
@@ -30,19 +33,20 @@ class OccupationFragment : Fragment() {
         }
         return view
     }
-
     // Set the listener for occupation entry
-    fun setOccupationListener(listener: UserInfoActivity) {
+    fun setPronounListener(listener: UserInfoActivity) {
         this.listener = listener
     }
 
     // Interface for sending the occupation back to the activity
-    interface OccupationListener {
-        fun onOccupationEntered(occupation: String)
+    interface PronounListener {
+        fun onPronounEntered(pronoun: String)
     }
-
     companion object {
         @JvmStatic
-        fun newInstance() = OccupationFragment()
+        fun newInstance() = PronounFragment()
     }
+
+
+
 }

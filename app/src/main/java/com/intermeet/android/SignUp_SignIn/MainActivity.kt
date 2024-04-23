@@ -1,6 +1,9 @@
 package com.intermeet.android
 
+import LikesPageFragment
 import android.content.Intent
+import android.os.Bundle
+import com.intermeet.android.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +14,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Places.initialize(applicationContext, "@string/google_maps_key")
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_nav)
         bottomNav.setOnItemSelectedListener { item ->

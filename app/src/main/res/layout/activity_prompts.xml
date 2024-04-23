@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PromptsActivity">
+    tools:context=".SignUp_SignIn.PromptsActivity">
 
     <TextView
         android:id="@+id/talk_a_little"

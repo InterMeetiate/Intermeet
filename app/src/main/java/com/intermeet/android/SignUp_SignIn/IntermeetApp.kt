@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.app.Application
 import android.net.Uri

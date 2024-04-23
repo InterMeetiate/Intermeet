@@ -1,10 +1,11 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.intermeet.android.R
 //import kotlinx.android.synthetic.main.activity_main.*
 import com.intermeet.android.helperFunc.DatePickerHelper
 import com.intermeet.android.helperFunc.getUserDataRepository
@@ -38,7 +39,7 @@ class BirthdayActivity : AppCompatActivity() {
 
                 // Retrieve userDataRepository
                 val userDataRepository = getUserDataRepository()
-                val userData = userDataRepository.userData ?: UserDataModel()
+                val userData = UserDataRepository.userData ?: UserDataModel()
                 userData.birthday = date
             }
         })

@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import android.net.Uri
@@ -8,6 +8,7 @@ import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PhotoUploadActivity : AppCompatActivity() {
@@ -67,6 +68,6 @@ class PhotoUploadActivity : AppCompatActivity() {
     private fun storeSelectedUris() {
         val userDataRepository = getUserDataRepository()
         // Filter out null URIs and store the list in userData repository
-        userDataRepository.userData?.photoUris = imageUris.filterNotNull().toMutableList()
+        UserDataRepository.userData?.photoUris = imageUris.filterNotNull().toMutableList()
     }
 }

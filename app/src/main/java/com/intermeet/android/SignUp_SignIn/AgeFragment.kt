@@ -1,4 +1,4 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.material.slider.RangeSlider
+import com.intermeet.android.R
 
 class AgeFragment : Fragment() {
-    var listener: AgeFragment.OnAgeSelectedListener? = null
+    var listener: OnAgeSelectedListener? = null
 
     private lateinit var rangeSlider: RangeSlider
     private lateinit var tvSelectedRange: TextView

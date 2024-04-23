@@ -1,9 +1,10 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.R
 
 class NotificationActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?)

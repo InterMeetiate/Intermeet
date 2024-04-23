@@ -1,10 +1,11 @@
-package com.intermeet.android
+package com.intermeet.android.SignUp_SignIn
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class SchoolActivity : AppCompatActivity() {
@@ -23,7 +24,7 @@ class SchoolActivity : AppCompatActivity() {
 
             // Retrieve userDataRepository
             val userDataRepository = getUserDataRepository()
-            val userData = userDataRepository.userData ?: UserDataModel()
+            val userData = UserDataRepository.userData ?: UserDataModel()
 
             userData.school = school
             val intent = Intent(this, UserInfoActivity::class.java)

@@ -32,7 +32,7 @@ class LikesPageFragment : Fragment() {
 
         // setting grid layout manager to implement grid view.
         // in this method '2' represents number of columns to be displayed in grid view.
-        val layoutManager = GridLayoutManager(activity, 2)
+        val layoutManager = GridLayoutManager(requireContext().applicationContext, 2)
 
         // at last set adapter to recycler view.
         recyclerView.layoutManager = layoutManager

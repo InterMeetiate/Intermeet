@@ -18,6 +18,8 @@
     <string name="setting_title">Settings</string>
     <string name="account_title">Account</string>
     <string name="email">Email</string>
+    <string name="likes_page">Likes Page</string>
+    <string name="see_who_lik">See who liked your profile!</string>
     <string name="payments">Payments</string>
     <string name="verification">Verification</string>
     <string name="phone_number">Phone Number</string>
@@ -324,4 +326,8 @@
     <string name="editProfile">Edit Profile</string>
     <string name="tipCenter">Tip Center</string>
     <string name="helpCenter">Help Center</string>
+    <string name="search">Search...</string>
+    <string name="handle_bar" />
+    <string name="search_maps" />
+    <string name="no_users">No users found in your area.</string>
 </resources>

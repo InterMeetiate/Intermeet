@@ -1,15 +1,18 @@
 package com.intermeet.android
 
-import LikesPageFragment
 import android.content.Intent
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Places.initialize(applicationContext, "@string/google_maps_key")
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_nav)
         bottomNav.setOnItemSelectedListener { item ->
@@ -32,6 +35,14 @@ class MainActivity : AppCompatActivity() {
                     val likesFragment = LikesPageFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, likesFragment)
+                        .commit()
+                    true
+                }
+                // set navigation for events fragment
+                R.id.navigation_events -> {
+                    val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, eventsFragment)
                         .commit()
                     true
                 }

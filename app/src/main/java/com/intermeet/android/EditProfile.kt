@@ -4,6 +4,7 @@ import CustomAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -25,13 +26,18 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 import com.intermeet.android.helperFunc.getUserDataRepository
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 // UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.
 class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListener,
@@ -69,6 +75,13 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private lateinit var enterPromptImage: ImageView
     private lateinit var promptDropdown: Spinner
     private lateinit var  deleteButton: Button
+    private lateinit var imageViews: List<ImageView>
+    private lateinit var firebaseStorage: FirebaseStorage
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    private lateinit var userPhotoUrlsRef: DatabaseReference
+    private lateinit var storageReference: StorageReference
+
+
 
     // Variables to store user-selected values.
     private var selectedTags: List<String> = listOf()
@@ -83,6 +96,11 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private var selectedDrugs: String? = null
     private var selectedSmoking: String? = null
     private var selectedPolitics: String? = null
+    private var aboutMeIntroText: String? = null
+    private var currentImageIndex = -1
+    private val imageUris = arrayOfNulls<Uri>(5)
+
+
 
     // Arrays containing options for various user attributes.
     private val genders = arrayOf("Male", "Female", "Nonbinary", "Trans", "Other")
@@ -125,156 +143,424 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
     // The onCreate method is called when the activity is starting.
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile) // Sets the UI layout for this Activity.
-        btnNavigateFragment = findViewById(R.id.addTagButton)
-        // Linking variables with their respective view components in the layout.
-        backButton = findViewById(R.id.next_button)
-        promptTextbox = findViewById(R.id.enter_prompt)
-        enterPromptImage = findViewById(R.id.add)
-        promptDropdown = findViewById(R.id.prompt_spinner)
-        promptsListView = findViewById(R.id.listView)
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_edit_profile) // Sets the UI layout for this Activity.
+            btnNavigateFragment = findViewById(R.id.addTagButton)
+            // Linking variables with their respective view components in the layout.
+            backButton = findViewById(R.id.next_button)
+            promptTextbox = findViewById(R.id.enter_prompt)
+            enterPromptImage = findViewById(R.id.add)
+            promptDropdown = findViewById(R.id.prompt_spinner)
+            promptsListView = findViewById(R.id.listView)
 
 
 
-        userDataRepository = getUserDataRepository()
+            userDataRepository = getUserDataRepository()
 
-        tvGender = findViewById(R.id.tvGender)
-        tvHeight = findViewById(R.id.tvHeight)
-        tvReligion = findViewById(R.id.tvReligion)
-        tvEthnicity = findViewById(R.id.tvEthnicity)
-        tvJob = findViewById(R.id.tvJob)
-        tvSex = findViewById(R.id.tvSex)
-        tvPronoun = findViewById(R.id.tvPronoun)
-        tvDrink = findViewById(R.id.tvDrink)
-        tvDrugs = findViewById(R.id.tvDrugs)
-        tvSmoking = findViewById(R.id.tvSmoking)
-        tvPolitics = findViewById(R.id.tvPolitics)
-        btnNavigateFragment = findViewById(R.id.addTagButton)
+            tvGender = findViewById(R.id.tvGender)
+            tvHeight = findViewById(R.id.tvHeight)
+            tvReligion = findViewById(R.id.tvReligion)
+            tvEthnicity = findViewById(R.id.tvEthnicity)
+            tvJob = findViewById(R.id.tvJob)
+            tvSex = findViewById(R.id.tvSex)
+            tvPronoun = findViewById(R.id.tvPronoun)
+            tvDrink = findViewById(R.id.tvDrink)
+            tvDrugs = findViewById(R.id.tvDrugs)
+            tvSmoking = findViewById(R.id.tvSmoking)
+            tvPolitics = findViewById(R.id.tvPolitics)
+            btnNavigateFragment = findViewById(R.id.addTagButton)
 
-        // Setting onClick listeners to show dialogs for selecting user attributes.
-        tvGender.setOnClickListener { showGenderPicker() }
-        tvHeight.setOnClickListener { showHeightPicker() }
-        tvReligion.setOnClickListener { showReligionPicker() }
-        tvEthnicity.setOnClickListener { showEthnicityPicker() }
-        tvJob.setOnClickListener { navigateToOccupationFragment() }
-        tvSex.setOnClickListener { showSexualityPicker() }
-        tvPronoun.setOnClickListener { navigateToPronounFragment() }
-        tvDrink.setOnClickListener { showDrinkPicker() }
-        tvDrugs.setOnClickListener { showDrugsPicker() }
-        tvSmoking.setOnClickListener { showSmokingPicker() }
-        tvPolitics.setOnClickListener { showPoliticsPicker() }
-        promptsListView = findViewById(R.id.listView) // Replace with your actual ListView ID
-        promptsCustomAdapter = CustomAdapter(this, promptsList, promptsListView)
+            // Setting onClick listeners to show dialogs for selecting user attributes.
+            tvGender.setOnClickListener { showGenderPicker() }
+            tvHeight.setOnClickListener { showHeightPicker() }
+            tvReligion.setOnClickListener { showReligionPicker() }
+            tvEthnicity.setOnClickListener { showEthnicityPicker() }
+            tvJob.setOnClickListener { navigateToOccupationFragment() }
+            tvSex.setOnClickListener { showSexualityPicker() }
+            tvPronoun.setOnClickListener { navigateToPronounFragment() }
+            tvDrink.setOnClickListener { showDrinkPicker() }
+            tvDrugs.setOnClickListener { showDrugsPicker() }
+            tvSmoking.setOnClickListener { showSmokingPicker() }
+            tvPolitics.setOnClickListener { showPoliticsPicker() }
+            promptsListView = findViewById(R.id.listView) // Replace with your actual ListView ID
+            promptsCustomAdapter = CustomAdapter(this, promptsList, promptsListView)
 
-        promptsListView.adapter = promptsCustomAdapter
+            promptsListView.adapter = promptsCustomAdapter
 
-        val isEditMode = intent.getBooleanExtra("isEditMode", false)
-        if (isEditMode) {
-            loadUserPrompts()
+            val isEditMode = intent.getBooleanExtra("isEditMode", false)
+            if (isEditMode) {
+                loadUserPrompts()
 
-            promptsListView.setOnItemClickListener { _, _, position, _ ->
-                val promptWithResponse = userPrompts[position]
-                val parts = promptWithResponse.split("... ")
-                val prompt = parts[0] + "..."
-                val response = parts.getOrElse(1) { "" }
+                promptsListView.setOnItemClickListener { _, _, position, _ ->
+                    val promptWithResponse = userPrompts[position]
+                    val parts = promptWithResponse.split("... ")
+                    val prompt = parts[0] + "..."
+                    val response = parts.getOrElse(1) { "" }
 
-                showEditPromptDialog(prompt, response, position)
+                    showEditPromptDialog(prompt, response, position)
 
+                }
+                //initializeImageViews()
+                //firebaseStorage = FirebaseStorage.getInstance()
+                loadUserPhotoUrls()
+                loadUserIntro()
+                loadUserPreferences()
             }
-            loadUserPreferences()
-        }
-        enterPromptImage.setOnClickListener {
-            val text = promptTextbox.text.toString()
-            val selectedPrompt = promptDropdown.selectedItem.toString()
-            val combinedText = "$selectedPrompt $text"
+            enterPromptImage.setOnClickListener {
+                val text = promptTextbox.text.toString()
+                val selectedPrompt = promptDropdown.selectedItem.toString()
+                val combinedText = "$selectedPrompt $text"
 
-            if (text.isEmpty()) {
-                Toast.makeText(this, "Please fill in the prompt.", Toast.LENGTH_SHORT).show()
-            } else {
-                // Hide the keyboard
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(promptTextbox.windowToken, 0)
+                if (text.isEmpty()) {
+                    Toast.makeText(this, "Please fill in the prompt.", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Hide the keyboard
+                    val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(promptTextbox.windowToken, 0)
 
-                // Add the combined text to your list and update the adapter
-                promptsList.add(combinedText)
-                promptsCustomAdapter.notifyDataSetChanged()
-                setListViewHeightBasedOnChildren(promptsListView)
+                    // Add the combined text to your list and update the adapter
+                    promptsList.add(combinedText)
+                    promptsCustomAdapter.notifyDataSetChanged()
+                    setListViewHeightBasedOnChildren(promptsListView)
 
-                // Clear the text box for the next entry
-                promptTextbox.setText("")
+                    // Clear the text box for the next entry
+                    promptTextbox.setText("")
+                }
             }
-        }
-
-
-
-        // Setting an onClick listener for the button to navigate to the PreferenceActivity.
-        backButton.setOnClickListener {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
-
-            val database = Firebase.database
-            val userRef = database.getReference("users").child(userId)
-            val userData = userDataRepository.userData ?: UserDataModel().apply{
-                gender = selectedGender
-                pronouns = selectedPronoun
-                ethnicity = selectedEthnicity
-                height = selectedHeight
-                drugs = selectedDrugs
-                smoking = selectedSmoking
-                occupation = selectedJob
-                politics = selectedPolitics
-                religion = selectedReligion
-                interests = selectedTags
-                sexuality = selectedSex
-
-
-            }
-            val userDataMap = mapOf(
-                "gender" to userData.gender,
-                "pronouns" to userData.pronouns,
-                "ethnicity" to userData.ethnicity,
-                "height" to userData.height,
-                "drugs" to userData.drugs,
-                "smoking" to userData.smoking,
-                "occupation" to userData.occupation,
-                "politics" to userData.politics,
-                "religion" to userData.religion,
-                "interests" to userData.interests,
-                "sexuality" to userData.sexuality,
-                "prompts" to promptsList  // Update the entire list of prompts
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+            firebaseStorage = FirebaseStorage.getInstance()
+            userPhotoUrlsRef = Firebase.database.getReference("users").child(userId).child("photoDownloadUrls")
+            storageReference = firebaseStorage.getReference("users/$userId/photos")
+            imageViews = listOf(
+                findViewById(R.id.imageView1),
+                findViewById(R.id.imageView2),
+                findViewById(R.id.imageView3),
+                findViewById(R.id.imageView4),
+                findViewById(R.id.imageView5)
             )
-            // Update Firebase with the new userData
-            userRef.updateChildren(userDataMap)
-                .addOnSuccessListener {
-                    Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
-                    // Handle success, perhaps by showing a toast or navigating
+            initializeImagePickerLauncher()
+            setupCloseIconListeners()
+
+            imageViews.forEachIndexed { index, imageView ->
+                imageView.setOnClickListener {
+                    currentImageIndex = index // Set the current index to know which ImageView to update
+                    imagePickerLauncher.launch("image/*") // Launch the image picker
                 }
-                .addOnFailureListener { e ->
-                    Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
-                    // Handle failure, perhaps by showing an error message
-                }
-            val intent = Intent(this, MainActivity::class.java).apply {
-                // Clear all activities on top of MainActivity and bring it to the top
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
-            val text = promptTextbox.text.toString()
-            val selectedPrompt = promptDropdown.selectedItem.toString()
-
-            val combinedText = "$selectedPrompt\n$text"
-
-            val promptsRef = database.getReference("users").child(userId).child("prompts")
 
 
-            startActivity(intent)
 
-        }
+            // Setting an onClick listener for the button to navigate to the PreferenceActivity.
+            backButton.setOnClickListener {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
 
-        // Setting an onClick listener for navigating to the TagsFragment.
-        btnNavigateFragment.setOnClickListener {
-            navigateToTagsFragment()
-            backButton.visibility = View.GONE // Hide the back button when navigating to the fragment.
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+                val introEditText: EditText = findViewById(R.id.IntroText)
+                aboutMeIntroText = introEditText.text.toString()
+                val userData = userDataRepository.userData ?: UserDataModel().apply{
+                    gender = selectedGender
+                    pronouns = selectedPronoun
+                    ethnicity = selectedEthnicity
+                    height = selectedHeight
+                    drugs = selectedDrugs
+                    smoking = selectedSmoking
+                    occupation = selectedJob
+                    politics = selectedPolitics
+                    religion = selectedReligion
+                    interests = selectedTags
+                    sexuality = selectedSex
+                    aboutMeIntro = aboutMeIntroText
+
+
+                }
+                val userDataMap = mapOf(
+                    "gender" to userData.gender,
+                    "pronouns" to userData.pronouns,
+                    "ethnicity" to userData.ethnicity,
+                    "height" to userData.height,
+                    "drugs" to userData.drugs,
+                    "smoking" to userData.smoking,
+                    "occupation" to userData.occupation,
+                    "politics" to userData.politics,
+                    "religion" to userData.religion,
+                    "interests" to userData.interests,
+                    "sexuality" to userData.sexuality,
+                    "prompts" to promptsList,
+                    "aboutMeIntro" to userData.aboutMeIntro
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
+                val intent = Intent(this, MainActivity::class.java).apply {
+                    // Clear all activities on top of MainActivity and bring it to the top
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+                val text = promptTextbox.text.toString()
+                val selectedPrompt = promptDropdown.selectedItem.toString()
+
+                val combinedText = "$selectedPrompt\n$text"
+
+                val promptsRef = database.getReference("users").child(userId).child("prompts")
+
+
+                startActivity(intent)
+
+            }
+
+            // Setting an onClick listener for navigating to the TagsFragment.
+            btnNavigateFragment.setOnClickListener {
+                navigateToTagsFragment()
+                backButton.visibility = View.GONE // Hide the back button when navigating to the fragment.
+            }
+    }
+    private fun initializeImagePickerLauncher() {
+        imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null && currentImageIndex != -1) {
+                imageViews[currentImageIndex].setImageURI(uri) // Display the selected image immediately
+                uploadImageToFirebaseStorage(uri)  // Trigger uploading to Firebase Storage
+            } else {
+                Toast.makeText(this, "Error: Please select an image.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
+
+    private fun uploadImageToFirebaseStorage(uri: Uri) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val photoRef = storageReference.child("images/${userId}/${System.currentTimeMillis()}")
+
+        photoRef.putFile(uri).addOnSuccessListener {
+            photoRef.downloadUrl.addOnSuccessListener { downloadUri ->
+                val newUrl = downloadUri.toString()
+                imageUris[currentImageIndex] = Uri.parse(newUrl)  // Update local URI list
+                updatePhotoDownloadUrlInFirebase(newUrl, currentImageIndex)  // Pass currentImageIndex here
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Upload failed: ${it.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun updatePhotoDownloadUrlInFirebase(newUrl: String?, index: Int) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        if (newUrl == null) {
+            // If newUrl is null, remove the value from Firebase
+            userPhotoUrlsRef.child(index.toString()).removeValue()
+                .addOnSuccessListener {
+                    Log.d(TAG, "Photo URL removed successfully from Firebase.")
+                }
+                .addOnFailureListener {
+                    Log.e(TAG, "Failed to remove photo URL from Firebase.", it)
+                }
+        } else {
+            // If newUrl is not null, update Firebase with the new URL
+            userPhotoUrlsRef.child(index.toString()).setValue(newUrl)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Photo URL updated successfully in Firebase.")
+                }
+                .addOnFailureListener {
+                    Log.e(TAG, "Failed to update photo URL in Firebase.", it)
+                }
+        }
+    }
+
+
+
+
+    private fun updateSelectedImage(uri: Uri) {
+        if (currentImageIndex == -1) {
+            Toast.makeText(this, "No image selected for updating", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Update the URI in the array
+        imageUris[currentImageIndex] = uri
+
+        // Update the ImageView to display the selected image
+        imageViews[currentImageIndex].setImageURI(uri)
+
+        // Optionally, you can log this to ensure it's updating correctly
+        Log.d(TAG, "Image updated at index $currentImageIndex: $uri")
+
+        // Update storage with the new URI if needed (consider this if you are managing a dynamic list)
+        storeSelectedUris()
+    }
+
+    private fun storeSelectedUris() {
+        val userDataRepository = getUserDataRepository()
+        userDataRepository.userData?.photoUris = imageUris.filterNotNull().toMutableList()
+
+        // Save/update the list of image URIs in Firebase if needed
+        updateFirebaseWithImageUris()
+    }
+
+    private fun updateFirebaseWithImageUris() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userRef = Firebase.database.getReference("users/$userId/photoDownloadUrls")
+
+        // Filter non-null URIs and map them to strings for Firebase storage
+        val uriStrings = imageUris.filterNotNull().map { it.toString() }
+
+        userRef.setValue(uriStrings)
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully updated image URIs in Firebase.")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update image URIs in Firebase.", e)
+            }
+    }
+
+
+
+    private fun initializeImageViews() {
+        // Initialize your ImageViews based on your layout
+        imageViews = listOf(
+            findViewById(R.id.imageView1),
+            // ... initialize other ImageViews ...
+        )
+    }
+
+    private fun loadUserPhotoUrls() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userPhotoUrlsRef = Firebase.database.getReference("users").child(userId).child("photoDownloadUrls")
+
+        userPhotoUrlsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val urls = dataSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {}) ?: return
+                displayUserPhotos(urls)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadUserPhotoUrls:onCancelled", databaseError.toException())
+            }
+        })
+    }
+    private fun displayUserPhotos(urls: List<String>) {
+        urls.forEachIndexed { index, url ->
+            if (index < imageViews.size) {
+                Glide.with(this)
+                    .load(url)
+                    .into(imageViews[index])
+            }
+        }
+    }
+    private fun setupCloseIconListeners() {
+        val closeIcons = listOf(
+            findViewById<ImageView>(R.id.closeImageView1),
+            findViewById<ImageView>(R.id.closeImageView2),
+            findViewById<ImageView>(R.id.closeImageView3),
+            findViewById<ImageView>(R.id.closeImageView4),
+            findViewById<ImageView>(R.id.closeImageView5),
+            // Add all the corresponding close icons...
+        )
+
+        imageViews.forEachIndexed { index, imageView ->
+            closeIcons[index].setOnClickListener {
+                removeImageUrlAt(index)
+            }
+        }
+    }
+    private fun fetchPhotoUrls(completion: (List<String>) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userPhotoUrlsRef = Firebase.database.getReference("users/$userId/photoDownloadUrls")
+
+        userPhotoUrlsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val urls = dataSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                completion(urls ?: listOf())
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "fetchPhotoUrls:onCancelled", databaseError.toException())
+            }
+        })
+    }
+
+    private fun updateUserPhotoUrlsInFirebase(urls: List<String>) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userPhotoUrlsRef = Firebase.database.getReference("users/$userId/photoDownloadUrls")
+
+        userPhotoUrlsRef.setValue(urls)
+            .addOnSuccessListener {
+                Log.d(TAG, "Photo URLs updated successfully in Firebase.")
+                // Use the current value of isEditMode when restarting
+                val isEditMode = intent.getBooleanExtra("isEditMode", false)
+                restartActivity(isEditMode)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update photo URLs in Firebase.", e)
+            }
+    }
+
+
+
+    private fun removeImageUrlAt(index: Int) {
+        fetchPhotoUrls { urls ->
+            // Ensure the index is within the list size
+            if (index < urls.size) {
+                // Create a new list with the URL at the index removed
+                val updatedUrls = urls.toMutableList().apply {
+                    removeAt(index)
+                }
+
+                // Update Firebase with the new list of URLs
+                updateUserPhotoUrlsInFirebase(updatedUrls)
+            }
+        }
+    }
+    private fun restartActivity(isEditMode: Boolean) {
+        val intent = Intent(this, EditProfile::class.java)
+        intent.putExtra("isEditMode", isEditMode)  // Re-pass the isEditMode flag
+        finish() // Call this to finish the current activity
+        startActivity(intent) // Start a new instance of the current activity with the flag
+    }
+
+
+
+    // Update Firebase with new image URIs and provide a callback for when it succeeds
+    private fun updateUserPhotoUrlsInFirebase(uriStrings: List<String>, onSuccess: () -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userPhotoUrlsRef = Firebase.database.getReference("users/$userId/photoDownloadUrls")
+
+        userPhotoUrlsRef.setValue(uriStrings)
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully updated image URIs in Firebase.")
+                onSuccess()
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Failed to update image URIs in Firebase.", e)
+            }
+    }
+
+    private fun updateUiAfterImageRemoval() {
+        imageViews.forEachIndexed { index, imageView ->
+            val uri = imageUris[index]
+            if (uri == null) {
+                imageView.setImageResource(R.drawable.image_placeholder) // Set placeholder if no image is present
+            } else {
+                Glide.with(this)
+                    .load(uri)
+                    .into(imageView) // Load the image from the URI
+            }
+        }
+    }
+
+
+
+    private fun removeImageAt(index: Int) {
+        imageUris[index] = null  // Clear the URI
+        imageViews[index].setImageResource(R.drawable.image_placeholder)  // Set back to placeholder
+        // Optionally, remove the URL from Firebase or handle other clean-up tasks
+        updatePhotoDownloadUrlInFirebase(null, index)
+    }
+
     private fun loadUserPrompts() {
         // Retrieve prompts from Firebase
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -297,6 +583,22 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             }
         })
     }
+    private fun loadUserIntro() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userAboutRef = Firebase.database.getReference("users").child(userId).child("aboutMeIntro")
+        userAboutRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                aboutMeIntroText = dataSnapshot.getValue((String::class.java))
+                val introEditText: EditText = findViewById(R.id.IntroText)
+                introEditText.setText(aboutMeIntroText)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w(TAG, "loadUserIntro:onCancelled", databaseError.toException())
+            }
+        })
+    }
+
     private fun showEditPromptDialog(prompt: String, response: String, position: Int) {
         val input = EditText(this).apply {
             setText(response)

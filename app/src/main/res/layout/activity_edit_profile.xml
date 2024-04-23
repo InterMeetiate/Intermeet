@@ -18,6 +18,150 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:id="@+id/PhotoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+            <!-- First row of ImageViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="159dp"
+                    android:layout_marginBottom="22dp"
+                    android:gravity="center">
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="43dp"
+                        android:gravity="center">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView1"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:contentDescription="@string/remove_photo"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="43dp"
+                        android:gravity="center">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView2"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:contentDescription="@string/remove_photo"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+                </LinearLayout>
+
+            <!-- Second row of ImageViews -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="159dp"
+                android:layout_marginBottom="22dp"
+                android:gravity="center">
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="43dp"
+                    android:gravity="center">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="43dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedCorners"
+                    app:srcCompat="@drawable/image_placeholder" />
+                <ImageView
+                    android:id="@+id/closeImageView3"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="top|end"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_close"
+                    android:background="@drawable/circle_background"
+                    android:contentDescription="@string/remove_photo" />
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="43dp"
+                    android:gravity="center">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedCorners"
+                    app:srcCompat="@drawable/image_placeholder" />
+                <ImageView
+                    android:id="@+id/closeImageView4"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="top|end"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_close"
+                    android:background="@drawable/circle_background"
+                    android:contentDescription="@string/remove_photo" />
+                </FrameLayout>
+            </LinearLayout>
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="159dp"
+                    android:layout_marginEnd="43dp"
+                    android:gravity="center">
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="centerCrop"
+                    app:shapeAppearanceOverlay="@style/RoundedCorners"
+                    app:srcCompat="@drawable/image_placeholder" />
+                <ImageView
+                    android:id="@+id/closeImageView5"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="top|end"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_close"
+                    android:background="@drawable/circle_background"
+                    android:contentDescription="@string/remove_photo" />
+                </FrameLayout>
+            </LinearLayout>
 
 
             <EditText
@@ -29,20 +173,21 @@
                 android:hint="@string/i_am"
                 android:padding="12dp"
                 android:textSize="30sp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/PhotoContainer"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent" />parent" />
 
             <Spinner
                 android:id="@+id/prompt_spinner"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:entries="@array/prompt_options"
                 android:spinnerMode="dropdown"
-                app:layout_constraintTop_toBottomOf="@+id/IntroText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.124"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/IntroText" />
 
             <EditText
                 android:id="@+id/enter_prompt"

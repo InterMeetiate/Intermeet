@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intermeet.android.DiscoverActivity
@@ -45,10 +44,11 @@ class LikesPageFragment : Fragment() {
                 override fun onClickDetect(position : Int, model : String)
                 {
                     val discoverFragment = DiscoverFragment.newInstance()
-                    (discoverFragment as FragmentActivity).supportFragmentManager.beginTransaction()
+                    //use parentFragmentManager when dealing with fragments not on main activity kotlin page
+                    parentFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, discoverFragment)
                         .commit()
-                    true
+                    //true
                 }
             }
         )

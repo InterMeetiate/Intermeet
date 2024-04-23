@@ -75,7 +75,7 @@ class RecyclerViewAdapter(
             }
         })
 
-        holder.itemView.setOnClickListener{
+        holder.likesCard.setOnClickListener{
             if(onClickListener != null)
             {
                 onClickListener!!.onClickDetect(position, recyclerData)

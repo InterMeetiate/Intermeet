@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -16,6 +17,7 @@ class DiscoverFragment : Fragment() {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: UsersPagerAdapter
+    private lateinit var noUsersTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +33,7 @@ class DiscoverFragment : Fragment() {
         viewPager.isUserInputEnabled = false
         adapter = UsersPagerAdapter(this)
         viewPager.adapter = adapter
+        noUsersTextView = view.findViewById(R.id.tvNoUsers)
 
         // Marking user as seen
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -62,12 +65,17 @@ class DiscoverFragment : Fragment() {
         // Observe the filtered user IDs LiveData
         viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
             if (userIds.isNotEmpty()) {
+                noUsersTextView.visibility = View.GONE
+                viewPager.visibility = View.VISIBLE
                 adapter.setUserIds(userIds)
                 adapter.notifyDataSetChanged()
                 // Log the filtered user IDs
                 Log.d("DiscoverFragment", "Filtered User IDs: $userIds")
             } else {
+                noUsersTextView.visibility = View.VISIBLE
+                viewPager.visibility = View.GONE
                 // Log when no user IDs are available
+
                 Log.d("DiscoverFragment", "No filtered user IDs available")
             }
         }

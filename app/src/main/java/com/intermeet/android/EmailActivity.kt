@@ -1,36 +1,39 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
-class PasswordActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+class EmailActivity : AppCompatActivity(){
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_password)
+        setContentView(R.layout.activity_email)
+
+//        val emailEdit : EditText = findViewById(R.id.email_input)
+//        val email = emailEdit.text.toString()
 
         ButtonFunc()
     }
 
     private
-    fun ButtonFunc() {
-
+    fun ButtonFunc()
+    {
 
         val nextButton: Button = findViewById(R.id.next_button)
-        nextButton.setOnClickListener {
-            val passwordEdit: EditText = findViewById(R.id.password)
-            val password = passwordEdit.text.toString()
+        nextButton.setOnClickListener{
+            val emailEdit : EditText = findViewById(R.id.email_input)
+            val email = emailEdit.text.toString()
 
             // Retrieve userDataRepository
             val userDataRepository = getUserDataRepository()
             val userData = UserDataRepository.userData ?: UserDataModel()
-            userData.password = password
 
-            val intent = Intent(this, BirthdayActivity::class.java)
+            userData.email = email
+            val intent = Intent(this, PasswordActivity::class.java)
             startActivity(intent)
         }
     }

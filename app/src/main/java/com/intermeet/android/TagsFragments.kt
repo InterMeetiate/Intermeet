@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Context
 import android.graphics.Color
@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import android.util.Log
 import androidx.fragment.app.activityViewModels
-import com.intermeet.android.R
 
 
 class TagsFragment : Fragment() {

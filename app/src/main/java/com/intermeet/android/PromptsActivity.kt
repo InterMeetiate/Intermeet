@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +12,6 @@ import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
 import com.intermeet.android.Home_Page.Test_to_home
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PromptsActivity : AppCompatActivity() {

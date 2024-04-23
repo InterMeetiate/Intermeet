@@ -1,7 +1,8 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.geofire.GeoFire
@@ -10,8 +11,6 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.intermeet.android.Home_Page.Test_to_home
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 

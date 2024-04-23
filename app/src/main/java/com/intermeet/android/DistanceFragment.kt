@@ -1,11 +1,10 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.intermeet.android.R
 import com.intermeet.android.databinding.FragmentDistanceBinding
 
 

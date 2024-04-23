@@ -1,12 +1,10 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.intermeet.android.R
 
 class EmailGrabActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

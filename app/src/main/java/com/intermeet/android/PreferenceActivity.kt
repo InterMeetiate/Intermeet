@@ -1,5 +1,5 @@
 // Specify the package name for the class.
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 // Import necessary Android and Kotlin libraries.
 import android.app.AlertDialog
@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 // Define the PreferenceActivity class that extends AppCompatActivity and implements listener interfaces.

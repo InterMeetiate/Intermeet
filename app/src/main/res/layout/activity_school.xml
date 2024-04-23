@@ -5,7 +5,7 @@
     android:id="@+id/schoolLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUp_SignIn.SchoolActivity">
+    tools:context=".SchoolActivity">
 
     <TextView
         android:id="@+id/what_s_school"

@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

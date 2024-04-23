@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

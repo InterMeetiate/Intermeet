@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.Manifest
 import android.content.Intent
@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 

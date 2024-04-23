@@ -1,4 +1,4 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -13,7 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.activity.viewModels
-import com.intermeet.android.R
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 // UserInfoActivity class inherits AppCompatActivity and implements listeners from fragments.

@@ -1,11 +1,10 @@
-package com.intermeet.android.SignUp_SignIn
+package com.intermeet.android
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import com.intermeet.android.R
 //import kotlinx.android.synthetic.main.activity_main.*
 import com.intermeet.android.helperFunc.DatePickerHelper
 import com.intermeet.android.helperFunc.getUserDataRepository

@@ -61,6 +61,9 @@ class DistanceFragment : Fragment() {
     fun setDistanceListener(listener: PreferenceActivity) {
         this.listener = listener
     }
+    fun setDistanceListener(listener: EditPreference) {
+        this.listener = listener
+    }
 
 
 }

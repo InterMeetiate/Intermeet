@@ -17,70 +17,97 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:ignore="HardcodedDebugMode"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:enableOnBackInvokedCallback="true">
         <activity
-            android:name=".Home_Page.HomePage_Test2"
-            android:exported="false" />
-        <activity android:name=".Home_Page.Test_to_home"
-            android:exported="false"/>
+            android:name=".Homepage"
+            android:exported="false">
+        </activity>
         <activity
-            android:name=".SignUp_SignIn.AccountCreationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SignUp_SignIn.PromptsActivity"
+            android:name=".AccountCreationActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.ResetPasswordActivity"
+            android:name=".PromptsActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.SchoolActivity"
+            android:name=".ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.LoginActivity"
+            android:name=".SchoolActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.SignupActivity"
+            android:name=".DiscoverActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.DescriptionActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.PasswordActivity"
+            android:name=".SignupActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.EmailActivity"
+            android:name=".DescriptionActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.BirthdayActivity"
+            android:name=".PasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.LocationActivity"
+            android:name=".EmailActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.NotificationActivity"
+            android:name=".BirthdayActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUp_SignIn.PhotoUploadActivity"
+            android:name=".LocationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PhotoUploadActivity"
             android:exported="false" />
         <activity
             android:name=".BeginningActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".PaymentsActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".UserInfoActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".ProfileEmailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUp_SignIn.UserInfoActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:name=".PreferenceActivity"
+            android:exported="false"/>
         <activity
-            android:name=".SignUp_SignIn.MainActivity"
-            android:exported="false" />
+            android:name=".PhoneNumberActivity"
+            android:exported="false"/>
         <activity
-            android:name=".SignUp_SignIn.PreferenceActivity"
-            android:exported="false" />
+            android:name=".ProfileActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".EditPreference"
+            android:exported="false">
+        </activity>
+
     </application>
 
 </manifest>

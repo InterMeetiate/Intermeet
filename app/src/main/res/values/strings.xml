@@ -15,6 +15,28 @@
     <string name="password_confirm">Confirm Password</string>
     <string name="reset_password">Reset Password</string>
     <string name="password_match">Both passwords must match</string>
+    <string name="setting_title">Settings</string>
+    <string name="account_title">Account</string>
+    <string name="email">Email</string>
+    <string name="payments">Payments</string>
+    <string name="verification">Verification</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="pause_account">Pause Account</string>
+    <string name="notifications">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="App_title">App</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="safety_title">Safety</string>
+    <string name="block_list">Block List</string>
+    <string name="legal_title">Legal</string>
+    <string name="TOS">Terms of Service</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="logout">Logout</string>
+    <string name="verify_email">Verify Email</string>
+    <string name="settings_emailTitle">Email</string>
+    <string name="promotion_slider">Promotions</string>
+    <string name="payments_title">Payments</string>
     <string name="what_s_your">
         Whats your name?
     </string>
@@ -278,7 +300,28 @@
     <string name="allow_button">Allow</string>
     <string name="dont_allow_button">Don\'t Allow</string>
     <string name="homePageIndicator">This is the home page!</string>
+    <string name="payment_methods">Payment Methods</string>
+    <string name="if_you_have_any_questions_or_need_help_please_reach_out_to_us_at">If you have any questions or need help, please reach out to us at</string>
+    <string name="reach_out_to_support">Reach out to Support</string>
+    <string name="add_credit_or_debit_card">Add Credit or Debit Card</string>
+    <string name="update_phone_number">Update Phone Number</string>
+    <string name="back" />
+    <string name="settings">Settings</string>
+    <string name="events">Events</string>
+    <string name="worth_to_meet">Worth To Meet</string>
+    <string name="discover">Discover</string>
+    <string name="chats">Chats</string>
+    <string name="profile">Profile</string>
+    <string name="about_me">About Me</string>
+    <string name="interests">Interests</string>
+
+    <string name="Discover">Discover</string>
+    <string name="error_loading_data">Error loading data.</string>
+    <string name="user_profile_photo">Where photo is at</string>
     <string name="discover_homepage">Discover</string>
-
-
+    <string name="profile_page">Profile</string>
+    <string name="preference">Preference</string>
+    <string name="editProfile">Edit Profile</string>
+    <string name="tipCenter">Tip Center</string>
+    <string name="helpCenter">Help Center</string>
 </resources>

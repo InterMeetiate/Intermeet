@@ -119,7 +119,7 @@ class AccountCreationActivity : AppCompatActivity() {
         }
     }
     private fun navigateToNextActivity() {
-        val intent = Intent(this, Test_to_home::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         //finish()
     }

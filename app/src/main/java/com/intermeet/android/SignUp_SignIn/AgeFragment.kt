@@ -62,6 +62,9 @@ class AgeFragment : Fragment() {
     fun setAgeListener(listener: PreferenceActivity) {
         this.listener = listener
     }
+    fun setAgeListener(listener: EditPreference) {
+        this.listener = listener
+    }
 
 
 

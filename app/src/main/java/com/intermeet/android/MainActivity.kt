@@ -1,13 +1,11 @@
 package com.intermeet.android
 
+import DiscoverFragment
+import EventsFragment
 import LikesPageFragment
 import android.content.Intent
 import android.os.Bundle
-import com.intermeet.android.R
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.util.Log
-import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {

@@ -12,6 +12,7 @@ import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -130,7 +131,8 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
 
         // Setting the backButton's onClickListener to navigate to the DescriptionActivity.
         backButton.setOnClickListener {
-            val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+
             val database = Firebase.database
             val userRef = database.getReference("users").child(userId)
 
@@ -361,7 +363,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
 
     }
     private fun loadUserPreferences() {
-        val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val database = Firebase.database
         val userDrinkingRef = database.getReference("users").child(userId).child("drinking")
         userDrinkingRef.addValueEventListener(object : ValueEventListener {

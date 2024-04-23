@@ -23,8 +23,11 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
-        val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+        //setContentView(R.layout.activity_profile)
+        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+        //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val userId = "vVAMTyBYWPP6nt4KIGQ4CzNsmC33"
+        Log.d(TAG, "userid: $userId")
         val database = Firebase.database
 
         ivUserProfilePhoto = findViewById(R.id.ivUserProfilePhoto)

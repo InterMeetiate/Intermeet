@@ -32,13 +32,23 @@ class DiscoverFragment : Fragment() {
         adapter = UsersPagerAdapter(this)
         viewPager.adapter = adapter
 
+        // Marking user as seen
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val userId = adapter.getUserId(position)
+                viewModel.markAsSeen(userId)
+            }
+        })
+
+
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val btnPass: Button = view.findViewById(R.id.btnPass)
         val returnButton: View = view.findViewById(R.id.return_button)
 
         btnLike.setOnClickListener {
             val likedUserId = adapter.getUserId(viewPager.currentItem)
-            viewModel.likeUser(likedUserId)
+            viewModel.addLike(likedUserId)
             navigateToNextUser()
         }
 

@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import queryNearbyUsers
+import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -49,7 +50,7 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    fun fetchCurrentUserLocationAndQueryNearbyUsers() {
+    private fun fetchCurrentUserLocationAndQueryNearbyUsers() {
         // Obtain the current user's UID
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         // Reference to the user's data in Firebase
@@ -90,27 +91,39 @@ class DiscoverViewModel : ViewModel() {
         })
     }
 
-    fun filterUserIdsByPreference(userIds: List<String>) {
+    private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
-            val filteredIds = mutableListOf<String>()
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+            val seenUserIds = fetchSeenUserIds()
+            val userRef = FirebaseDatabase.getInstance().getReference("users/$currentUserId")
 
-            userIds.forEach { userId ->
-                val userRef = FirebaseDatabase.getInstance().getReference("users/$userId")
-                val user = userRef.get().await().getValue(UserDataModel::class.java)
-                if (user != null && userMeetsPreferences(user, currentUser)) {
-                    filteredIds.add(userId)
-                }
+            val filteredIds = userIds.filter { userId ->
+                !seenUserIds.contains(userId) && userRef.get().await().getValue(UserDataModel::class.java)?.let {
+                    userMeetsPreferences(it, currentUser)
+                } == true
             }
 
             filteredUserIdsLiveData.postValue(filteredIds)
         }
     }
-
     private suspend fun fetchCurrentUserPreferences(): UserDataModel {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return UserDataModel()
         val prefRef = FirebaseDatabase.getInstance().getReference("users/$userId")
         return prefRef.get().await().getValue(UserDataModel::class.java) ?: UserDataModel()
+    }
+
+    private suspend fun fetchSeenUserIds(): Set<String> {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return emptySet()
+        val seenRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
+
+        return try {
+            val snapshot = seenRef.get().await()
+            snapshot.children.mapNotNull { it.key }.toSet()
+        } catch (e: Exception) {
+            Log.e("DiscoverViewModel", "Failed to fetch seen user IDs", e)
+            emptySet()
+        }
     }
 
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
@@ -153,19 +166,18 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    fun likeUser(likedUserId: String) {
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        val database = FirebaseDatabase.getInstance().getReference()
-        viewModelScope.launch {
-            // Store the current user ID as a string under the liked user's likes
-            database.child("users/$likedUserId/likes/$currentUserId").setValue(true)
-                .addOnSuccessListener {
-                    Log.d("DiscoverViewModel", "User $currentUserId liked $likedUserId successfully")
-                }
-                .addOnFailureListener {
-                    Log.e("DiscoverViewModel", "Failed to like user $likedUserId", it)
-                }
-        }
+    fun addLike(likedUserId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val likeTimestamp = System.currentTimeMillis()
+        val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
+        dbRef.updateChildren(mapOf(userId to likeTimestamp))
     }
+
+    fun markAsSeen(seenUserId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val seenTimestamp = System.currentTimeMillis()
+        val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
+        dbRef.updateChildren(mapOf(seenUserId to seenTimestamp))
+    }
+
 }

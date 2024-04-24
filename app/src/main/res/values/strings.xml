@@ -18,6 +18,8 @@
     <string name="setting_title">Settings</string>
     <string name="account_title">Account</string>
     <string name="email">Email</string>
+    <string name="likes_page">Likes Page</string>
+    <string name="see_who_lik">See who liked your profile!</string>
     <string name="payments">Payments</string>
     <string name="verification">Verification</string>
     <string name="phone_number">Phone Number</string>

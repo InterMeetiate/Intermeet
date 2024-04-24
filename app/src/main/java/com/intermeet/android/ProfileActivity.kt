@@ -24,11 +24,12 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_profile)
-        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
-        //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val userId = "vVAMTyBYWPP6nt4KIGQ4CzNsmC33"
+        setContentView(R.layout.activity_profile)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         Log.d(TAG, "userid: $userId")
+
+
+        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
         val database = Firebase.database
 
         ivUserProfilePhoto = findViewById(R.id.ivUserProfilePhoto)
@@ -40,7 +41,52 @@ class ProfileActivity : AppCompatActivity() {
         val userPhotosRef = database.getReference("users").child(userId)
 
 
+        // ValueEventListener to read the "firstName" data
+        userNameRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Get the value of "firstName"
+                val userData = dataSnapshot.getValue(UserData::class.java)
 
+                userData?.let { user ->
+                    val firstName = user.firstName
+                    val birthday = user.birthday
+                    val age = calculateAge(birthday)
+
+                    tvUserFirstName.text = "$firstName, $age"
+
+
+                    }
+                }
+
+
+
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Log any errors
+                Log.w(TAG, "loadUserName:onCancelled", databaseError.toException())
+                // Handle error case, perhaps set TextView to an error message
+                tvUserFirstName.text = getString(R.string.error_loading_data)
+            }
+        })
+
+        // ValueEventListener to read the "photoDownloadURLs" data
+        // ValueEventListener to read the "photoDownloadURLs" data
+        userPhotosRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val userData = dataSnapshot.getValue(UserData::class.java)
+                userData?.photoDownloadUrls?.firstOrNull()?.let { url ->
+                    Glide.with(this@ProfileActivity)
+                        .load(url)
+                        .circleCrop()
+                        .into(ivUserProfilePhoto)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Log any errors
+                Log.w(TAG, "loadUserPhotos:onCancelled", databaseError.toException())
+            }
+        })
 
         val settingButton: View = findViewById(R.id.setting)
         settingButton.setOnClickListener {

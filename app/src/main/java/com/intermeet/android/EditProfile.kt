@@ -33,6 +33,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.database.DatabaseReference
@@ -52,7 +53,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     val sharedViewModel: SharedViewModel by viewModels()
 
     // UI components declared to be initialized later.
-    private lateinit var backButton: Button
+
     private lateinit var tvGender: TextView
     private lateinit var tvHeight: TextView
     private lateinit var tvReligion: TextView
@@ -69,6 +70,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private lateinit var userDataRepository: UserDataRepository
     private lateinit var promptsListView: ListView
     private lateinit var promptsCustomAdapter: CustomAdapter
+    private lateinit var deleteCustomAdapter: CustomAdapter
     private var promptsList: ArrayList<String> = arrayListOf()
     private var userPrompts: MutableList<String> = mutableListOf()
     private lateinit var promptTextbox: EditText
@@ -147,11 +149,13 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             setContentView(R.layout.activity_edit_profile) // Sets the UI layout for this Activity.
             btnNavigateFragment = findViewById(R.id.addTagButton)
             // Linking variables with their respective view components in the layout.
-            backButton = findViewById(R.id.next_button)
+
             promptTextbox = findViewById(R.id.enter_prompt)
             enterPromptImage = findViewById(R.id.add)
             promptDropdown = findViewById(R.id.prompt_spinner)
             promptsListView = findViewById(R.id.listView)
+
+
 
 
 
@@ -186,6 +190,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             promptsCustomAdapter = CustomAdapter(this, promptsList, promptsListView)
 
             promptsListView.adapter = promptsCustomAdapter
+
 
             val isEditMode = intent.getBooleanExtra("isEditMode", false)
             if (isEditMode) {
@@ -225,6 +230,15 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
                     // Clear the text box for the next entry
                     promptTextbox.setText("")
+                    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+                    val database = Firebase.database
+                    val userRef = database.getReference("users").child(userId)
+                    val userDataMap = mapOf(
+                        "prompts" to promptsList,
+
+                        )
+                    userRef.updateChildren(userDataMap)
+
                 }
             }
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -247,46 +261,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                     imagePickerLauncher.launch("image/*") // Launch the image picker
                 }
             }
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+
 
 
 
             // Setting an onClick listener for the button to navigate to the PreferenceActivity.
-            backButton.setOnClickListener {
-                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+            toolbar.setNavigationOnClickListener {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setNavigationOnClickListener
 
                 val database = Firebase.database
                 val userRef = database.getReference("users").child(userId)
                 val introEditText: EditText = findViewById(R.id.IntroText)
                 aboutMeIntroText = introEditText.text.toString()
                 val userData = userDataRepository.userData ?: UserDataModel().apply{
-                    gender = selectedGender
-                    pronouns = selectedPronoun
-                    ethnicity = selectedEthnicity
-                    height = selectedHeight
-                    drugs = selectedDrugs
-                    smoking = selectedSmoking
-                    occupation = selectedJob
-                    politics = selectedPolitics
-                    religion = selectedReligion
-                    interests = selectedTags
-                    sexuality = selectedSex
                     aboutMeIntro = aboutMeIntroText
+
+
 
 
                 }
                 val userDataMap = mapOf(
-                    "gender" to userData.gender,
-                    "pronouns" to userData.pronouns,
-                    "ethnicity" to userData.ethnicity,
-                    "height" to userData.height,
-                    "drugs" to userData.drugs,
-                    "smoking" to userData.smoking,
-                    "occupation" to userData.occupation,
-                    "politics" to userData.politics,
-                    "religion" to userData.religion,
-                    "interests" to userData.interests,
-                    "sexuality" to userData.sexuality,
-                    "prompts" to promptsList,
                     "aboutMeIntro" to userData.aboutMeIntro
                 )
                 // Update Firebase with the new userData
@@ -318,7 +313,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             // Setting an onClick listener for navigating to the TagsFragment.
             btnNavigateFragment.setOnClickListener {
                 navigateToTagsFragment()
-                backButton.visibility = View.GONE // Hide the back button when navigating to the fragment.
+
             }
     }
     private fun initializeImagePickerLauncher() {
@@ -374,24 +369,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
 
 
-    private fun updateSelectedImage(uri: Uri) {
-        if (currentImageIndex == -1) {
-            Toast.makeText(this, "No image selected for updating", Toast.LENGTH_SHORT).show()
-            return
-        }
 
-        // Update the URI in the array
-        imageUris[currentImageIndex] = uri
-
-        // Update the ImageView to display the selected image
-        imageViews[currentImageIndex].setImageURI(uri)
-
-        // Optionally, you can log this to ensure it's updating correctly
-        Log.d(TAG, "Image updated at index $currentImageIndex: $uri")
-
-        // Update storage with the new URI if needed (consider this if you are managing a dynamic list)
-        storeSelectedUris()
-    }
 
     private fun storeSelectedUris() {
         val userDataRepository = getUserDataRepository()
@@ -419,13 +397,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
 
 
-    private fun initializeImageViews() {
-        // Initialize your ImageViews based on your layout
-        imageViews = listOf(
-            findViewById(R.id.imageView1),
-            // ... initialize other ImageViews ...
-        )
-    }
+
 
     private fun loadUserPhotoUrls() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -576,6 +548,9 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 }
                 promptsCustomAdapter.notifyDataSetChanged()
                 setListViewHeightBasedOnChildren(promptsListView)
+
+
+
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -636,8 +611,15 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
 
     private fun updatePromptInFirebase(position: Int, newResponse: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val promptRef = Firebase.database.getReference("users").child(userId).child("prompts").child(position.toString())
-        promptRef.setValue(newResponse)
+        val database = Firebase.database
+
+        val userRef = database.getReference("users").child(userId)
+        val userDataMap = mapOf(
+            "prompts" to promptsList,
+
+            )
+        userRef.updateChildren(userDataMap)
+
             .addOnSuccessListener {
                 Toast.makeText(this, "Prompt updated successfully.", Toast.LENGTH_SHORT).show()
             }
@@ -870,6 +852,30 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.gender = selectedGender
+
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    gender = selectedGender
+                }
+                val userDataMap = mapOf(
+                    "gender" to userData.gender
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
+
+
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -894,6 +900,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.height = selectedHeight
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    height = selectedHeight
+                }
+                val userDataMap = mapOf(
+                    "height" to userData.height
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -918,6 +945,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.religion = selectedReligion
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    religion = selectedReligion
+                }
+                val userDataMap = mapOf(
+                    "religion" to userData.religion
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -942,6 +990,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.ethnicity = selectedEthnicity
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    ethnicity = selectedEthnicity
+                }
+                val userDataMap = mapOf(
+                    "ethnicity" to userData.ethnicity
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -966,6 +1035,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.sexuality = selectedSex
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    sexuality = selectedSex
+                }
+                val userDataMap = mapOf(
+                    "sexuality" to userData.sexuality
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -990,6 +1080,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.drinking = selectedDrink
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    drinking = selectedDrink
+                }
+                val userDataMap = mapOf(
+                    "drinking" to userData.drinking
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -1014,6 +1125,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.drugs = selectedDrugs
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    drugs = selectedDrugs
+                }
+                val userDataMap = mapOf(
+                    "drugs" to userData.drugs
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -1038,6 +1170,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.smoking = selectedSmoking
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    smoking = selectedSmoking
+                }
+                val userDataMap = mapOf(
+                    "smoking" to userData.smoking
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -1062,6 +1215,27 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
                 // Update user data
                 val userData = userDataRepository.userData ?: UserDataModel()
                 userData.politics = selectedPolitics
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                userDataRepository.userData ?: UserDataModel().apply{
+                    politics = selectedPolitics
+                }
+                val userDataMap = mapOf(
+                    "politics" to userData.politics
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
             setNegativeButton("Cancel", null)
         }.show()
@@ -1071,7 +1245,9 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private fun navigateToOccupationFragment() {
         val editOccupationFragment = EditOccupation().also {
             it.setEditOccupationListener(this)  // Setting the current activity as the listener for the fragment.
-            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            toolbar.visibility = View.GONE
         }
 
         supportFragmentManager.beginTransaction()
@@ -1084,7 +1260,9 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     private fun navigateToPronounFragment() {
         val editPronounFragment = EditPronounFragment().also {
             it.editPronounListener(this)  // Setting the current activity as the listener for the fragment.
-            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            toolbar.visibility = View.GONE
         }
 
         supportFragmentManager.beginTransaction()
@@ -1096,7 +1274,9 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     // Navigate to the TagsFragment.
     private fun navigateToTagsFragment() {
         val tagsFragment = EditTagsFragments().also {
-            backButton.visibility = View.GONE  // Hides the back button when the fragment is displayed.
+
+            val toolbar: Toolbar = findViewById(R.id.toolbar)
+            toolbar.visibility = View.GONE
         }
 
         supportFragmentManager.beginTransaction()
@@ -1106,15 +1286,38 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     }
 
     // Updates the UI based on the selected occupation.
-    private fun updateOccupationUI(occupation: String) {
-        tvJob.text = "$occupation >"  // Sets the text of the job TextView to the selected occupation.
-        selectedJob = occupation  // Updates the selectedJob variable with the chosen occupation.
+    private fun updateOccupationUI(job: String) {
+        tvJob.text = "$job >"  // Sets the text of the job TextView to the selected occupation.
+        selectedJob = job  // Updates the selectedJob variable with the chosen occupation.
         tvJob.visibility = View.VISIBLE  // Makes the job TextView visible.
-        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
 
         // Update user data
         val userData = userDataRepository.userData ?: UserDataModel()
         userData.occupation = selectedJob
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
+
+        userDataRepository.userData ?: UserDataModel().apply{
+            occupation = selectedJob
+        }
+        val userDataMap = mapOf(
+            "occupation" to userData.occupation
+        )
+        // Update Firebase with the new userData
+        userRef.updateChildren(userDataMap)
+            .addOnSuccessListener {
+                Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                // Handle success, perhaps by showing a toast or navigating
+            }
+            .addOnFailureListener { e ->
+                Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                // Handle failure, perhaps by showing an error message
+            }
     }
 
     // Updates the UI based on the entered pronoun.
@@ -1122,11 +1325,34 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
         tvPronoun.text = "$pronoun >"  // Sets the text of the pronoun TextView to the selected pronoun.
         selectedPronoun = pronoun  // Updates the selectedPronoun variable with the chosen pronoun.
         tvPronoun.visibility = View.VISIBLE  // Makes the pronoun TextView visible.
-        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
 
         // Update user data
         val userData = userDataRepository.userData ?: UserDataModel()
         userData.pronouns = selectedPronoun
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
+
+        userDataRepository.userData ?: UserDataModel().apply{
+            pronouns = selectedPronoun
+        }
+        val userDataMap = mapOf(
+            "pronouns" to userData.pronouns
+        )
+        // Update Firebase with the new userData
+        userRef.updateChildren(userDataMap)
+            .addOnSuccessListener {
+                Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                // Handle success, perhaps by showing a toast or navigating
+            }
+            .addOnFailureListener { e ->
+                Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                // Handle failure, perhaps by showing an error message
+            }
     }
 
     // Updates the UI to display the selected tags.
@@ -1153,7 +1379,31 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
             tagsContainer.addView(textView)  // Adds the TextView to the GridLayout.
         }
         sharedViewModel.setSelectedTags(tags)  // Updates the ViewModel with the selected tags.
-        backButton.visibility = View.VISIBLE  // Ensures the back button is visible.
+
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.visibility = View.VISIBLE
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
+
+        val userData = userDataRepository.userData ?: UserDataModel().apply{
+            interests = selectedTags
+        }
+        val userDataMap = mapOf(
+            "interests" to userData.interests,
+        )
+        // Update Firebase with the new userData
+        userRef.updateChildren(userDataMap)
+            .addOnSuccessListener {
+                Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                // Handle success, perhaps by showing a toast or navigating
+            }
+            .addOnFailureListener { e ->
+                Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                // Handle failure, perhaps by showing an error message
+            }
+
 
         // Update user data
         //val userData = userDataRepository.userData ?: UserDataModel()
@@ -1163,7 +1413,7 @@ class EditProfile : AppCompatActivity(),  EditTagsFragments.OnTagsSelectedListen
     // Callback method triggered when the activity resumes from the paused state.
     override fun onResume() {
         super.onResume()
-        backButton.visibility = View.VISIBLE  // Ensures the back button is visible when the activity resumes.
+
     }
 
 }

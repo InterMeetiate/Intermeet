@@ -5,39 +5,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#F5F5F5"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:title="@string/profile_setting"
+        app:titleMarginEnd="75dp"
+        app:titleMarginStart="100dp"
+        app:titleTextColor="@android:color/black" />
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@id/next_button"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="36dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/uploadTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/EditProfileTitle"
+                android:textColor="#000000"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
             <LinearLayout
                 android:id="@+id/PhotoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/uploadTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- First row of ImageViews -->
+                <!-- First row of ImageViews -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="159dp"
-                    android:layout_marginBottom="22dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:gravity="center">
 
                     <FrameLayout
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:layout_marginEnd="43dp"
-                        android:gravity="center">
+                        android:layout_marginEnd="16dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imageView1"
@@ -53,7 +89,6 @@
                             android:layout_height="34dp"
                             android:layout_gravity="top|end"
                             android:background="@drawable/circle_background"
-                            android:contentDescription="@string/remove_photo"
                             android:padding="4dp"
                             android:src="@drawable/ic_close" />
                     </FrameLayout>
@@ -61,13 +96,12 @@
                     <FrameLayout
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:layout_marginEnd="43dp"
-                        android:gravity="center">
+                        android:layout_marginEnd="16dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imageView2"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:scaleType="centerCrop"
                             app:shapeAppearanceOverlay="@style/RoundedCorners"
                             app:srcCompat="@drawable/image_placeholder" />
@@ -78,90 +112,106 @@
                             android:layout_height="34dp"
                             android:layout_gravity="top|end"
                             android:background="@drawable/circle_background"
-                            android:contentDescription="@string/remove_photo"
                             android:padding="4dp"
                             android:src="@drawable/ic_close" />
                     </FrameLayout>
                 </LinearLayout>
 
-            <!-- Second row of ImageViews -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="159dp"
-                android:layout_marginBottom="22dp"
-                android:gravity="center">
-                <FrameLayout
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginEnd="43dp"
+                <!-- Second row of ImageViews -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
                     android:gravity="center">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginEnd="43dp"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/RoundedCorners"
-                    app:srcCompat="@drawable/image_placeholder" />
-                <ImageView
-                    android:id="@+id/closeImageView3"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="top|end"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_close"
-                    android:background="@drawable/circle_background"
-                    android:contentDescription="@string/remove_photo" />
-                </FrameLayout>
-                <FrameLayout
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginEnd="43dp"
-                    android:gravity="center">
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/RoundedCorners"
-                    app:srcCompat="@drawable/image_placeholder" />
-                <ImageView
-                    android:id="@+id/closeImageView4"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="top|end"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_close"
-                    android:background="@drawable/circle_background"
-                    android:contentDescription="@string/remove_photo" />
-                </FrameLayout>
-            </LinearLayout>
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView3"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView4"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Single ImageView in the third row -->
                 <FrameLayout
                     android:layout_width="120dp"
-                    android:layout_height="159dp"
-                    android:layout_marginEnd="43dp"
-                    android:gravity="center">
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_gravity="center_horizontal"
-                    android:scaleType="centerCrop"
-                    app:shapeAppearanceOverlay="@style/RoundedCorners"
-                    app:srcCompat="@drawable/image_placeholder" />
-                <ImageView
-                    android:id="@+id/closeImageView5"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_gravity="top|end"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_close"
-                    android:background="@drawable/circle_background"
-                    android:contentDescription="@string/remove_photo" />
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/RoundedCorners"
+                        app:srcCompat="@drawable/image_placeholder" />
+
+                    <ImageView
+                        android:id="@+id/closeImageView5"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/circle_background"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_close" />
                 </FrameLayout>
             </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/aboutMeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/about_me_title"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/PhotoContainer" />
 
 
             <EditText
@@ -172,22 +222,36 @@
                 android:gravity="top|start"
                 android:hint="@string/i_am"
                 android:padding="12dp"
+                android:layout_marginTop="16dp"
                 android:textSize="30sp"
-                app:layout_constraintTop_toBottomOf="@+id/PhotoContainer"
+                app:layout_constraintTop_toBottomOf="@+id/aboutMeTitle"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />parent" />
+                app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/promptTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/prompt_title"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/IntroText" />
 
             <Spinner
                 android:id="@+id/prompt_spinner"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="0dp"
                 android:entries="@array/prompt_options"
                 android:spinnerMode="dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.124"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/IntroText" />
+                app:layout_constraintTop_toBottomOf="@+id/promptTitle" />
 
             <EditText
                 android:id="@+id/enter_prompt"
@@ -230,7 +294,19 @@
                 android:layout_marginTop="8dp" />
 
             <!-- Your existing layout starting with the Gender TextView should follow -->
-
+            <TextView
+                android:id="@+id/basicInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/basic_info"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/listView" />
             <TextView
                 android:id="@+id/gender"
                 android:layout_width="74dp"
@@ -241,7 +317,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.08"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/listView" />
+                app:layout_constraintTop_toBottomOf="@+id/basicInfo" />
 
             <TextView
                 android:id="@+id/tvGender"
@@ -257,7 +333,7 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@+id/gender"
-                app:layout_constraintTop_toBottomOf="@+id/listView" />
+                app:layout_constraintTop_toBottomOf="@+id/basicInfo" />
 
             <View
                 android:id="@+id/view4"
@@ -688,20 +764,8 @@
 
 
 
-    <Button
-        android:id="@+id/next_button"
-        android:layout_width="96dp"
-        android:layout_height="45dp"
-        android:background="@drawable/black_button"
-        android:text="@string/next"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-<!--
+
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container1"
         android:layout_width="match_parent"
@@ -717,7 +781,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
-        -->
+
 
 
 

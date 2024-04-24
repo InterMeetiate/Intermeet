@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.*
@@ -24,7 +25,11 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        Log.d(TAG, "userid: $userId")
+
+
+        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
         val database = Firebase.database
 
         ivUserProfilePhoto = findViewById(R.id.ivUserProfilePhoto)

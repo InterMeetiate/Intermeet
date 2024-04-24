@@ -328,4 +328,10 @@
     <string name="handle_bar" />
     <string name="search_maps" />
     <string name="no_users">No users found in your area.</string>
+    <string name="remove_photo">Remove Photo</string>
+    <string name="EditProfileTitle">Lets change your profile a bit!</string>
+    <string name="about_me_title">About Me</string>
+    <string name="prompt_title">Prompt Title</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="profile_setting">Profile Setting</string>
 </resources>

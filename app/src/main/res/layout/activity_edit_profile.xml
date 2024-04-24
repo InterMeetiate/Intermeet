@@ -1,0 +1,792 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#F5F5F5"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:title="@string/profile_setting"
+        app:titleMarginEnd="75dp"
+        app:titleMarginStart="100dp"
+        app:titleTextColor="@android:color/black" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="36dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/uploadTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/EditProfileTitle"
+                android:textColor="#000000"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/PhotoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/uploadTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- First row of ImageViews -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView1"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView2"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Second row of ImageViews -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center">
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView3"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="16dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageView4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/RoundedCorners"
+                            app:srcCompat="@drawable/image_placeholder" />
+
+                        <ImageView
+                            android:id="@+id/closeImageView4"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="top|end"
+                            android:background="@drawable/circle_background"
+                            android:padding="4dp"
+                            android:src="@drawable/ic_close" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Single ImageView in the third row -->
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center_horizontal">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/RoundedCorners"
+                        app:srcCompat="@drawable/image_placeholder" />
+
+                    <ImageView
+                        android:id="@+id/closeImageView5"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_gravity="top|end"
+                        android:background="@drawable/circle_background"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_close" />
+                </FrameLayout>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/aboutMeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/about_me_title"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/PhotoContainer" />
+
+
+            <EditText
+                android:id="@+id/IntroText"
+                android:layout_width="370dp"
+                android:layout_height="360dp"
+                android:background="@drawable/bold_border"
+                android:gravity="top|start"
+                android:hint="@string/i_am"
+                android:padding="12dp"
+                android:layout_marginTop="16dp"
+                android:textSize="30sp"
+                app:layout_constraintTop_toBottomOf="@+id/aboutMeTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/promptTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/prompt_title"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/IntroText" />
+
+            <Spinner
+                android:id="@+id/prompt_spinner"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:entries="@array/prompt_options"
+                android:spinnerMode="dropdown"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.124"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/promptTitle" />
+
+            <EditText
+                android:id="@+id/enter_prompt"
+                android:layout_width="309dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/prompt_rectangle"
+                android:gravity="top|start"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                app:layout_constraintTop_toBottomOf="@+id/prompt_spinner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.156"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp" />
+
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="36dp"
+                android:contentDescription="@string/checkmark"
+                android:src="@drawable/add_prompts"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.369"
+                app:layout_constraintStart_toEndOf="@+id/enter_prompt"
+                app:layout_constraintTop_toBottomOf="@+id/prompt_spinner" />
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:dividerHeight="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/enter_prompt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="8dp" />
+
+            <!-- Your existing layout starting with the Gender TextView should follow -->
+            <TextView
+                android:id="@+id/basicInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/basic_info"
+                android:textColor="#000000"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/listView" />
+            <TextView
+                android:id="@+id/gender"
+                android:layout_width="74dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/gender"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/basicInfo" />
+
+            <TextView
+                android:id="@+id/tvGender"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/gender"
+                app:layout_constraintTop_toBottomOf="@+id/basicInfo" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gender" />
+
+            <TextView
+                android:id="@+id/height"
+                android:layout_width="74dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="2dp"
+                android:text="@string/height"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view4" />
+
+            <TextView
+                android:id="@+id/tvHeight"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="96dp"
+                android:layout_marginTop="2dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/height"
+                app:layout_constraintTop_toBottomOf="@+id/view4" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.448"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/height" />
+
+            <TextView
+                android:id="@+id/religion"
+                android:layout_width="74dp"
+                android:layout_height="36dp"
+                android:text="@string/religion"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <TextView
+                android:id="@+id/tvReligion"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="96dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/religion"
+                app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.482"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/religion" />
+
+            <TextView
+                android:id="@+id/ethnicity"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/race"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.085"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+
+            <TextView
+                android:id="@+id/tvEthnicity"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="75dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/ethnicity"
+                app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+            <View
+                android:id="@+id/view6"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.431"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ethnicity" />
+
+            <TextView
+                android:id="@+id/occupation"
+                android:layout_width="113dp"
+                android:layout_height="33dp"
+                android:text="@string/work"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.09"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+            <TextView
+                android:id="@+id/tvJob"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="57dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/occupation"
+                app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+            <View
+                android:id="@+id/view7"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.448"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/occupation" />
+
+            <TextView
+                android:id="@+id/sexuality"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:layout_marginTop="1dp"
+                android:text="@string/sex"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.085"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view7" />
+
+            <TextView
+                android:id="@+id/tvSex"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/sexuality"
+                app:layout_constraintTop_toBottomOf="@+id/view7" />
+
+            <View
+                android:id="@+id/view8"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.465"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sexuality" />
+
+            <TextView
+                android:id="@+id/pronoun"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/pronoun"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.085"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view8" />
+
+            <TextView
+                android:id="@+id/tvPronoun"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/pronoun"
+                app:layout_constraintTop_toBottomOf="@+id/view8" />
+
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.413"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pronoun" />
+
+            <TextView
+                android:id="@+id/interests"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/interest"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.079"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+            <GridLayout
+                android:id="@+id/customTagsContainer"
+                android:layout_width="376dp"
+                android:layout_height="148dp"
+                android:columnCount="3"
+                android:orientation="horizontal"
+                android:rowCount="2"
+                app:layout_constraintEnd_toEndOf="@+id/addTagButton"
+                app:layout_constraintHorizontal_bias="0.236"
+                app:layout_constraintStart_toStartOf="@+id/interests"
+                app:layout_constraintTop_toBottomOf="@+id/interests">
+
+            </GridLayout>
+
+            <TextView
+                android:id="@+id/drink"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/drink"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.082"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <TextView
+                android:id="@+id/tvDrink"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/drink"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
+            <View
+                android:id="@+id/view9"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.475"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/drink" />
+
+            <TextView
+                android:id="@+id/drugs"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/drug"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.082"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view9" />
+
+            <TextView
+                android:id="@+id/tvDrugs"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/drugs"
+                app:layout_constraintTop_toBottomOf="@+id/view9" />
+
+            <View
+                android:id="@+id/view10"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.448"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/drugs" />
+
+            <View
+                android:id="@+id/view11"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.448"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/smoking" />
+
+            <TextView
+                android:id="@+id/smoking"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/smoke"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.079"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view10" />
+
+            <TextView
+                android:id="@+id/tvSmoking"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/smoking"
+                app:layout_constraintTop_toBottomOf="@+id/view10" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="353dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:background="#000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.431"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/politics" />
+
+            <TextView
+                android:id="@+id/politics"
+                android:layout_width="95dp"
+                android:layout_height="37dp"
+                android:text="@string/politics"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.075"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view11" />
+
+
+            <TextView
+                android:id="@+id/tvPolitics"
+                android:layout_width="184dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="76dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="end"
+                android:text="@string/input_default"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/politics"
+                app:layout_constraintTop_toBottomOf="@+id/view11" />
+
+            <TextView
+                android:id="@+id/addTagButton"
+                android:layout_width="126dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="132dp"
+                android:background="@drawable/transparent_button"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="+"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@+id/interests"
+                app:layout_constraintTop_toBottomOf="@+id/view3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"/>
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

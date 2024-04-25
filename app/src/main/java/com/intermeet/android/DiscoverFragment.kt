@@ -88,6 +88,10 @@ class DiscoverFragment : Fragment() {
         if (viewPager.currentItem < adapter.itemCount - 1) {
             viewPager.currentItem += 1
         }
+        else {
+            noUsersTextView.visibility = View.VISIBLE
+            viewPager.visibility = View.GONE
+        }
     }
 
     private fun navigateToPreviousUser() {

@@ -72,7 +72,7 @@ class DiscoverViewModel : ViewModel() {
                     viewModelScope.launch {
                         try {
                             val nearbyUserIds =
-                                queryNearbyUsers(latitude, longitude, maxDistancePreference)
+                                queryNearbyUsers(latitude, longitude, maxDistancePreference).filter { it != userId }
                             _nearbyUserIdsLiveData.postValue(nearbyUserIds)
                         } catch (e: Exception) {
                             Log.e("DiscoverViewModel", "Error querying nearby users", e)
@@ -101,7 +101,8 @@ class DiscoverViewModel : ViewModel() {
 
             val usersDataDeferred = userIds.map { userId ->
                 async {
-                    val userData = userRef.child(userId).get().await().getValue(UserDataModel::class.java)
+                    val userData =
+                        userRef.child(userId).get().await().getValue(UserDataModel::class.java)
                     if (userData != null && !seenUserIds.contains(userId)) {
                         userId to userData
                     } else {
@@ -159,6 +160,7 @@ class DiscoverViewModel : ViewModel() {
                         )
                         ))
     }
+
     private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
         return when (userPreference) {
             "Men" -> userGender == "Male"
@@ -198,8 +200,15 @@ class DiscoverViewModel : ViewModel() {
     }
 
     private fun commonInterestsCount(userInterests: List<String>?, currentUserInterests: List<String>?): Int {
-        if (userInterests == null || currentUserInterests == null) return 0
-        return userInterests.intersect(currentUserInterests.toSet()).size
-    }
+        if (userInterests == null || currentUserInterests == null) {
+            Log.e("DiscoverViewModel", "One or both users have null interests")
+            return 0
+        }
 
+        val commonInterests = userInterests.intersect(currentUserInterests.toSet())
+        Log.d("DiscoverViewModel", "Comparing interests: User interests = ${userInterests.joinToString()}, Current user interests = ${currentUserInterests.joinToString()}")
+        Log.d("DiscoverViewModel", "Common interests: ${commonInterests.joinToString()}")
+        Log.d("DiscoverViewModel", "Common interests count: ${commonInterests.size}")
+        return commonInterests.size
+    }
 }

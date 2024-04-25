@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -76,9 +77,11 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var eventList: ListView
     private lateinit var searchBar: AutoCompleteTextView
     private lateinit var placesClient: PlacesClient
+    private lateinit var mapButton: Button
+    private lateinit var myLocation: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
-    private lateinit var locationManager: LocationManager
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var selectedPlaceText: String? = null
 
@@ -94,6 +97,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
             this.state=BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        mapButton = view.findViewById(R.id.events_mapIcon)
+        mapButton.setOnClickListener {
+            toggleMapType()
+        }
+
+        myLocation = view.findViewById(R.id.myLocation_button)
+        myLocation.setOnClickListener {
+            moveToUserLocation()
         }
 
         // Initialize Places API client
@@ -460,6 +473,43 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         googleMap.addMarker(MarkerOptions().position(latLng).title("User"))
         if(!cameraMovedOnce) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+        }
+    }
+
+    // Method to toggle between map types
+    private fun toggleMapType() {
+        if (googleMap.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+            // Switch to satellite view
+            googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            mapButton.text = "Switch to Normal"
+        } else {
+            // Switch to normal view
+            googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            mapButton.text = "Switch to Satellite"
+        }
+    }
+
+    private fun moveToUserLocation() {
+        // Check if the last known location is available
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    // Move the camera to the user's current location
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                } ?: run {
+                    // Handle the case when the last known location is not available
+                    Toast.makeText(
+                        requireContext(),
+                        "Unable to retrieve current location",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 

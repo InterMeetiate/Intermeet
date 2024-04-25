@@ -10,6 +10,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import queryNearbyUsers
@@ -94,19 +96,34 @@ class DiscoverViewModel : ViewModel() {
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
-            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
             val seenUserIds = fetchSeenUserIds()
-            val userRef = FirebaseDatabase.getInstance().getReference("users/$currentUserId")
+            val userRef = FirebaseDatabase.getInstance().getReference("users")
 
-            val filteredIds = userIds.filter { userId ->
-                !seenUserIds.contains(userId) && userRef.get().await().getValue(UserDataModel::class.java)?.let {
-                    userMeetsPreferences(it, currentUser)
-                } == true
+            val usersDataDeferred = userIds.map { userId ->
+                async {
+                    val userData = userRef.child(userId).get().await().getValue(UserDataModel::class.java)
+                    if (userData != null && !seenUserIds.contains(userId)) {
+                        userId to userData
+                    } else {
+                        null
+                    }
+                }
             }
 
-            filteredUserIdsLiveData.postValue(filteredIds)
+            val usersData = usersDataDeferred.awaitAll().filterNotNull().toMap()
+
+            // Filter and sort the users
+            val filteredAndSortedIds = usersData.filter {
+                userMeetsPreferences(it.value, currentUser)
+            }.toList().sortedByDescending {
+                commonInterestsCount(it.second.interests, currentUser.interests)
+            }.map { it.first }
+
+            filteredUserIdsLiveData.postValue(filteredAndSortedIds)
         }
     }
+
+
     private suspend fun fetchCurrentUserPreferences(): UserDataModel {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return UserDataModel()
         val prefRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -178,6 +195,11 @@ class DiscoverViewModel : ViewModel() {
         val seenTimestamp = System.currentTimeMillis()
         val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
         dbRef.updateChildren(mapOf(seenUserId to seenTimestamp))
+    }
+
+    private fun commonInterestsCount(userInterests: List<String>?, currentUserInterests: List<String>?): Int {
+        if (userInterests == null || currentUserInterests == null) return 0
+        return userInterests.intersect(currentUserInterests.toSet()).size
     }
 
 }

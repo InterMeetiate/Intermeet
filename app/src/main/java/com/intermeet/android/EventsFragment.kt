@@ -103,23 +103,23 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         searchBar.setAdapter(autocompleteAdapter)
         searchBar.threshold = 1 // Start autocomplete after 1 character
 
-        // Set up click listener for events menu bar button
+        // Fill up the event bottom sheet with events from the database
+        fetchEventsFromDatabase { eventsList ->
+            val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+            eventList.adapter = eventAdapter
+        }
+
+        // Fills the database when events based on the currently logged in user's current location
+        // Temporarily set to the top right menu bar in the events page
         eventsMenuBarButton.setOnClickListener {
             getUserLocation { userLocation ->
-                Log.d("eventsMenuBar", "Did we get location: $userLocation")
                 val addressComponents = userLocation.split(", ")
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
-                Log.d("eventsMenuBar", "Searching events in $city")
-                getEventsByLocation(city) { eventsList ->
-                    for (event in eventsList) {
-                        Log.d("TESTING EVENTS", "Title ${event.title}")
-                    }
-                    val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
-                    eventList.adapter = eventAdapter
-                }
+                getEventsByLocation(city)
             }
         }
 
+        // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
             Toast.makeText(requireContext(), "Clicked on event: ${event.title}", Toast.LENGTH_SHORT).show()
@@ -215,8 +215,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                 Log.e("Autocomplete", "Autocomplete prediction fetch failed: $exception")
             }
     }
-
-
 
     private fun fetchPlaceDetails(placeId: String?) {
         if (placeId != null) {
@@ -322,9 +320,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun getEventsByLocation(city: String, callback: (MutableList<Event>) -> Unit) {
+    private fun getEventsByLocation(city: String) {
         val apiKey = resources.getString(R.string.serpapi_key)
         val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+${city}&hl=en&gl=us&api_key=${apiKey}"
+        Log.d("SerpAPI", "Query: $url")
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -336,10 +335,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                     val reader = BufferedReader(InputStreamReader(inputStream))
                     val response = reader.readText()
 
-                    val eventsList = handleEvents(response)
-//                    GlobalScope.launch(Dispatchers.Main) {
-//                        callback(eventsList)
-//                    }
+                    handleEvents(response)
                 } else {
                     Log.e("SerpAPI", "HTTP error: $responseCode")
                 }
@@ -349,10 +345,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun handleEvents(response: String): MutableList<Event> {
+    private fun handleEvents(response: String) {
         val jsonResponse = JSONObject(response)
         val eventsArray = jsonResponse.getJSONArray("events_results")
-        val eventsList = mutableListOf<Event>()
 
         for (i in 0 until eventsArray.length()) {
             val eventObject = eventsArray.getJSONObject(i)
@@ -370,9 +365,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             val thumbnail = eventObject.getString("thumbnail")
             val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail, 0)
             uploadEvent(event)
-            eventsList.add(event)
         }
-        return eventsList
     }
 
     private fun uploadEvent(event: Event) {
@@ -426,6 +419,28 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.w("Location", "Failed to read location.", databaseError.toException())
                 callback("") // Invoke the callback with an empty string in case of failure
+            }
+        })
+    }
+
+    private fun fetchEventsFromDatabase(callback: (MutableList<Event>) -> Unit) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val eventsList = mutableListOf<Event>()
+                for (snapshot in dataSnapshot.children) {
+                    val event = snapshot.getValue(Event::class.java)
+                    event?.let {
+                        eventsList.add(it)
+                    }
+                }
+                callback(eventsList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("FetchEvents", "Failed to fetch events from database: ${databaseError.message}")
+                callback(mutableListOf()) // Pass an empty list in case of failure
             }
         })
     }

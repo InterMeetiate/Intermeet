@@ -59,5 +59,8 @@ data class UserDataModel(
     var interests: List<String> = listOf(),
     // About me section
     var aboutMeIntro: String? = null,
-    var prompts: MutableList<String> = mutableListOf()
+    var prompts: MutableList<String> = mutableListOf(),
+    // Discover attributes
+    var likes: Map<String, Long> = emptyMap(),
+    var seen: Map<String, Long> = emptyMap()
 )

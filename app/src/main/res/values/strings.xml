@@ -327,7 +327,8 @@
     <string name="search">Search...</string>
     <string name="handle_bar" />
     <string name="search_maps" />
-    <string name="no_users">No users found in your area.</string>
+    <string name="no_users">"You've seen all the users in your area."</string>
+    <string name="refresh">Refresh</string>
     <string name="remove_photo">Remove Photo</string>
     <string name="EditProfileTitle">Lets change your profile a bit!</string>
     <string name="about_me_title">About Me</string>

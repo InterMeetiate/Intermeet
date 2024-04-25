@@ -1,9 +1,13 @@
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -20,6 +24,11 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -57,7 +66,7 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
 import org.w3c.dom.Text
 
-class EventsFragment : Fragment(), OnMapReadyCallback {
+class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     private lateinit var eventsTitleTextView: TextView
     private lateinit var eventsMenuBarButton: Button
@@ -68,6 +77,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var searchBar: AutoCompleteTextView
     private lateinit var placesClient: PlacesClient
     private lateinit var autocompleteAdapter: AutocompleteAdapter
+    private lateinit var locationManager: LocationManager
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var cameraMovedOnce = false
     private var selectedPlaceText: String? = null
 
     override fun onCreateView(
@@ -241,45 +253,38 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-
-
+    // When the map is done initializing move the camera to the user's current location
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
 
-        // Add a marker in a default location and move the camera
-        val defaultLocation = LatLng(0.0, 0.0)
-        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
+        // Initialize fusedLocationClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        // Request location updates
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.requestLocationUpdates(
+                LocationRequest.create().apply {
+                    interval = 5000 // 5 seconds
+                    fastestInterval = 1000 // 1 second
+                    priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                },
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        locationResult.lastLocation?.let { location ->
+                            // Handle location update
+                            onLocationChanged(location)
+                            cameraMovedOnce = true
+                        }
+                    }
+                },
+                Looper.getMainLooper() // Looper for handling callbacks on main thread
+            )
+        }
     }
 
-//    override fun onMapReady(googleMap: GoogleMap) {
-//        this.googleMap = googleMap
-//
-//        // Enable location tracking
-//        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            googleMap.isMyLocationEnabled = true
-//            googleMap.uiSettings.isMyLocationButtonEnabled = true
-//            googleMap.uiSettings.isZoomControlsEnabled = true
-//
-//            // Get last known location
-//            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-//            fusedLocationProviderClient.lastLocation
-//                .addOnSuccessListener { location ->
-//                    if (location != null) {
-//                        // Move the camera to the user's last known location
-//                        val latLng = LatLng(location.latitude, location.longitude)
-//                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-//                    }
-//                }
-//                .addOnFailureListener { exception ->
-//                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
-//                }
-//        }
-//    }
-
-
     // Method to perform geocoding
-    private fun performGeocoding(address: String) {
+    private fun performGeocoding(address: String): LatLng {
+        var coords = LatLng(0.0,0.0)
         try {
             val addresses = geocoder.getFromLocationName(address, 1)
             if (addresses != null) {
@@ -287,6 +292,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                     val location = addresses[0]
                     val latitude = location.latitude
                     val longitude = location.longitude
+                    coords = LatLng(latitude, longitude)
                     Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
                     val message = "Latitude: $latitude, Longitude: $longitude"
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -297,6 +303,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         } catch (e: IOException) {
             Log.e("Geocoding", "Geocoding failed: ${e.message}")
         }
+        return coords
     }
 
     // Method to perform reverse geocoding
@@ -445,6 +452,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
+    override fun onLocationChanged(location: Location) {
+        // Update marker with new location
+        Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+        val latLng = LatLng(location.latitude, location.longitude)
+        googleMap.clear() // Clear previous marker
+        googleMap.addMarker(MarkerOptions().position(latLng).title("User"))
+        if(!cameraMovedOnce) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+        }
+    }
 
     companion object {
         fun newInstance(): EventsFragment {

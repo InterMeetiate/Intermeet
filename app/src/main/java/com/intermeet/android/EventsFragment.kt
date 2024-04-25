@@ -47,10 +47,13 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
 import org.w3c.dom.Text
 
@@ -106,7 +109,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             // Example: Perform geocoding and reverse geocoding
             //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
             //performReverseGeocoding(LatLng(33.7838, -118.1141))
-            getEventsByLocation(LatLng(33.7838, -118.1141)) { eventsList ->
+            getEventsByLocation() { eventsList ->
                 for(event in eventsList) {
                     Log.d("TESTING EVENTS", "Title ${event.title}")
                 }
@@ -240,39 +243,39 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
 
 
-//    override fun onMapReady(gMap: GoogleMap) {
-//        googleMap = gMap
-//
-//        // Add a marker in a default location and move the camera
-//        val defaultLocation = LatLng(0.0, 0.0)
-//        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
-//    }
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-
-        // Enable location tracking
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap.isMyLocationEnabled = true
-            googleMap.uiSettings.isMyLocationButtonEnabled = true
-            googleMap.uiSettings.isZoomControlsEnabled = true
-
-            // Get last known location
-            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-            fusedLocationProviderClient.lastLocation
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        // Move the camera to the user's last known location
-                        val latLng = LatLng(location.latitude, location.longitude)
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
-                }
-        }
+        // Add a marker in a default location and move the camera
+        val defaultLocation = LatLng(0.0, 0.0)
+        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
+
+//    override fun onMapReady(googleMap: GoogleMap) {
+//        this.googleMap = googleMap
+//
+//        // Enable location tracking
+//        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            googleMap.isMyLocationEnabled = true
+//            googleMap.uiSettings.isMyLocationButtonEnabled = true
+//            googleMap.uiSettings.isZoomControlsEnabled = true
+//
+//            // Get last known location
+//            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+//            fusedLocationProviderClient.lastLocation
+//                .addOnSuccessListener { location ->
+//                    if (location != null) {
+//                        // Move the camera to the user's last known location
+//                        val latLng = LatLng(location.latitude, location.longitude)
+//                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
+//                }
+//        }
+//    }
 
 
     // Method to perform geocoding
@@ -297,13 +300,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     }
 
     // Method to perform reverse geocoding
-    private fun performReverseGeocoding(latLng: LatLng) {
+    private fun performReverseGeocoding(latLng: LatLng): String {
+        var fullAddress = ""
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (addresses != null) {
                 if (addresses.isNotEmpty()) {
                     val address = addresses[0]
-                    val fullAddress = address.getAddressLine(0)
+                    fullAddress = address.getAddressLine(0)
                     Log.d("Reverse Geocoding", "Address: $fullAddress")
                 } else {
                     Log.e("Reverse Geocoding", "No address found for the given coordinates")
@@ -312,14 +316,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         } catch (e: IOException) {
             Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
         }
+        return fullAddress
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun getEventsByLocation(location: LatLng, callback: (MutableList<Event>) -> Unit) {
+    private fun getEventsByLocation(callback: (MutableList<Event>) -> Unit) {
         val apiKey = resources.getString(R.string.serpapi_key)
-        val latitude = location.latitude
-        val longitude = location.longitude
-        val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+Long+Beach&hl=en&gl=us&api_key=${apiKey}"
+        val userLocation = getUserLocation()
+        Log.d("getEventsByLocation()", "Did we get location: ${userLocation}")
+        val addressComponents = userLocation.split(", ")
+        val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
+        Log.d("getEventsByLocation()", "Seaching events in ${city}")
+        val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+${city}&hl=en&gl=us&api_key=${apiKey}"
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -397,6 +405,36 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                 Log.d("Add Event", "Database query cancelled: ${databaseError.message}")
             }
         })
+    }
+
+    private fun getUserLocation(): String {
+        // Grab the current user's location
+        var userLocation = ""
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val database = Firebase.database
+        val userRef = userId?.let { database.getReference("user_locations").child(it).child("l") }
+
+        userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // This method is called once with the initial value and again whenever data at this location is updated.
+                val locationList: List<Any>? = dataSnapshot.value as? List<Any>
+                // Ensure locationList is not null and has at least 2 elements
+                if (locationList != null && locationList.size >= 2) {
+                    val latitude = (locationList[0] as? Double) ?: return
+                    val longitude = (locationList[1] as? Double) ?: return
+                    userLocation = performReverseGeocoding(LatLng(latitude, longitude))
+                    Log.d("gerUserLocation()", "Current Location: ${userLocation}", )
+                } else {
+                    Log.d("Location", "Location data not found or incomplete.")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Getting data failed, log a message
+                Log.w("Location", "Failed to read location.", databaseError.toException())
+            }
+        })
+        return userLocation
     }
 
 

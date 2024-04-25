@@ -211,4 +211,10 @@ class DiscoverViewModel : ViewModel() {
         Log.d("DiscoverViewModel", "Common interests count: ${commonInterests.size}")
         return commonInterests.size
     }
+
+    fun clearSeenUsers() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val seenRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
+        seenRef.removeValue()
+    }
 }

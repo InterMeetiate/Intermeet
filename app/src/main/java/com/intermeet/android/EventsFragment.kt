@@ -1,4 +1,5 @@
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Geocoder
@@ -12,11 +13,13 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -44,7 +47,15 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
+import org.w3c.dom.Text
 
 class EventsFragment : Fragment(), OnMapReadyCallback {
 
@@ -92,20 +103,54 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         searchBar.setAdapter(autocompleteAdapter)
         searchBar.threshold = 1 // Start autocomplete after 1 character
 
-        // Set up click listener for events menu bar button
+        // Fill up the event bottom sheet with events from the database
+        fetchEventsFromDatabase { eventsList ->
+            val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+            eventList.adapter = eventAdapter
+        }
+
+        // Fills the database when events based on the currently logged in user's current location
+        // Temporarily set to the top right menu bar in the events page
         eventsMenuBarButton.setOnClickListener {
-            // Handle menu bar button click here
-            // Example: Perform geocoding and reverse geocoding
-            //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            //performReverseGeocoding(LatLng(33.7838, -118.1141))
-            getEventsByLocation(LatLng(33.7838, -118.1141)) { eventsList ->
-                for(event in eventsList) {
-                    Log.d("TESTING EVENTS", "Title ${event.title}")
-                }
-                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
-                eventList.adapter = eventAdapter
+            getUserLocation { userLocation ->
+                val addressComponents = userLocation.split(", ")
+                val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
+                getEventsByLocation(city)
             }
         }
+
+        // Clicking any event in the bottom sheet will bring up its respective event card
+        eventList.setOnItemClickListener { parent, view, position, _ ->
+            val event = parent.adapter.getItem(position) as Event
+            Toast.makeText(requireContext(), "Clicked on event: ${event.title}", Toast.LENGTH_SHORT).show()
+            val dialog = Dialog(requireContext())
+            dialog.setContentView(R.layout.event_details_card)
+
+            val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
+            Glide.with(requireContext())
+                .load(event.thumbnail)
+                .into(eventCardImage)
+
+            val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
+            eventCardTitle.text = event.title
+
+            val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
+            eventCardDate.text = event.whenInfo.dropLast(4)
+
+            val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
+            eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
+
+            val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
+            eventCardDescription.text = event.description
+
+            // Hard coded to 1 person going until we figure out how to keep track of that
+            val amountGoing = 1
+            val goingText = dialog.findViewById<TextView>(R.id.going_text)
+            goingText.text = "Going (${amountGoing})"
+
+            dialog.show()
+        }
+
 
         // Initialize and set up the map
         mapView.onCreate(savedInstanceState)
@@ -171,8 +216,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
-
-
     private fun fetchPlaceDetails(placeId: String?) {
         if (placeId != null) {
             val placeFields = listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG)
@@ -200,39 +243,39 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
 
 
-//    override fun onMapReady(gMap: GoogleMap) {
-//        googleMap = gMap
-//
-//        // Add a marker in a default location and move the camera
-//        val defaultLocation = LatLng(0.0, 0.0)
-//        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
-//    }
+    override fun onMapReady(gMap: GoogleMap) {
+        googleMap = gMap
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        this.googleMap = googleMap
-
-        // Enable location tracking
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            googleMap.isMyLocationEnabled = true
-            googleMap.uiSettings.isMyLocationButtonEnabled = true
-            googleMap.uiSettings.isZoomControlsEnabled = true
-
-            // Get last known location
-            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-            fusedLocationProviderClient.lastLocation
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        // Move the camera to the user's last known location
-                        val latLng = LatLng(location.latitude, location.longitude)
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
-                }
-        }
+        // Add a marker in a default location and move the camera
+        val defaultLocation = LatLng(0.0, 0.0)
+        googleMap.addMarker(MarkerOptions().position(defaultLocation).title("Marker in Default Location"))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(defaultLocation))
     }
+
+//    override fun onMapReady(googleMap: GoogleMap) {
+//        this.googleMap = googleMap
+//
+//        // Enable location tracking
+//        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            googleMap.isMyLocationEnabled = true
+//            googleMap.uiSettings.isMyLocationButtonEnabled = true
+//            googleMap.uiSettings.isZoomControlsEnabled = true
+//
+//            // Get last known location
+//            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+//            fusedLocationProviderClient.lastLocation
+//                .addOnSuccessListener { location ->
+//                    if (location != null) {
+//                        // Move the camera to the user's last known location
+//                        val latLng = LatLng(location.latitude, location.longitude)
+//                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+//                    }
+//                }
+//                .addOnFailureListener { exception ->
+//                    Log.e("MapActivity", "Error getting last known location: ${exception.message}")
+//                }
+//        }
+//    }
 
 
     // Method to perform geocoding
@@ -257,13 +300,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     }
 
     // Method to perform reverse geocoding
-    private fun performReverseGeocoding(latLng: LatLng) {
+    private fun performReverseGeocoding(latLng: LatLng): String {
+        var fullAddress = ""
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             if (addresses != null) {
                 if (addresses.isNotEmpty()) {
                     val address = addresses[0]
-                    val fullAddress = address.getAddressLine(0)
+                    fullAddress = address.getAddressLine(0)
                     Log.d("Reverse Geocoding", "Address: $fullAddress")
                 } else {
                     Log.e("Reverse Geocoding", "No address found for the given coordinates")
@@ -272,14 +316,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         } catch (e: IOException) {
             Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
         }
+        return fullAddress
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun getEventsByLocation(location: LatLng, callback: (MutableList<Event>) -> Unit) {
+    private fun getEventsByLocation(city: String) {
         val apiKey = resources.getString(R.string.serpapi_key)
-        val latitude = location.latitude
-        val longitude = location.longitude
-        val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+Long+Beach&hl=en&gl=us&api_key=${apiKey}"
+        val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+${city}&hl=en&gl=us&api_key=${apiKey}"
+        Log.d("SerpAPI", "Query: $url")
 
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -291,10 +335,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
                     val reader = BufferedReader(InputStreamReader(inputStream))
                     val response = reader.readText()
 
-                    val eventsList = handleEvents(response)
-                    GlobalScope.launch(Dispatchers.Main) {
-                        callback(eventsList)
-                    }
+                    handleEvents(response)
                 } else {
                     Log.e("SerpAPI", "HTTP error: $responseCode")
                 }
@@ -304,14 +345,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun handleEvents(response: String): MutableList<Event> {
+    private fun handleEvents(response: String) {
         val jsonResponse = JSONObject(response)
         val eventsArray = jsonResponse.getJSONArray("events_results")
-        val eventsList = mutableListOf<Event>()
 
         for (i in 0 until eventsArray.length()) {
             val eventObject = eventsArray.getJSONObject(i)
             val title = eventObject.getString("title")
+            Log.d("SerpAPI", "Event found: ${title}")
             val startDate = eventObject.getJSONObject("date").getString("start_date")
             val whenInfo = eventObject.getJSONObject("date").getString("when")
             val addressArray = eventObject.getJSONArray("address")
@@ -322,10 +363,86 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
             val link = eventObject.getString("link")
             val description = eventObject.getString("description")
             val thumbnail = eventObject.getString("thumbnail")
-            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail)
-            eventsList.add(event)
+            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail, 0)
+            uploadEvent(event)
         }
-        return eventsList
+    }
+
+    private fun uploadEvent(event: Event) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        // Query to check if the event already exists
+        databaseReference.orderByChild("title").equalTo(event.title).addListenerForSingleValueEvent(object :
+            ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Event already exists, do not add it again
+                    Log.d("Add Event", "Event already exists in database")
+                } else {
+                    // Event does not exist, add it
+                    val eventRef = databaseReference.push()
+                    eventRef.setValue(event)
+                        .addOnSuccessListener {
+                            Log.d("Add Event", "Event added successfully with key: ${eventRef.key}")
+                        }
+                        .addOnFailureListener {
+                            Log.d("Add Event", "Could not add event")
+                        }
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.d("Add Event", "Database query cancelled: ${databaseError.message}")
+            }
+        })
+    }
+
+    private fun getUserLocation(callback: (String) -> Unit) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val database = Firebase.database
+        val userRef = userId?.let { database.getReference("user_locations").child(it).child("l") }
+
+        userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val locationList: List<Any>? = dataSnapshot.value as? List<Any>
+                if (locationList != null && locationList.size >= 2) {
+                    val latitude = (locationList[0] as? Double) ?: return
+                    val longitude = (locationList[1] as? Double) ?: return
+                    val userLocation = performReverseGeocoding(LatLng(latitude, longitude))
+                    callback(userLocation) // Invoke the callback with the retrieved location
+                } else {
+                    Log.d("Location", "Location data not found or incomplete.")
+                    callback("") // Invoke the callback with an empty string if location data is incomplete
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("Location", "Failed to read location.", databaseError.toException())
+                callback("") // Invoke the callback with an empty string in case of failure
+            }
+        })
+    }
+
+    private fun fetchEventsFromDatabase(callback: (MutableList<Event>) -> Unit) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val eventsList = mutableListOf<Event>()
+                for (snapshot in dataSnapshot.children) {
+                    val event = snapshot.getValue(Event::class.java)
+                    event?.let {
+                        eventsList.add(it)
+                    }
+                }
+                callback(eventsList)
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("FetchEvents", "Failed to fetch events from database: ${databaseError.message}")
+                callback(mutableListOf()) // Pass an empty list in case of failure
+            }
+        })
     }
 
 

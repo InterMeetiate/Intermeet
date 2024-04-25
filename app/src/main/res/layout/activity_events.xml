@@ -11,8 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!-- Your existing UI elements -->
-
     <View
         android:id="@+id/topBar"
         android:layout_width="match_parent"

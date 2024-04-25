@@ -105,16 +105,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
 
         // Set up click listener for events menu bar button
         eventsMenuBarButton.setOnClickListener {
-            // Handle menu bar button click here
-            // Example: Perform geocoding and reverse geocoding
-            //performGeocoding("1600 Amphitheatre Parkway, Mountain View, CA")
-            //performReverseGeocoding(LatLng(33.7838, -118.1141))
-            getEventsByLocation() { eventsList ->
-                for(event in eventsList) {
-                    Log.d("TESTING EVENTS", "Title ${event.title}")
+            getUserLocation { userLocation ->
+                Log.d("eventsMenuBar", "Did we get location: $userLocation")
+                val addressComponents = userLocation.split(", ")
+                val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
+                Log.d("eventsMenuBar", "Searching events in $city")
+                getEventsByLocation(city) { eventsList ->
+                    for (event in eventsList) {
+                        Log.d("TESTING EVENTS", "Title ${event.title}")
+                    }
+                    val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                    eventList.adapter = eventAdapter
                 }
-                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
-                eventList.adapter = eventAdapter
             }
         }
 
@@ -320,13 +322,8 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun getEventsByLocation(callback: (MutableList<Event>) -> Unit) {
+    private fun getEventsByLocation(city: String, callback: (MutableList<Event>) -> Unit) {
         val apiKey = resources.getString(R.string.serpapi_key)
-        val userLocation = getUserLocation()
-        Log.d("getEventsByLocation()", "Did we get location: ${userLocation}")
-        val addressComponents = userLocation.split(", ")
-        val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
-        Log.d("getEventsByLocation()", "Seaching events in ${city}")
         val url = "https://serpapi.com/search.json?engine=google_events&q=Events+in+${city}&hl=en&gl=us&api_key=${apiKey}"
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -407,34 +404,30 @@ class EventsFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-    private fun getUserLocation(): String {
-        // Grab the current user's location
-        var userLocation = ""
+    private fun getUserLocation(callback: (String) -> Unit) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val database = Firebase.database
         val userRef = userId?.let { database.getReference("user_locations").child(it).child("l") }
 
         userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // This method is called once with the initial value and again whenever data at this location is updated.
                 val locationList: List<Any>? = dataSnapshot.value as? List<Any>
-                // Ensure locationList is not null and has at least 2 elements
                 if (locationList != null && locationList.size >= 2) {
                     val latitude = (locationList[0] as? Double) ?: return
                     val longitude = (locationList[1] as? Double) ?: return
-                    userLocation = performReverseGeocoding(LatLng(latitude, longitude))
-                    Log.d("gerUserLocation()", "Current Location: ${userLocation}", )
+                    val userLocation = performReverseGeocoding(LatLng(latitude, longitude))
+                    callback(userLocation) // Invoke the callback with the retrieved location
                 } else {
                     Log.d("Location", "Location data not found or incomplete.")
+                    callback("") // Invoke the callback with an empty string if location data is incomplete
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // Getting data failed, log a message
                 Log.w("Location", "Failed to read location.", databaseError.toException())
+                callback("") // Invoke the callback with an empty string in case of failure
             }
         })
-        return userLocation
     }
 
 

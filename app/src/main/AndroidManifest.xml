@@ -115,6 +115,10 @@
             android:name=".EditProfile"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".TipCenter"
+            android:exported="false">
+        </activity>
 
     </application>
 

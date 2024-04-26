@@ -41,6 +41,26 @@
         android:background="@drawable/baseline_menu_24"
         android:contentDescription="@string/events" />
 
+    <Button
+        android:id="@+id/events_mapIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="35dp"
+        android:background="@drawable/map_icon"
+        android:contentDescription="@string/events" />
+
+    <Button
+        android:id="@+id/myLocation_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="35dp"
+        android:background="@drawable/my_location"
+        android:contentDescription="@string/events" />
+
     <FrameLayout
         android:id="@+id/eventSheet"
         android:layout_width="match_parent"

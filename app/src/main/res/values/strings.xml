@@ -334,4 +334,11 @@
     <string name="prompt_title">Prompt Title</string>
     <string name="basic_info">Basic Info</string>
     <string name="profile_setting">Profile Setting</string>
+    <string name="tip_matching">Keep matching with others to have more a a chance to meet others!</string>
+    <string name="matching">"Matching "</string>
+    <string name="convo">Conversation\n</string>
+    <string name="tip_prompts">Share what makes you interesting with clever answers!</string>
+    <string name="tip_photo">Show off your looks with the right photos!</string>
+    <string name="tip_message">Know the right words to say to others!</string>
+    <string name="photo">Photos</string>
 </resources>

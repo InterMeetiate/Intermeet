@@ -342,4 +342,13 @@
     <string name="tip_photo">Show off your looks with the right photos!</string>
     <string name="tip_message">Know the right words to say to others!</string>
     <string name="photo">Photos</string>
+    <string name="support">Support</string>
+    <string name="whatIntermeet">What is Intermeet?</string>
+    <string name="missionStatment">
+        Intermeet is a place to meet and engage with others like you. Here, we initiate the meet and give you the tools to make a hangout or date. Whether that meet is to engage in a friendship or relationship, it all depends on you both.
+    </string>
+    <string name="AccountSettings">My Account Settings</string>
+
+    <string name="tuneProfile">Tuning My Profile</string>
+    <string name="howToEditProfile">How do I edit my profile?</string>
 </resources>

@@ -108,6 +108,11 @@ class ProfileFragment : Fragment() {
             val intent = Intent(activity, TipCenter::class.java)
             startActivity(intent)
         }
+        val helpCenterButton : Button = view.findViewById(R.id.helpCeter)
+        helpCenterButton.setOnClickListener {
+            val intent = Intent(activity, HelpCenterActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 

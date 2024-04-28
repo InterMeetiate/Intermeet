@@ -119,6 +119,10 @@
             android:name=".TipCenter"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".HelpCenterActivity"
+            android:exported="false">
+        </activity>
 
     </application>
 

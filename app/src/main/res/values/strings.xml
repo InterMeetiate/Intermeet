@@ -326,4 +326,50 @@
     <string name="editProfile">Edit Profile</string>
     <string name="tipCenter">Tip Center</string>
     <string name="helpCenter">Help Center</string>
+    <string name="search">Search...</string>
+    <string name="handle_bar" />
+    <string name="search_maps" />
+    <string name="no_users">"You've seen all the users in your area."</string>
+    <string name="refresh">Refresh</string>
+    <string name="remove_photo">Remove Photo</string>
+    <string name="EditProfileTitle">Lets change your profile a bit!</string>
+    <string name="about_me_title">About Me</string>
+    <string name="prompt_title">Prompt Title</string>
+    <string name="basic_info">Basic Info</string>
+    <string name="profile_setting">Profile Setting</string>
+    <string name="tip_matching">Keep matching with others to have more a a chance to meet others!</string>
+    <string name="matching">"Matching "</string>
+    <string name="convo">Conversation\n</string>
+    <string name="tip_prompts">Share what makes you interesting with clever answers!</string>
+    <string name="tip_photo">Show off your looks with the right photos!</string>
+    <string name="tip_message">Know the right words to say to others!</string>
+    <string name="photo">Photos</string>
+    <string name="support">Support</string>
+    <string name="whatIntermeet">What is Intermeet?</string>
+    <string name="missionStatment">
+        Intermeet is a place to meet and engage with others like you. Here, we initiate the meet and give you the tools to make a hangout or date. Whether that meet is to engage in a friendship or relationship, it all depends on you both.
+    </string>
+    <string name="AccountSettings">My Account Settings</string>
+
+    <string name="tuneProfile">Tuning My Profile</string>
+    <string name="howToEditProfile">How do I edit my profile?</string>
+    <string name="editProfileAnswer">You can edit your profile in the Profile page when you click the button "Edit Profile"</string>
+    <string name="minAgeQuestion">What is the minimum age requirement to use Intermeet?</string>
+    <string name="minAgeAnswer">You must be at least 18 years old to create a Hinge profile</string>
+    <string name="IntermeetAvailable">Where is Intermeet available?</string>
+    <string name="IntermeetAnswer">For now, Intermeet is available on Android. In future, we will make Intermeet available on IOS and online</string>
+    <string name="what_is_intermeet">What is Intermeet?</string>
+    <string name="about_us">About Us</string>
+    <string name="myAccountSet">My Account Settings</string>
+    <string name="cantLogin">Why can\'t I login?</string>
+    <string name="loginAnswer1">If you are having trouble trying to login there are two reasons:</string>
+    <string name="loginAnswer2">1. You inputted an incorrect email\n2. You inputted an incorrect password</string>
+    <string name="loginAnswer3">If you are having problem remembering your password, click on the "Forget Password" button to reset your password.</string>
+    <string name="changeEmailPhonePassNotifSub">How do I change my email/phone number/password/notification/subscription?</string>
+    <string name="changechangeEmailPhonePassAnswerNotifSub">You can change your email/phone number/password/notification/subscription in the settings in the designated buttons.</string>
+    <string name="PauseDeleteLogoutAccount">How Do I Pause/Delete/Logout?</string>
+    <string name="PauseDeleteLogoutAnswer">You can Pause/Delete/Logout of your account in the bottom of the Setting Page.</string>
+    <string name="tunePreference">How can I change my preferences?</string>
+    <string name="tunrPreferenceAns">You can change your preferences in the Profile page in the button "Preference" button</string>
+
 </resources>

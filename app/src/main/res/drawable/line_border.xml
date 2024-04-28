@@ -1,0 +1,17 @@
+<!-- res/drawable/top_border.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Bottom transparent layer to maintain the background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <!-- Top border layer -->
+    <item android:top="-2dp" android:right="-2dp" android:left="-2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF000000" /> <!-- Change the color as needed -->
+            <size android:height="1dp" />
+        </shape>
+    </item>
+</layer-list>
+

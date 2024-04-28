@@ -351,4 +351,23 @@
 
     <string name="tuneProfile">Tuning My Profile</string>
     <string name="howToEditProfile">How do I edit my profile?</string>
+    <string name="editProfileAnswer">You can edit your profile in the Profile page when you click the button "Edit Profile"</string>
+    <string name="minAgeQuestion">What is the minimum age requirement to use Intermeet?</string>
+    <string name="minAgeAnswer">You must be at least 18 years old to create a Hinge profile</string>
+    <string name="IntermeetAvailable">Where is Intermeet available?</string>
+    <string name="IntermeetAnswer">For now, Intermeet is available on Android. In future, we will make Intermeet available on IOS and online</string>
+    <string name="what_is_intermeet">What is Intermeet?</string>
+    <string name="about_us">About Us</string>
+    <string name="myAccountSet">My Account Settings</string>
+    <string name="cantLogin">Why can\'t I login?</string>
+    <string name="loginAnswer1">If you are having trouble trying to login there are two reasons:</string>
+    <string name="loginAnswer2">1. You inputted an incorrect email\n2. You inputted an incorrect password</string>
+    <string name="loginAnswer3">If you are having problem remembering your password, click on the "Forget Password" button to reset your password.</string>
+    <string name="changeEmailPhonePassNotifSub">How do I change my email/phone number/password/notification/subscription?</string>
+    <string name="changechangeEmailPhonePassAnswerNotifSub">You can change your email/phone number/password/notification/subscription in the settings in the designated buttons.</string>
+    <string name="PauseDeleteLogoutAccount">How Do I Pause/Delete/Logout?</string>
+    <string name="PauseDeleteLogoutAnswer">You can Pause/Delete/Logout of your account in the bottom of the Setting Page.</string>
+    <string name="tunePreference">How can I change my preferences?</string>
+    <string name="tunrPreferenceAns">You can change your preferences in the Profile page in the button "Preference" button</string>
+
 </resources>

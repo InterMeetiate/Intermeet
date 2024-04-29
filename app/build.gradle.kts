@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 26
+        minSdk = 21
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -95,5 +95,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.firebase:geofire-android:3.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
 }
 

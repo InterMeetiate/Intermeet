@@ -53,8 +53,13 @@ class ProfileActivity : AppCompatActivity() {
                     val age = calculateAge(birthday)
 
                     tvUserFirstName.text = "$firstName, $age"
+
+
                     }
                 }
+
+
+
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Log any errors

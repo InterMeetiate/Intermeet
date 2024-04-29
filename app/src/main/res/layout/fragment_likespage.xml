@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--XMl Layout for RecyclerView-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/frame_2"
+        android:layout_width="177dp"
+        android:layout_height="38dp"
+        android:background="@drawable/discover_bar"
+        android:clipToOutline="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/discover"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.01999998" />
+
+    <View
+        android:id="@+id/return_button"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:background="@drawable/resource_return"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/frame_2"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.01999998" />
+
+    <TextView
+        android:id="@+id/likes_page"
+        android:layout_width="162dp"
+        android:layout_height="55dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/likes_page"
+        android:textAppearance="@style/likes_page"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.07"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.100000024" />
+
+    <TextView
+        android:id="@+id/see_who_lik"
+        android:layout_width="178dp"
+        android:layout_height="45dp"
+        android:gravity="center_horizontal|top"
+        android:text="@string/see_who_lik"
+        android:textAppearance="@style/see_who_lik"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.09"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.16000003" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/idCourseRV"
+        android:layout_width="397dp"
+        android:layout_height="681dp"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="7dp"
+        tools:layout_editor_absoluteY="142dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

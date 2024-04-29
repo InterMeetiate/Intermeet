@@ -1,12 +1,14 @@
 
 //import androidx.core.content.ContextCompat.startActivity
 //import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.NonNull
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -53,6 +55,7 @@ class RecyclerViewAdapter(
         //val databaseImage = FirebaseDatabase.getInstance().getReference("users/$recyclerData")
 
         databaseReference.addValueEventListener(object : ValueEventListener{
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 val userData = snapshot.getValue(UserData::class.java)
 
@@ -98,6 +101,7 @@ class RecyclerViewAdapter(
         return courseDataArrayList.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateAge(birthday: String?): Int {
         // Implement logic to calculate age based on birthday
         // Example: Parse birthday string, calculate age based on current date, and return age

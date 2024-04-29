@@ -33,15 +33,18 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
-                R.id.navigation_worth -> {
-                    val likesFragment = LikesPageFragment.newInstance() // Assuming your LikesFragment also has a newInstance method
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, likesFragment)
                 // set navigation for events fragment
                 R.id.navigation_events -> {
                     val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, eventsFragment)
+                        .commit()
+                    true
+                }
+                R.id.navigation_worth -> {
+                    val likesFragment = LikesPageFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, likesFragment)
                         .commit()
                     true
                 }

@@ -35,9 +35,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp">
+        android:layout_marginEnd="20dp"/>
 
-    </RelativeLayout>
+    <ListView
+        android:id="@+id/eventList"
+        android:layout_width="420dp"
+        android:layout_height="547dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="176dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <EditText
         android:id="@+id/search_edit_text"
@@ -47,7 +53,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="29dp"
         android:layout_marginTop="128dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="561dp"
@@ -55,11 +61,11 @@
         android:hint="@string/search"
         android:importantForAutofill="no"
         android:inputType="textAutoCorrect"
-        android:paddingStart="15dp"
-        android:paddingTop="50dp"
-        android:paddingEnd="50dp"
-        android:paddingBottom="5dp"
+        android:padding="10dp"
         android:textColor="@android:color/black"
-        android:textColorHint="@android:color/black"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
+
+
+
+</RelativeLayout>

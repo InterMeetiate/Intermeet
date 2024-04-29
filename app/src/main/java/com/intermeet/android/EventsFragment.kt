@@ -1,11 +1,10 @@
 import android.Manifest
 import android.app.Dialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
@@ -21,7 +20,6 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -35,7 +33,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -65,7 +65,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
-import org.w3c.dom.Text
 
 class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -83,6 +82,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
+    private var userMarker: Marker? = null
     private var selectedPlaceText: String? = null
 
     override fun onCreateView(
@@ -269,6 +269,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     // When the map is done initializing move the camera to the user's current location
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
+        fetchEventsFromDatabase { eventsList ->
+            addMarkersToMap(eventsList)
+        }
 
         // Initialize fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -337,6 +340,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             Log.e("Reverse Geocoding", "Reverse geocoding failed: ${e.message}")
         }
         return fullAddress
+    }
+
+    private fun addMarkersToMap(events: List<Event>) {
+        for (event in events) {
+            val fullAddress = event.addressList.joinToString(", ")
+            val coords = performGeocoding(fullAddress)
+            Log.d("addMarkersToMap()", "${event.title} added at ${coords}")
+
+            googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -469,12 +482,30 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Update marker with new location
         Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
         val latLng = LatLng(location.latitude, location.longitude)
-        googleMap.clear() // Clear previous marker
-        googleMap.addMarker(MarkerOptions().position(latLng).title("User"))
+
+        // Remove the previous user marker if it exists
+        userMarker?.remove()
+
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.user_icon)
+
+        // Define the desired width and height for the resized image
+        val width = 50 // Specify the desired width in pixels
+        val height = 50 // Specify the desired height in pixels
+
+        // Resize the image
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+
+        // Convert the resized bitmap to a BitmapDescriptor
+        val customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
+
+        // Add a new marker for the updated user location with the resized custom icon
+        userMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("User").icon(customMarkerIcon))
+
         if(!cameraMovedOnce) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
         }
     }
+
 
     // Method to toggle between map types
     private fun toggleMapType() {

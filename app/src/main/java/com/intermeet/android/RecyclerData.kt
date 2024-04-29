@@ -1,1 +1,0 @@
-class RecyclerData(var title: String, var imgid: Int)

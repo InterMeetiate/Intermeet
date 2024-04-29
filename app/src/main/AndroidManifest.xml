@@ -43,9 +43,6 @@
             android:name=".SchoolActivity"
             android:exported="false" />
         <activity
-            android:name=".DiscoverActivity"
-            android:exported="false" />
-        <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity

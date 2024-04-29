@@ -310,8 +310,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     val longitude = location.longitude
                     coords = LatLng(latitude, longitude)
                     Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
-                    val message = "Latitude: $latitude, Longitude: $longitude"
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("Geocoding", "Address not found")
                 }
@@ -479,32 +477,36 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        // Update marker with new location
-        Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
-        val latLng = LatLng(location.latitude, location.longitude)
+        // Check if the Fragment is attached to a context
+        if (isAdded) {
+            // Fragment is attached, safe to access resources
+            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+            val latLng = LatLng(location.latitude, location.longitude)
 
-        // Remove the previous user marker if it exists
-        userMarker?.remove()
+            // Remove the previous user marker if it exists
+            userMarker?.remove()
 
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.user_icon)
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.user_icon)
 
-        // Define the desired width and height for the resized image
-        val width = 50 // Specify the desired width in pixels
-        val height = 50 // Specify the desired height in pixels
+            // Define the desired width and height for the resized image
+            val width = 50 // Specify the desired width in pixels
+            val height = 50 // Specify the desired height in pixels
 
-        // Resize the image
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+            // Resize the image
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
 
-        // Convert the resized bitmap to a BitmapDescriptor
-        val customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
+            // Convert the resized bitmap to a BitmapDescriptor
+            val customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
 
-        // Add a new marker for the updated user location with the resized custom icon
-        userMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("User").icon(customMarkerIcon))
+            // Add a new marker for the updated user location with the resized custom icon
+            userMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("User").icon(customMarkerIcon))
 
-        if(!cameraMovedOnce) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            if(!cameraMovedOnce) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            }
         }
     }
+
 
 
     // Method to toggle between map types

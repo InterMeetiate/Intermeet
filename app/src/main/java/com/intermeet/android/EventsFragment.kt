@@ -1,4 +1,5 @@
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -86,6 +87,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var selectedPlaceText: String? = null
     private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
+    private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
     interface PermissionCallback {
         fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
@@ -153,35 +155,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
-            Toast.makeText(requireContext(), "Clicked on event: ${event.title}", Toast.LENGTH_SHORT).show()
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.event_details_card)
-
-            val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
-            Glide.with(requireContext())
-                .load(event.thumbnail)
-                .into(eventCardImage)
-
-            val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
-            eventCardTitle.text = event.title
-
-            val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
-            eventCardDate.text = event.whenInfo.dropLast(4)
-
-            val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
-            eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
-
-            val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
-            eventCardDescription.text = event.description
-
-            // Hard coded to 1 person going until we figure out how to keep track of that
-            val amountGoing = 1
-            val goingText = dialog.findViewById<TextView>(R.id.going_text)
-            goingText.text = "Going (${amountGoing})"
-
-            dialog.show()
+            val eventMarker = eventMarkersMap[event.title]
+            eventMarker?.let { marker ->
+                // Move the camera to the position of the marker
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+            }
         }
-
 
         // Initialize and set up the map
         mapView.onCreate(savedInstanceState)
@@ -273,9 +252,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     // When the map is done initializing move the camera to the user's current location
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
         googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+
+        googleMap.setOnMarkerClickListener { marker ->
+            // Open the event card when a marker is clicked
+            openEventCard(marker)
+            true // Return true to consume the event and prevent the default behavior (opening the info window)
+        }
 
         fetchEventsFromDatabase { eventsList ->
             addMarkersToMap(eventsList)
@@ -305,6 +291,47 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
         }
+    }
+
+    private fun openEventCard(marker: Marker) {
+        Log.d("MarkerClick", "Marker clicked: ${marker.title}")
+        val event = marker.tag as? Event
+        event?.let {
+            // Move the camera to the position of the marker
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+
+            // Show the event card for the clicked marker
+            showEventCard(event)
+        }
+    }
+
+    private fun showEventCard(event: Event) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.event_details_card)
+
+        val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
+        Glide.with(requireContext())
+            .load(event.thumbnail)
+            .into(eventCardImage)
+
+        val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
+        eventCardTitle.text = event.title
+
+        val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
+        eventCardDate.text = event.whenInfo.dropLast(4)
+
+        val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
+        eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
+
+        val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
+        eventCardDescription.text = event.description
+
+        // Hard coded to 1 person going until we figure out how to keep track of that
+        val amountGoing = 1
+        val goingText = dialog.findViewById<TextView>(R.id.going_text)
+        goingText.text = "Going (${amountGoing})"
+
+        dialog.show()
     }
 
     private fun startLocationUpdates() {
@@ -386,7 +413,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             val coords = performGeocoding(fullAddress)
             Log.d("addMarkersToMap()", "${event.title} added at ${coords}")
 
-            googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
+            // Add marker to the map and store the title-marker pair in the map
+            val marker = googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
+            if (marker != null) {
+                marker.tag = event
+            } // Set the event object as the tag for the marker
+            eventMarkersMap[event.title] = marker
         }
     }
 

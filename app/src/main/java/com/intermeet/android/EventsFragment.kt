@@ -1,4 +1,5 @@
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -18,6 +19,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -65,6 +67,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlin.math.*
 
 class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -78,12 +81,23 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var placesClient: PlacesClient
     private lateinit var mapButton: Button
     private lateinit var myLocation: Button
+    private lateinit var debugButton: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
+    private var eventsList: MutableList<Event> = mutableListOf()
     private var userMarker: Marker? = null
     private var selectedPlaceText: String? = null
+    private var locationGiven: Boolean = false
+    private var permissionCallback: PermissionCallback? = null
+    private val EARTH_RADIUS_KM = 6371.0
+    private lateinit var currentCoords: LatLng
+    private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
+
+    interface PermissionCallback {
+        fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,6 +131,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        debugButton = view.findViewById(R.id.events_debug)
         searchBar = view.findViewById(R.id.search_edit_text)
         eventList = view.findViewById(R.id.eventList)
 
@@ -129,14 +144,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         searchBar.threshold = 1 // Start autocomplete after 1 character
 
         // Fill up the event bottom sheet with events from the database
-        fetchEventsFromDatabase { eventsList ->
+        fetchEventsFromDatabase { fetchedEventsList ->
+            eventsList = fetchedEventsList
             val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
             eventList.adapter = eventAdapter
         }
 
         // Fills the database when events based on the currently logged in user's current location
         // Temporarily set to the top right menu bar in the events page
-        eventsMenuBarButton.setOnClickListener {
+        debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
@@ -144,38 +160,19 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
         }
 
+        eventsMenuBarButton.setOnClickListener {
+            showDropdownMenu()
+        }
+
         // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
-            Toast.makeText(requireContext(), "Clicked on event: ${event.title}", Toast.LENGTH_SHORT).show()
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.event_details_card)
-
-            val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
-            Glide.with(requireContext())
-                .load(event.thumbnail)
-                .into(eventCardImage)
-
-            val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
-            eventCardTitle.text = event.title
-
-            val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
-            eventCardDate.text = event.whenInfo.dropLast(4)
-
-            val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
-            eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
-
-            val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
-            eventCardDescription.text = event.description
-
-            // Hard coded to 1 person going until we figure out how to keep track of that
-            val amountGoing = 1
-            val goingText = dialog.findViewById<TextView>(R.id.going_text)
-            goingText.text = "Going (${amountGoing})"
-
-            dialog.show()
+            val eventMarker = eventMarkersMap[event.title]
+            eventMarker?.let { marker ->
+                // Move the camera to the position of the marker
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+            }
         }
-
 
         // Initialize and set up the map
         mapView.onCreate(savedInstanceState)
@@ -241,6 +238,50 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
     }
 
+    private fun showDropdownMenu() {
+        val popupMenu = PopupMenu(requireContext(), eventsMenuBarButton)
+        popupMenu.menuInflater.inflate(R.menu.events_dropdown, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.sort_by_name -> {
+                    // Sort events by name
+                    sortEventsByName(eventsList)
+                    true
+                }
+                R.id.sort_by_distance -> {
+                    // Sort events by distance
+                    sortEventsByDistance(currentCoords, eventsList)
+                    true
+                }
+                R.id.sort_by_date -> {
+                    // Sort events by date
+                    sortEventsByDate(eventsList)
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
+    private fun sortEventsByName(eventsList: MutableList<Event>) {
+        // Sort events by name
+        eventList.adapter = EventSheetAdapter(requireContext(), eventsList.sortedBy { it.title })
+    }
+
+    private fun sortEventsByDistance(userLocation: LatLng, eventsList: MutableList<Event>) {
+        // Sort events by distance
+        eventList.adapter = EventSheetAdapter(
+            requireContext(),
+            eventsList.sortedBy {/* */ it.title}
+        )
+    }
+
+    private fun sortEventsByDate(eventsList: MutableList<Event>) {
+        // Sort events by date
+        eventList.adapter = EventSheetAdapter(requireContext(), eventsList.sortedBy { it.startDate })
+    }
+
     private fun fetchPlaceDetails(placeId: String?) {
         if (placeId != null) {
             val placeFields = listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG)
@@ -267,8 +308,17 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     // When the map is done initializing move the camera to the user's current location
+    @SuppressLint("PotentialBehaviorOverride")
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
+        googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+
+        googleMap.setOnMarkerClickListener { marker ->
+            // Open the event card when a marker is clicked
+            openEventCard(marker)
+            true // Return true to consume the event and prevent the default behavior (opening the info window)
+        }
+
         fetchEventsFromDatabase { eventsList ->
             addMarkersToMap(eventsList)
         }
@@ -276,7 +326,100 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Initialize fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        // Request location updates
+        // Check if permission is granted
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, proceed with location updates
+            startLocationUpdates()
+        } else {
+            // Permission not granted, request permission
+            permissionCallback = object : PermissionCallback {
+                override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+                    if (requestCode == REQUEST_LOCATION_PERMISSION) {
+                        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            // Permission granted, proceed with location updates
+                            startLocationUpdates()
+                        } else {
+                            // Permission denied, handle accordingly
+                            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
+        }
+    }
+
+    private fun openEventCard(marker: Marker) {
+        Log.d("MarkerClick", "Marker clicked: ${marker.title}")
+        val event = marker.tag as? Event
+        event?.let {
+            // Move the camera to the position of the marker
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+
+            // Show the event card for the clicked marker
+            showEventCard(event)
+        }
+    }
+
+    private fun showEventCard(event: Event) {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.event_details_card)
+
+        val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
+        Glide.with(requireContext())
+            .load(event.thumbnail)
+            .into(eventCardImage)
+
+        val eventCardTitle = dialog.findViewById<TextView>(R.id.event_title)
+        eventCardTitle.text = event.title
+
+        val eventCardDate = dialog.findViewById<TextView>(R.id.event_date)
+        eventCardDate.text = event.whenInfo.dropLast(4)
+
+        val eventCardAddress = dialog.findViewById<TextView>(R.id.event_address)
+        eventCardAddress.text = "${event.addressList[0]}, ${event.addressList[1]}"
+
+        val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
+        eventCardDescription.text = event.description
+
+        val eventCardDistance = dialog.findViewById<TextView>(R.id.event_distance)
+        val fullAddress = event.addressList.joinToString(", ")
+        val coords = performGeocoding(fullAddress)
+        eventCardDistance.text = "${calculateDistance(currentCoords, coords).toString()} mi"
+
+        // Hard coded to 1 person going until we figure out how to keep track of that
+        val amountGoing = 1
+        val goingText = dialog.findViewById<TextView>(R.id.going_text)
+        goingText.text = "Going (${amountGoing})"
+
+        dialog.show()
+    }
+
+    private fun Location.distanceToInMiles(dest: Location): Int {
+        val earthRadiusMiles = 3958.8 // Earth radius in miles
+        val deltaLatitude = Math.toRadians(dest.latitude - this.latitude)
+        val deltaLongitude = Math.toRadians(dest.longitude - this.longitude)
+        val a = sin(deltaLatitude / 2) * sin(deltaLatitude / 2) +
+                cos(Math.toRadians(this.latitude)) * cos(Math.toRadians(dest.latitude)) *
+                sin(deltaLongitude / 2) * sin(deltaLongitude / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        val distanceInMiles = earthRadiusMiles * c
+        return Math.round(distanceInMiles).toInt()
+    }
+
+    private fun calculateDistance(userLocation: LatLng, eventLocation: LatLng): Int {
+        val user = Location("")
+        user.latitude = userLocation.latitude
+        user.longitude = userLocation.longitude
+
+        val event = Location("")
+        event.latitude = eventLocation.latitude
+        event.longitude = eventLocation.longitude
+
+        return user.distanceToInMiles(event)
+    }
+
+    private fun startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(
                 LocationRequest.create().apply {
@@ -295,7 +438,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 },
                 Looper.getMainLooper() // Looper for handling callbacks on main thread
             )
+        } else {
+            // Handle the case when permission is not granted
+            // You can prompt the user to grant permission again, show a message, or take any other appropriate action
+            Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCallback?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     // Method to perform geocoding
@@ -310,8 +462,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     val longitude = location.longitude
                     coords = LatLng(latitude, longitude)
                     Log.d("Geocoding", "Latitude: $latitude, Longitude: $longitude")
-                    val message = "Latitude: $latitude, Longitude: $longitude"
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e("Geocoding", "Address not found")
                 }
@@ -348,7 +498,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             val coords = performGeocoding(fullAddress)
             Log.d("addMarkersToMap()", "${event.title} added at ${coords}")
 
-            googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
+            // Add marker to the map and store the title-marker pair in the map
+            val marker = googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
+            if (marker != null) {
+                marker.tag = event
+            } // Set the event object as the tag for the marker
+            eventMarkersMap[event.title] = marker
         }
     }
 
@@ -479,43 +634,48 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        // Update marker with new location
-        Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
-        val latLng = LatLng(location.latitude, location.longitude)
+        // Check if the Fragment is attached to a context
+        if (isAdded) {
+            // Fragment is attached, safe to access resources
+            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+            currentCoords = LatLng(location.latitude, location.longitude)
+            val latLng = LatLng(location.latitude, location.longitude)
 
-        // Remove the previous user marker if it exists
-        userMarker?.remove()
+            // Remove the previous user marker if it exists
+            userMarker?.remove()
 
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.user_icon)
+            val bitmap = BitmapFactory.decodeResource(resources, R.drawable.user_icon)
 
-        // Define the desired width and height for the resized image
-        val width = 50 // Specify the desired width in pixels
-        val height = 50 // Specify the desired height in pixels
+            // Define the desired width and height for the resized image
+            val width = 50 // Specify the desired width in pixels
+            val height = 50 // Specify the desired height in pixels
 
-        // Resize the image
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
+            // Resize the image
+            val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
 
-        // Convert the resized bitmap to a BitmapDescriptor
-        val customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
+            // Convert the resized bitmap to a BitmapDescriptor
+            val customMarkerIcon = BitmapDescriptorFactory.fromBitmap(resizedBitmap)
 
-        // Add a new marker for the updated user location with the resized custom icon
-        userMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("User").icon(customMarkerIcon))
+            // Add a new marker for the updated user location with the resized custom icon
+            userMarker = googleMap.addMarker(MarkerOptions().position(latLng).title("User").icon(customMarkerIcon))
 
-        if(!cameraMovedOnce) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            if(!cameraMovedOnce) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+            }
         }
     }
 
 
+
     // Method to toggle between map types
     private fun toggleMapType() {
-        if (googleMap.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+        if (googleMap.mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             // Switch to satellite view
             googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
             mapButton.text = "Switch to Normal"
         } else {
             // Switch to normal view
-            googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
             mapButton.text = "Switch to Satellite"
         }
     }

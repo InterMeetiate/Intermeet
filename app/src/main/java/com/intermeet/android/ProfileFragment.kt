@@ -68,10 +68,12 @@ class ProfileFragment : Fragment() {
 
                     // Setting profile photo if available
                     user.photoDownloadUrls?.firstOrNull()?.let { url ->
-                        Glide.with(this@ProfileFragment)
-                            .load(url)
-                            .circleCrop()
-                            .into(ivUserProfilePhoto)
+                        if (isAdded) { // Check if the fragment is currently added to an activity
+                            Glide.with(this@ProfileFragment)
+                                .load(url)
+                                .circleCrop()
+                                .into(ivUserProfilePhoto)
+                        }
                     }
                 }
             }

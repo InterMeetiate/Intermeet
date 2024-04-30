@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.*
@@ -47,14 +46,21 @@ class ProfileActivity : AppCompatActivity() {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
 
+
                 userData?.let { user ->
                     val firstName = user.firstName
                     val birthday = user.birthday
                     val age = calculateAge(birthday)
 
                     tvUserFirstName.text = "$firstName, $age"
+
+
                     }
                 }
+
+
+
+
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Log any errors

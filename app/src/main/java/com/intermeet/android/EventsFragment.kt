@@ -84,6 +84,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var cameraMovedOnce = false
     private var userMarker: Marker? = null
     private var selectedPlaceText: String? = null
+    private var locationGiven: Boolean = false
+    private var permissionCallback: PermissionCallback? = null
+
+    interface PermissionCallback {
+        fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -269,6 +275,8 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     // When the map is done initializing move the camera to the user's current location
     override fun onMapReady(gMap: GoogleMap) {
         googleMap = gMap
+        googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+
         fetchEventsFromDatabase { eventsList ->
             addMarkersToMap(eventsList)
         }
@@ -276,7 +284,30 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Initialize fusedLocationClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        // Request location updates
+        // Check if permission is granted
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, proceed with location updates
+            startLocationUpdates()
+        } else {
+            // Permission not granted, request permission
+            permissionCallback = object : PermissionCallback {
+                override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+                    if (requestCode == REQUEST_LOCATION_PERMISSION) {
+                        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            // Permission granted, proceed with location updates
+                            startLocationUpdates()
+                        } else {
+                            // Permission denied, handle accordingly
+                            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_LOCATION_PERMISSION)
+        }
+    }
+
+    private fun startLocationUpdates() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(
                 LocationRequest.create().apply {
@@ -295,7 +326,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 },
                 Looper.getMainLooper() // Looper for handling callbacks on main thread
             )
+        } else {
+            // Handle the case when permission is not granted
+            // You can prompt the user to grant permission again, show a message, or take any other appropriate action
+            Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCallback?.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     // Method to perform geocoding
@@ -511,13 +551,13 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     // Method to toggle between map types
     private fun toggleMapType() {
-        if (googleMap.mapType == GoogleMap.MAP_TYPE_NORMAL) {
+        if (googleMap.mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             // Switch to satellite view
             googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
             mapButton.text = "Switch to Normal"
         } else {
             // Switch to normal view
-            googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
             mapButton.text = "Switch to Satellite"
         }
     }

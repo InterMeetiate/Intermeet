@@ -1,5 +1,6 @@
 package com.intermeet.android
 
+import DiscoverFragment
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -257,6 +258,6 @@ class DiscoverActivity : AppCompatActivity() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = UserDetailFragment()
+        fun newInstance() = DiscoverFragment()
     }
 }

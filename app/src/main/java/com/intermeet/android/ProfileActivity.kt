@@ -1,6 +1,7 @@
 package com.intermeet.android
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
@@ -43,9 +45,11 @@ class ProfileActivity : AppCompatActivity() {
 
         // ValueEventListener to read the "firstName" data
         userNameRef.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
+
 
                 userData?.let { user ->
                     val firstName = user.firstName
@@ -53,8 +57,14 @@ class ProfileActivity : AppCompatActivity() {
                     val age = calculateAge(birthday)
 
                     tvUserFirstName.text = "$firstName, $age"
+
+
                     }
                 }
+
+
+
+
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Log any errors
@@ -91,6 +101,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateAge(birthday: String?): Int {
         // Implement logic to calculate age based on birthday
         // Example: Parse birthday string, calculate age based on current date, and return age

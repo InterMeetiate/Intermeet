@@ -256,6 +256,6 @@ class DiscoverActivity : AppCompatActivity() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = DiscoverActivity()
+        fun newInstance() = UserDetailFragment()
     }
 }

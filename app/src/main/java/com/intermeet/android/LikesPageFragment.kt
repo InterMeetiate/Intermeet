@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.intermeet.android.DiscoverActivity
-import com.intermeet.android.DiscoverFragment
+//import com.intermeet.android.DiscoverFragment
 import com.intermeet.android.R
 
 class LikesPageFragment : Fragment() {

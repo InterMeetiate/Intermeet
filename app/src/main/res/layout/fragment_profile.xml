@@ -93,7 +93,7 @@
         <Button
             android:id="@+id/tipCenter"
             android:layout_width="150dp"
-            android:layout_height="140dp"
+            android:layout_height="150dp"
             android:background="@drawable/big_rectangle"
             android:text="@string/tipCenter"
             android:textColor="@android:color/black"
@@ -107,7 +107,7 @@
         <Button
             android:id="@+id/helpCeter"
             android:layout_width="150dp"
-            android:layout_height="140dp"
+            android:layout_height="150dp"
             android:background="@drawable/big_rectangle"
             android:text="@string/helpCenter"
             android:textColor="@android:color/black"

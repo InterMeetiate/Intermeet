@@ -3,8 +3,8 @@ package com.intermeet.android
 //import LikesPageFragment
 import LikesPageFragment
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -33,7 +33,12 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_worth -> {
-                    val likesFragment = LikesPageFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
+                    val likesFragment = LikesPageFragment.newInstance() // Assuming your LikesFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, likesFragment)
+                // set navigation for events fragment
+                R.id.navigation_events -> {
+                    val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, likesFragment)
                         .commit()

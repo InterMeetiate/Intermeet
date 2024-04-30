@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,8 +11,6 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!-- Your existing UI elements -->
 
     <View
         android:id="@+id/topBar"
@@ -41,6 +40,26 @@
         android:layout_marginEnd="35dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/baseline_menu_24"
+        android:contentDescription="@string/events" />
+
+    <Button
+        android:id="@+id/events_mapIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="35dp"
+        android:background="@drawable/map_icon"
+        android:contentDescription="@string/events" />
+
+    <Button
+        android:id="@+id/myLocation_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="35dp"
+        android:background="@drawable/my_location"
         android:contentDescription="@string/events" />
 
     <FrameLayout

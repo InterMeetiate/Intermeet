@@ -23,11 +23,12 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_profile)
-        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
-        //val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val userId = "vVAMTyBYWPP6nt4KIGQ4CzNsmC33"
+        setContentView(R.layout.activity_profile)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         Log.d(TAG, "userid: $userId")
+
+
+        //val userId = "knIJTTeOHsa3ce4L84dbE7BUYQI2"
         val database = Firebase.database
 
         ivUserProfilePhoto = findViewById(R.id.ivUserProfilePhoto)
@@ -45,6 +46,7 @@ class ProfileActivity : AppCompatActivity() {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
 
+
                 userData?.let { user ->
                     val firstName = user.firstName
                     val birthday = user.birthday
@@ -55,6 +57,7 @@ class ProfileActivity : AppCompatActivity() {
 
                     }
                 }
+
 
 
 

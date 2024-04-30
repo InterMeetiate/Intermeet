@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#F5F5F5"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:title="@string/tipCenter"
+        app:titleMarginEnd="75dp"
+        app:titleMarginStart="100dp"
+        app:titleTextColor="@android:color/black" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+
+        <LinearLayout
+            android:id="@+id/parentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="177dp"
+                android:layout_height="177dp"
+                android:layout_marginStart="116dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/ask_for_help"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+
+            <!-- First dropdown tab -->
+            <TextView
+                android:id="@+id/aboutUs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/about_us"
+                android:textStyle="bold"
+
+                android:textSize="25sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/dropdownTab1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/what_is_intermeet"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/missionStatment"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Second dropdown tab -->
+            <TextView
+                android:id="@+id/dropdownTab2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/minAgeQuestion"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/minAgeAnswer"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <!-- You can add more dropdown tabs and contents following the same pattern -->
+            <TextView
+                android:id="@+id/dropdownTab3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/IntermeetAvailable"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/IntermeetAnswer"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/myAccountSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/myAccountSet"
+                android:textStyle="bold"
+                android:textSize="25sp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/dropdownTab4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cantLogin"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loginAnswer1"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loginAnswer2"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/loginAnswer3"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/dropdownTab5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/changeEmailPhonePassNotifSub"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/changechangeEmailPhonePassAnswerNotifSub"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/dropdownTab6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/PauseDeleteLogoutAccount"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/PauseDeleteLogoutAnswer"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/publicProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/tuneProfile"
+                android:textStyle="bold"
+                android:textSize="25sp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/dropdownTab7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/howToEditProfile"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/editProfileAnswer"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/dropdownTab8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/tunePreference"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:id="@+id/dropdownContent8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tunrPreferenceAns"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"/>
+
+
+                <!-- More content can be added here if necessary -->
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="1dp"
+                android:background="#FFBDBDBD"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

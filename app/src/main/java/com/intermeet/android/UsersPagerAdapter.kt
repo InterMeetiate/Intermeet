@@ -15,4 +15,8 @@ class UsersPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return UserDetailFragment.newInstance(userIds[position])
     }
+
+    fun getUserId(position: Int): String {
+        return userIds[position]
+    }
 }

@@ -23,10 +23,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/baseline_arrow_back_24"
-            app:title="@string/setting_title"
+            app:title="Test"
             app:titleMarginEnd="75dp"
             app:titleMarginStart="100dp"
             app:titleTextColor="@android:color/black" />
+        <Button
+            android:id="@+id/backToProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back to Profile"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="16dp" />
 
         <ScrollView
             android:id="@+id/scrollView"

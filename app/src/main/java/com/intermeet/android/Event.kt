@@ -8,4 +8,7 @@ data class Event(
     val link: String,
     val description: String,
     val thumbnail: String,
-)
+    var peopleGoing: Int,
+) {
+    constructor() : this("", "", "", listOf(), "", "", "", 0)
+}

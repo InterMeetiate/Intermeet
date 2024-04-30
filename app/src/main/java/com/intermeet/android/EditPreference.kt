@@ -8,9 +8,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -67,10 +69,10 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_preferences) // Sets the UI layout for this Activity.
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         userDataRepository = getUserDataRepository()
         // Linking variables with their respective view components in the layout.
-        backButton = findViewById(R.id.next_button)
+
         tvInterest = findViewById(R.id.tvInterested)
         tvInterest.setOnClickListener { showInterestedPicker() }
 
@@ -79,7 +81,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             // Create an instance of the DistanceFragment and set the listener.
             val fragment = DistanceFragment().also {
                 it.setDistanceListener(this)
-                backButton.visibility = View.GONE // Hide the back button when the fragment is shown.
+                toolbar.visibility = View.GONE // Hide the back button when the fragment is shown.
             }
 
             // Replace the current fragment/container with the DistanceFragment.
@@ -101,7 +103,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             // Create an instance of the AgeFragment and set the listener.
             val fragment = AgeFragment().also {
                 it.setAgeListener(this)
-                backButton.visibility = View.GONE // Hide the back button when the fragment is shown.
+                toolbar.visibility = View.GONE // Hide the back button when the fragment is shown.
             }
 
             // Replace the current fragment/container with the AgeFragment.
@@ -129,59 +131,26 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             loadUserPreferences()
         }
 
+
         // Setting the backButton's onClickListener to navigate to the DescriptionActivity.
-        backButton.setOnClickListener {
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+        toolbar.setNavigationOnClickListener {
 
-            val database = Firebase.database
-            val userRef = database.getReference("users").child(userId)
-
-            val userData = userDataRepository.userData ?: UserDataModel().apply {
-                religionPreference = selectedReligion
-                genderPreference = selectedInterested
-                ethnicityPreference = selectedEthnicity
-                drinkingPreference = selectedDrink
-                drugsPreference = selectedDrugs
-                politicsPreference = selectedPolitics
-                smokingPreference = selectedSmoking
-                maxDistancePreference = selectedDistance
-                minAgePreference = selectedMinAge
-                maxAgePreference = selectedMaxAge
-            }
-            val userDataMap = mapOf(
-                "religionPreference" to userData.religionPreference,
-                "genderPreference" to userData.genderPreference,
-                "ethnicityPreference" to userData.ethnicityPreference,
-                "drinkingPreference" to userData.drinkingPreference,
-                "drugsPreference" to userData.drugsPreference,
-                "politicsPreference" to userData.politicsPreference,
-                "smokingPreference" to userData.smokingPreference,
-                "maxDistancePreference" to userData.maxDistancePreference,
-                "minAgePreference" to userData.minAgePreference,
-                "maxAgePreference" to userData.maxAgePreference
-
-            )
-            // Update Firebase with the new userData
-            userRef.updateChildren(userDataMap)
-                .addOnSuccessListener {
-                    Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
-                    // Handle success, perhaps by showing a toast or navigating
-                }
-                .addOnFailureListener { e ->
-                    Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
-                    // Handle failure, perhaps by showing an error message
-                }
 
             val intent = Intent(this, MainActivity::class.java).apply {
                 // Clear all activities on top of MainActivity and bring it to the top
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
+
+
             startActivity(intent)
+
         }
     }
 
     // Method to display a picker dialog for selecting religion preference.
     private fun showReligionPicker() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
         val numberPicker = NumberPicker(this).apply {
             minValue = 0
             maxValue = religion.size - 1
@@ -195,7 +164,29 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedReligion = religion[numberPicker.value]
                 tvReligion.text = "${religion[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?:return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    religionPreference = selectedReligion
+                }
+                val userDataMap = mapOf(
+                    "religionPreference" to userData.religionPreference,
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
 
@@ -213,6 +204,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = interested
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Is there someone who you are looking for specifically?")
@@ -220,7 +212,28 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedInterested = interested[numberPicker.value]
                 tvInterest.text = "${interested[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    genderPreference = selectedInterested
+                }
+                val userDataMap = mapOf(
+                    "genderPreference" to userData.genderPreference,
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -236,6 +249,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = ethnicity
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Who are you comfortable with?")
@@ -243,7 +257,28 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedEthnicity = ethnicity[numberPicker.value]
                 tvEthnicity.text = "${ethnicity[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    ethnicityPreference = selectedEthnicity
+                }
+                val userDataMap = mapOf(
+                    "ethnicityPreference" to userData.ethnicityPreference,
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
 
@@ -260,6 +295,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = drinking
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Mind if they drink?")
@@ -267,7 +303,30 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedDrink = drinking[numberPicker.value]
                 tvDrink.text = "${drinking[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    drinkingPreference = selectedDrink
+
+                }
+                val userDataMap = mapOf(
+                    "drinkingPreference" to userData.drinkingPreference,
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -283,6 +342,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = drugs
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Care if they take anything interesting?")
@@ -290,7 +350,31 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedDrugs = drugs[numberPicker.value]
                 tvDrugs.text = "${drugs[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    drugsPreference = selectedDrugs
+
+                }
+                val userDataMap = mapOf(
+                    "drugsPreference" to userData.drugsPreference,
+
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -306,6 +390,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = smoking
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Do you mind if they smoke?")
@@ -313,7 +398,29 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedSmoking = smoking[numberPicker.value]
                 tvSmoking.text = "${smoking[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    smokingPreference = selectedSmoking
+                }
+                val userDataMap = mapOf(
+                    "smokingPreference" to userData.smokingPreference,
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -329,6 +436,7 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             displayedValues = politics
             wrapSelectorWheel = true
         }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
 
         AlertDialog.Builder(this).apply {
             setTitle("Care what side of the political spectrum they're on?")
@@ -336,7 +444,30 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
             setPositiveButton("OK") { _, _ ->
                 selectedPolitics = politics[numberPicker.value]
                 tvPolitics.text = "${politics[numberPicker.value]} >"
-                backButton.visibility = View.VISIBLE
+                toolbar.visibility = View.VISIBLE
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setPositiveButton
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    politicsPreference = selectedPolitics
+                }
+                val userDataMap = mapOf(
+                    "politicsPreference" to userData.politicsPreference,
+
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -346,9 +477,36 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
 
     // Implementation of the OnDistanceSelectedListener interface.
     override fun onDistanceSelected(distance: Int) {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
         selectedDistance = distance  // Assign the selected distance to the variable.
         tvDistance.text = getString(R.string.selected_distance, distance)  // Update the TextView to display the selected distance.
-        backButton.visibility = View.VISIBLE  // Make the back button visible again.
+        toolbar.visibility = View.VISIBLE  // Make the back button visible again.
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
+
+        val userData = userDataRepository.userData ?: UserDataModel().apply {
+            maxDistancePreference = selectedDistance
+
+        }
+        val userDataMap = mapOf(
+
+            "maxDistancePreference" to userData.maxDistancePreference,
+
+
+        )
+        // Update Firebase with the new userData
+        userRef.updateChildren(userDataMap)
+            .addOnSuccessListener {
+                Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                // Handle success, perhaps by showing a toast or navigating
+            }
+            .addOnFailureListener { e ->
+                Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                // Handle failure, perhaps by showing an error message
+            }
 
 
     }
@@ -358,7 +516,33 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
         tvAge.text = "$minAge - $maxAge years old"  // Update the TextView to display the selected age range.
         selectedMinAge = minAge  // Assign the selected minimum age to the variable.
         selectedMaxAge = maxAge  // Assign the selected maximum age to the variable.
-        backButton.visibility = View.VISIBLE  // Make the back button visible again.
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        val database = Firebase.database
+        val userRef = database.getReference("users").child(userId)
+
+        val userData = userDataRepository.userData ?: UserDataModel().apply {
+            minAgePreference = selectedMinAge
+            maxAgePreference = selectedMaxAge
+        }
+        val userDataMap = mapOf(
+            "minAgePreference" to userData.minAgePreference,
+            "maxAgePreference" to userData.maxAgePreference
+
+        )
+        // Update Firebase with the new userData
+        userRef.updateChildren(userDataMap)
+            .addOnSuccessListener {
+                Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                // Handle success, perhaps by showing a toast or navigating
+            }
+            .addOnFailureListener { e ->
+                Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                // Handle failure, perhaps by showing an error message
+            }
+        toolbar.visibility = View.VISIBLE  // Make the back button visible again.
 
 
     }
@@ -461,6 +645,30 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
                 // Here, you just get the value of "drinking"
                 selectedDistance = dataSnapshot.getValue<Int>() ?: 0
                 tvDistance.text = getString(R.string.selected_distance, selectedDistance)  // Update the TextView to display the selected distance.
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+
+                    maxDistancePreference = selectedDistance
+
+                }
+                val userDataMap = mapOf(
+                    "maxDistancePreference" to userData.maxDistancePreference,
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
 
 
             }
@@ -474,6 +682,32 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
         userMinAgeRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 selectedMinAge = dataSnapshot.getValue<Int>() ?: 0
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+
+                    minAgePreference = selectedMinAge
+
+                }
+                val userDataMap = mapOf(
+
+                    "minAgePreference" to userData.minAgePreference,
+
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
                 updateAgeTextView()
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -485,6 +719,29 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
         userMaxAgeRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 selectedMaxAge = dataSnapshot.getValue<Int>() ?: 0
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    maxAgePreference = selectedMaxAge
+                }
+                val userDataMap = mapOf(
+
+                    "maxAgePreference" to userData.maxAgePreference
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
                 updateAgeTextView()
             }
             override fun onCancelled(databaseError: DatabaseError) {
@@ -517,6 +774,30 @@ class EditPreference : AppCompatActivity(), DistanceFragment.OnDistanceSelectedL
         if (selectedMinAge != null && selectedMaxAge != null) {
             runOnUiThread {
                 tvAge.text = "$selectedMinAge - $selectedMaxAge years old"
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@runOnUiThread
+
+                val database = Firebase.database
+                val userRef = database.getReference("users").child(userId)
+
+                val userData = userDataRepository.userData ?: UserDataModel().apply {
+                    minAgePreference = selectedMinAge
+                    maxAgePreference = selectedMaxAge
+                }
+                val userDataMap = mapOf(
+                    "minAgePreference" to userData.minAgePreference,
+                    "maxAgePreference" to userData.maxAgePreference
+
+                )
+                // Update Firebase with the new userData
+                userRef.updateChildren(userDataMap)
+                    .addOnSuccessListener {
+                        Log.d("UpdateFirebase", "Successfully updated user data in Firebase.")
+                        // Handle success, perhaps by showing a toast or navigating
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("UpdateFirebase", "Failed to update user data in Firebase.", e)
+                        // Handle failure, perhaps by showing an error message
+                    }
             }
         }
     }

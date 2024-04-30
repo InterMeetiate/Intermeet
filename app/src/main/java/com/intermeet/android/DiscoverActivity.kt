@@ -129,6 +129,7 @@ class DiscoverActivity : AppCompatActivity() {
         val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId")
 
         dbRef.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(UserDataModel::class.java)
                 user?.let {

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
+import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_events -> {
                     val eventsFragment = EventsFragment.newInstance() // Assuming your EventsFragment also has a newInstance method
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, likesFragment)
+                        .replace(R.id.fragmentContainer, eventsFragment)
                         .commit()
                     true
                 }

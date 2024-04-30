@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -66,6 +67,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlin.math.*
 
 class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -79,14 +81,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var placesClient: PlacesClient
     private lateinit var mapButton: Button
     private lateinit var myLocation: Button
+    private lateinit var debugButton: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
+    private var eventsList: MutableList<Event> = mutableListOf()
     private var userMarker: Marker? = null
     private var selectedPlaceText: String? = null
     private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
+    private val EARTH_RADIUS_KM = 6371.0
+    private lateinit var currentCoords: LatLng
     private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
     interface PermissionCallback {
@@ -125,6 +131,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        debugButton = view.findViewById(R.id.events_debug)
         searchBar = view.findViewById(R.id.search_edit_text)
         eventList = view.findViewById(R.id.eventList)
 
@@ -137,19 +144,24 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         searchBar.threshold = 1 // Start autocomplete after 1 character
 
         // Fill up the event bottom sheet with events from the database
-        fetchEventsFromDatabase { eventsList ->
+        fetchEventsFromDatabase { fetchedEventsList ->
+            eventsList = fetchedEventsList
             val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
             eventList.adapter = eventAdapter
         }
 
         // Fills the database when events based on the currently logged in user's current location
         // Temporarily set to the top right menu bar in the events page
-        eventsMenuBarButton.setOnClickListener {
+        debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
                 getEventsByLocation(city)
             }
+        }
+
+        eventsMenuBarButton.setOnClickListener {
+            showDropdownMenu()
         }
 
         // Clicking any event in the bottom sheet will bring up its respective event card
@@ -224,6 +236,50 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             .addOnFailureListener { exception: Exception ->
                 Log.e("Autocomplete", "Autocomplete prediction fetch failed: $exception")
             }
+    }
+
+    private fun showDropdownMenu() {
+        val popupMenu = PopupMenu(requireContext(), eventsMenuBarButton)
+        popupMenu.menuInflater.inflate(R.menu.events_dropdown, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.sort_by_name -> {
+                    // Sort events by name
+                    sortEventsByName(eventsList)
+                    true
+                }
+                R.id.sort_by_distance -> {
+                    // Sort events by distance
+                    sortEventsByDistance(currentCoords, eventsList)
+                    true
+                }
+                R.id.sort_by_date -> {
+                    // Sort events by date
+                    sortEventsByDate(eventsList)
+                    true
+                }
+                else -> false
+            }
+        }
+        popupMenu.show()
+    }
+
+    private fun sortEventsByName(eventsList: MutableList<Event>) {
+        // Sort events by name
+        eventList.adapter = EventSheetAdapter(requireContext(), eventsList.sortedBy { it.title })
+    }
+
+    private fun sortEventsByDistance(userLocation: LatLng, eventsList: MutableList<Event>) {
+        // Sort events by distance
+        eventList.adapter = EventSheetAdapter(
+            requireContext(),
+            eventsList.sortedBy {/* */ it.title}
+        )
+    }
+
+    private fun sortEventsByDate(eventsList: MutableList<Event>) {
+        // Sort events by date
+        eventList.adapter = EventSheetAdapter(requireContext(), eventsList.sortedBy { it.startDate })
     }
 
     private fun fetchPlaceDetails(placeId: String?) {
@@ -326,12 +382,41 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val eventCardDescription = dialog.findViewById<TextView>(R.id.event_description)
         eventCardDescription.text = event.description
 
+        val eventCardDistance = dialog.findViewById<TextView>(R.id.event_distance)
+        val fullAddress = event.addressList.joinToString(", ")
+        val coords = performGeocoding(fullAddress)
+        eventCardDistance.text = "${calculateDistance(currentCoords, coords).toString()} mi"
+
         // Hard coded to 1 person going until we figure out how to keep track of that
         val amountGoing = 1
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
         dialog.show()
+    }
+
+    private fun Location.distanceToInMiles(dest: Location): Int {
+        val earthRadiusMiles = 3958.8 // Earth radius in miles
+        val deltaLatitude = Math.toRadians(dest.latitude - this.latitude)
+        val deltaLongitude = Math.toRadians(dest.longitude - this.longitude)
+        val a = sin(deltaLatitude / 2) * sin(deltaLatitude / 2) +
+                cos(Math.toRadians(this.latitude)) * cos(Math.toRadians(dest.latitude)) *
+                sin(deltaLongitude / 2) * sin(deltaLongitude / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        val distanceInMiles = earthRadiusMiles * c
+        return Math.round(distanceInMiles).toInt()
+    }
+
+    private fun calculateDistance(userLocation: LatLng, eventLocation: LatLng): Int {
+        val user = Location("")
+        user.latitude = userLocation.latitude
+        user.longitude = userLocation.longitude
+
+        val event = Location("")
+        event.latitude = eventLocation.latitude
+        event.longitude = eventLocation.longitude
+
+        return user.distanceToInMiles(event)
     }
 
     private fun startLocationUpdates() {
@@ -553,6 +638,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         if (isAdded) {
             // Fragment is attached, safe to access resources
             Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+            currentCoords = LatLng(location.latitude, location.longitude)
             val latLng = LatLng(location.latitude, location.longitude)
 
             // Remove the previous user marker if it exists

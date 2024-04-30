@@ -372,5 +372,7 @@
     <string name="tunePreference">How can I change my preferences?</string>
     <string name="tunrPreferenceAns">You can change your preferences in the Profile page in the button "Preference" button</string>
     <string name="PreferenceSetting">Preferences</string>
+    <string name="chat">Chats</string>
+
 
 </resources>

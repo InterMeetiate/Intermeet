@@ -50,14 +50,21 @@ class ProfileActivity : AppCompatActivity() {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
 
+
                 userData?.let { user ->
                     val firstName = user.firstName
                     val birthday = user.birthday
                     val age = calculateAge(birthday)
 
                     tvUserFirstName.text = "$firstName, $age"
+
+
                     }
                 }
+
+
+
+
 
             override fun onCancelled(databaseError: DatabaseError) {
                 // Log any errors

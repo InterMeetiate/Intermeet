@@ -84,6 +84,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var debugButton: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -108,9 +109,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
-        BottomSheetBehavior.from(bottomSheet).apply {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
-            this.state=BottomSheetBehavior.STATE_COLLAPSED
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         mapButton = view.findViewById(R.id.events_mapIcon)
@@ -171,6 +172,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             eventMarker?.let { marker ->
                 // Move the camera to the position of the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+
+                // Collapse the bottom sheet after an event is clicked
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
 

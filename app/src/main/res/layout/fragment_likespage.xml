@@ -9,65 +9,57 @@
     tools:context=".MainActivity">
 
 
+    <!-- New Return Button at top left -->
+
+    <!-- CardView showing user details -->
+
     <TextView
         android:id="@+id/frame_2"
         android:layout_width="177dp"
         android:layout_height="38dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/discover_bar"
-        android:clipToOutline="true"
         android:gravity="center_horizontal|top"
-        android:text="@string/discover"
+        android:text="@string/likes"
+
         android:textColor="@color/white"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01999998" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <View
-        android:id="@+id/return_button"
-        android:layout_width="42dp"
-        android:layout_height="38dp"
-        android:layout_row="0"
-        android:layout_column="0"
-        android:background="@drawable/resource_return"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/frame_2"
-        app:layout_constraintHorizontal_bias="0.3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01999998" />
 
     <TextView
         android:id="@+id/likes_page"
-        android:layout_width="162dp"
-        android:layout_height="55dp"
+        android:layout_width="360dp"
+        android:layout_height="48dp"
         android:layout_row="1"
         android:layout_column="0"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:gravity="center_horizontal|top"
-        android:text="@string/likes_page"
+
+        android:text="@string/seelikes"
         android:textAppearance="@style/likes_page"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.088"
+        app:layout_constraintHorizontal_bias="0.137"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frame_2"
         app:layout_constraintVertical_bias="0.027" />
 
     <TextView
         android:id="@+id/see_who_lik"
-        android:layout_width="178dp"
-        android:layout_height="45dp"
-        android:gravity="center_horizontal|top"
+        android:layout_width="363dp"
+        android:layout_height="42dp"
+
         android:text="@string/see_who_lik"
         android:textAppearance="@style/see_who_lik"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
+        app:layout_constraintHorizontal_bias="0.145"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/likes_page"
         app:layout_constraintVertical_bias="0.0" />
@@ -79,6 +71,8 @@
         app:layout_constraintTop_toBottomOf="@+id/see_who_lik"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="7dp" />
+
+
 
 
 

@@ -19,7 +19,7 @@
     <string name="account_title">Account</string>
     <string name="email">Email</string>
     <string name="likes_page">Likes Page</string>
-    <string name="see_who_lik">See who liked your profile!</string>
+    <string name="see_who_lik">Those who like you will be shown here</string>
     <string name="payments">Payments</string>
     <string name="verification">Verification</string>
     <string name="phone_number">Phone Number</string>
@@ -373,6 +373,8 @@
     <string name="tunrPreferenceAns">You can change your preferences in the Profile page in the button "Preference" button</string>
     <string name="PreferenceSetting">Preferences</string>
     <string name="chat">Chats</string>
+    <string name="likes">Likes You</string>
+    <string name="seelikes">See Who Likes You!</string>
 
 
 </resources>

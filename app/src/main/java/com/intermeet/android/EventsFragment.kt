@@ -67,6 +67,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.DelicateCoroutinesApi
+import java.util.UUID
 import kotlin.math.*
 
 class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
@@ -84,6 +85,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var debugButton: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -108,9 +110,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
-        BottomSheetBehavior.from(bottomSheet).apply {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
-            this.state=BottomSheetBehavior.STATE_COLLAPSED
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         mapButton = view.findViewById(R.id.events_mapIcon)
@@ -158,6 +160,12 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
                 getEventsByLocation(city)
             }
+
+            fetchEventsFromDatabase { fetchedEventsList ->
+                eventsList = fetchedEventsList
+                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                eventList.adapter = eventAdapter
+            }
         }
 
         eventsMenuBarButton.setOnClickListener {
@@ -171,6 +179,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             eventMarker?.let { marker ->
                 // Move the camera to the position of the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+
+                // Collapse the bottom sheet after an event is clicked
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
 
@@ -387,12 +398,66 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val coords = performGeocoding(fullAddress)
         eventCardDistance.text = "${calculateDistance(currentCoords, coords).toString()} mi"
 
-        // Hard coded to 1 person going until we figure out how to keep track of that
-        val amountGoing = 1
+        var amountGoing = event.peopleGoing.size - 1
+        Log.d("showEventCard", "People going ${amountGoing}")
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
+        val goingButton = dialog.findViewById<Button>(R.id.going_button)
+        goingButton.setOnClickListener {
+            // Add the user's ID to the list of people going
+            val currentUserId = getCurrentUserId()
+            if (currentUserId != null) {
+                addUserIdToEvent(event.id, currentUserId)
+
+                amountGoing++
+                goingText.text = "Going (${amountGoing})"
+            }
+        }
+
         dialog.show()
+    }
+
+    private fun getCurrentUserId(): String? {
+        // Assuming you're using Firebase Authentication
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        return currentUser?.uid
+    }
+
+    private fun addUserIdToEvent(eventId: String, userId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        // Reference the specific event by its ID
+        val eventRef = databaseReference.child(eventId)
+
+        // Add the user ID to the peopleGoing list in the event object
+        eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val selectedEvent = dataSnapshot.getValue(Event::class.java)
+                selectedEvent?.let { event ->
+                    // Add the user ID to the peopleGoing list if it's not already there
+                    if (!event.peopleGoing.contains(userId)) {
+                        event.peopleGoing.add(userId)
+                        // Update the event object in Firebase
+                        eventRef.setValue(event)
+                            .addOnSuccessListener {
+                                Log.d("AddUserIdToEvent", "User added to event: $eventId")
+                            }
+                            .addOnFailureListener {
+                                Log.e("AddUserIdToEvent", "Failed to add user to event: $eventId")
+                            }
+                    } else {
+                        Log.d("AddUserIdToEvent", "User already exists in event: $eventId")
+                    }
+                } ?: run {
+                    Log.e("AddUserIdToEvent", "Event not found: $eventId")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("AddUserIdToEvent", "Database query cancelled: ${databaseError.message}")
+            }
+        })
     }
 
     private fun Location.distanceToInMiles(dest: Location): Int {
@@ -439,8 +504,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 Looper.getMainLooper() // Looper for handling callbacks on main thread
             )
         } else {
-            // Handle the case when permission is not granted
-            // You can prompt the user to grant permission again, show a message, or take any other appropriate action
             Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
         }
     }
@@ -551,7 +614,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             val link = eventObject.getString("link")
             val description = eventObject.getString("description")
             val thumbnail = eventObject.getString("thumbnail")
-            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail, 0)
+            val peopleGoing = mutableListOf<String>()
+            peopleGoing.add(0,"dummy")
+            val event = Event("", title, startDate, whenInfo, addressList, link, description, thumbnail, peopleGoing)
             uploadEvent(event)
         }
     }
@@ -567,11 +632,13 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     // Event already exists, do not add it again
                     Log.d("Add Event", "Event already exists in database")
                 } else {
-                    // Event does not exist, add it
-                    val eventRef = databaseReference.push()
+                    // Event does not exist, generate random ID and add it
+                    val eventId = UUID.randomUUID().toString() // Generate random UUID
+                    val eventRef = databaseReference.child(eventId)
+                    event.id = eventId // Set the generated ID to the event
                     eventRef.setValue(event)
                         .addOnSuccessListener {
-                            Log.d("Add Event", "Event added successfully with key: ${eventRef.key}")
+                            Log.d("Add Event", "Event added successfully with ID: $eventId")
                         }
                         .addOnFailureListener {
                             Log.d("Add Event", "Could not add event")

@@ -704,7 +704,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Check if the Fragment is attached to a context
         if (isAdded) {
             // Fragment is attached, safe to access resources
-            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.longitude}")
             currentCoords = LatLng(location.latitude, location.longitude)
             val latLng = LatLng(location.latitude, location.longitude)
 

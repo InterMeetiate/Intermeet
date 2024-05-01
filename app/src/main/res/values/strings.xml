@@ -375,6 +375,7 @@
     <string name="chat">Chats</string>
     <string name="likes">Likes You</string>
     <string name="seelikes">See Who Likes You!</string>
+    <string name="TOSyPP">By signing up, you agree to our Terms. See how we use your data in our Private Policy</string>
 
 
 </resources>

@@ -5,25 +5,10 @@
     android:id="@+id/beginningLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_list"
+    android:background="@color/white"
     tools:context=".BeginningActivity">
 
-    <TextView
-        android:id="@+id/logo"
-        android:layout_width="116dp"
-        android:layout_height="25dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center_horizontal|top"
-        android:text="@string/logo"
-        android:textAppearance="@style/logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25" />
-
+    <!--
     <TextView
         android:id="@+id/app_name"
         android:layout_width="308dp"
@@ -39,40 +24,81 @@
         app:layout_constraintTop_toBottomOf="@+id/logo"
         app:layout_constraintVertical_bias="0.050000012"
         android:textStyle="bold"/>
+-->
+
+    <TextView
+        android:id="@+id/logo"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/intermeet_png_72ppi_icon"
+        android:gravity="center_horizontal|top"
+        android:textAppearance="@style/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.095" />
+
+    <ImageView
+        android:id="@+id/app_name"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/intermeetlogo"
+        android:gravity="center_horizontal|top"
+        android:text="@string/app_name"
+        android:textAppearance="@style/app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintVertical_bias="0.029" />
 
     <TextView
         android:id="@+id/where_we_in"
-        android:layout_width="244dp"
-        android:layout_height="63dp"
+        android:layout_width="259dp"
+        android:layout_height="61dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:fontFamily="@font/outfitsemibold"
         android:gravity="center_horizontal|top"
         android:text="@string/app_motto"
         android:textAppearance="@style/app_moto"
+        android:textStyle="bold"
+        android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_name"
-        app:layout_constraintVertical_bias="0.050000012" />
-
+        app:layout_constraintVertical_bias="0.023" />
+    <!--
     <Button
         android:id="@+id/sign_up_button"
         android:layout_width="153dp"
         android:layout_height="57dp"
+        android:background="@drawable/discover_button"
         android:text="@string/sign_up"
-        android:background="@drawable/black_button"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/where_we_in"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintVertical_bias="0.589" />
+        -->
 
+
+    <!--
     <Button
         android:id="@+id/sign_in_button"
         android:layout_width="153dp"
         android:layout_height="57dp"
         android:text="@string/sign_in"
+        android:textSize="15dp"
+        android:fontFamily="@font/outfitregular"
         android:background="@drawable/transparent_button"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -80,6 +106,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_button"
         app:layout_constraintVertical_bias="0.050000012" />
+        -->
+
+    <TextView
+        android:id="@+id/sign_up_button"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/discover_button"
+        android:fontFamily="@font/outfitregular"
+        android:gravity="center"
+        android:text="@string/sign_up"
+        android:textColor="@android:color/white"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/where_we_in"
+        app:layout_constraintVertical_bias="0.668" />
+
+    <TextView
+        android:id="@+id/sign_in_button"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:background="@drawable/outlinebutton"
+        android:fontFamily="@font/outfitregular"
+        android:gravity="center"
+        android:text="@string/sign_in"
+        android:textColor="@android:color/black"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_button"
+        app:layout_constraintVertical_bias="0.107" />
+
+    <TextView
+        android:layout_width="245dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/outfitregular"
+        android:gravity="center"
+        android:text="@string/TOSyPP"
+        android:textColor="@color/black"
+        android:textSize="13dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

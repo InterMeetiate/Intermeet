@@ -1,4 +1,3 @@
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.intermeet.android.DiscoverActivity
 //import com.intermeet.android.DiscoverFragment
 import com.intermeet.android.R
+import com.intermeet.android.UserDetailFragment
 
 class LikesPageFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
@@ -44,19 +44,16 @@ class LikesPageFragment : Fragment() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
-        adapter.setOnClickListener(object :
-            RecyclerViewAdapter.OnClickDetect{
-                override fun onClickDetect(position : Int, model : String)
-                {
-                    val discoverFragment = DiscoverFragment.newInstance()
-                    //use parentFragmentManager when dealing with fragments not on main activity kotlin page
-                    parentFragmentManager.beginTransaction()
-                        .replace(R.id.fragmentContainer, discoverFragment)
-                        .commit()
-                    //true
-                }
+        adapter.setOnClickListener(object : RecyclerViewAdapter.OnClickDetect {
+            override fun onClickDetect(position: Int, userId: String) {
+                val userDetailFragment = UserDetailFragment.newInstance(userId)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, userDetailFragment)
+                    .addToBackStack(null)  // Optional: Add transaction to the back stack
+                    .commit()
             }
-        )
+        })
+
 
         return view
     }
@@ -66,4 +63,3 @@ class LikesPageFragment : Fragment() {
         fun newInstance() = LikesPageFragment()
     }
 }
-

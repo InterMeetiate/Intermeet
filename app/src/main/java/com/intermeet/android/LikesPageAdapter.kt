@@ -46,6 +46,7 @@ class LikesPageAdapter(context: Context, private val likesuser_list: List<String
 
         val likesuser = likesuser_list[position]
 
+
         val dbReference = FirebaseDatabase.getInstance().getReference("users/$likesuser")
         dbReference.addValueEventListener(object : ValueEventListener
         {

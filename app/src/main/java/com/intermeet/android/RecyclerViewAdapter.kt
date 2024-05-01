@@ -81,7 +81,7 @@ class RecyclerViewAdapter(
         holder.likesCard.setOnClickListener{
             if(onClickListener != null)
             {
-                onClickListener!!.onClickDetect(position, recyclerData)
+                onClickListener!!.onClickDetect(position, courseDataArrayList[position])
             }
         }
     }
@@ -93,7 +93,7 @@ class RecyclerViewAdapter(
 
     public interface OnClickDetect
     {
-        fun onClickDetect(position : Int, model : String)
+        fun onClickDetect(position : Int, userID : String)
     }
 
     override fun getItemCount(): Int {

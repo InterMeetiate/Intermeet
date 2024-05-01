@@ -39,7 +39,7 @@
             android:layout_marginEnd="35dp"
             android:layout_marginRight="49dp"
             android:layout_toLeftOf="@id/frame_2"
-            android:background="@drawable/resource_return" />
+            android:background="@drawable/left_arrow__2_" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"

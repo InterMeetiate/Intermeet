@@ -1,6 +1,7 @@
 package com.intermeet.android
 
 data class Event(
+    var id: String,
     val title: String,
     val startDate: String,
     val whenInfo: String,
@@ -8,7 +9,7 @@ data class Event(
     val link: String,
     val description: String,
     val thumbnail: String,
-    var peopleGoing: Int,
+    val peopleGoing: MutableList<String>
 ) {
-    constructor() : this("", "", "", listOf(), "", "", "", 0)
+    constructor() : this("", "", "", "", listOf(), "", "", "", mutableListOf())
 }

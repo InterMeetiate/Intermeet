@@ -66,6 +66,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.intermeet.android.UserAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.util.UUID
 import kotlin.math.*
@@ -403,6 +404,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val goingButton = dialog.findViewById<TextView>(R.id.going_button)
         goingButton.text = "Going (${amountGoing})"
 
+        goingButton.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                // You could use another Dialog or a RecyclerView within the current Dialog to show the list of users
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog) // Assume you have a layout for this
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
         val checkmarkButton = dialog.findViewById<Button>(R.id.checkmark_button)
         checkmarkButton.setOnClickListener {
             // Add the user's ID to the list of people going
@@ -419,7 +432,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun getCurrentUserId(): String? {
-        // Assuming you're using Firebase Authentication
         val currentUser = FirebaseAuth.getInstance().currentUser
         return currentUser?.uid
     }
@@ -769,6 +781,21 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 }
             }
         }
+    }
+
+    private fun fetchUsersGoingToEvent(eventId: String, callback: (List<String>) -> Unit) {
+        val eventRef = FirebaseDatabase.getInstance().getReference("events").child(eventId).child("peopleGoing")
+        eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val usersGoing = snapshot.children.mapNotNull { it.getValue(String::class.java) }
+                callback(usersGoing)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FetchUsersGoingToEvent", "Error fetching users: ${error.message}")
+                callback(emptyList()) // Return an empty list in case of error
+            }
+        })
     }
 
     companion object {

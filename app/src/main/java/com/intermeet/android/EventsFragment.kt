@@ -398,20 +398,20 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val coords = performGeocoding(fullAddress)
         eventCardDistance.text = "${calculateDistance(currentCoords, coords).toString()} mi"
 
-        var amountGoing = event.peopleGoing.size - 1
+        var amountGoing = event.peopleGoing.size
         Log.d("showEventCard", "People going ${amountGoing}")
-        val goingText = dialog.findViewById<TextView>(R.id.going_text)
-        goingText.text = "Going (${amountGoing})"
+        val goingButton = dialog.findViewById<TextView>(R.id.going_button)
+        goingButton.text = "Going (${amountGoing})"
 
-        val goingButton = dialog.findViewById<Button>(R.id.going_button)
-        goingButton.setOnClickListener {
+        val checkmarkButton = dialog.findViewById<Button>(R.id.checkmark_button)
+        checkmarkButton.setOnClickListener {
             // Add the user's ID to the list of people going
             val currentUserId = getCurrentUserId()
             if (currentUserId != null) {
                 addUserIdToEvent(event.id, currentUserId)
 
                 amountGoing++
-                goingText.text = "Going (${amountGoing})"
+                goingButton.text = "Going (${amountGoing})"
             }
         }
 

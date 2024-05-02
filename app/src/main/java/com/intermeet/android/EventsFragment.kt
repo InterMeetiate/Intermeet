@@ -20,6 +20,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -87,6 +88,8 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var currentCoords: LatLng
+    private lateinit var progressBar: ProgressBar
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -95,7 +98,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
     private val EARTH_RADIUS_KM = 6371.0
-    private lateinit var currentCoords: LatLng
+
     private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
     interface PermissionCallback {
@@ -134,6 +137,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        progressBar = view.findViewById(R.id.mapProgressBar)
         debugButton = view.findViewById(R.id.events_debug)
         searchBar = view.findViewById(R.id.search_edit_text)
         eventList = view.findViewById(R.id.eventList)
@@ -509,7 +513,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         locationResult.lastLocation?.let { location ->
                             // Handle location update
                             onLocationChanged(location)
-                            cameraMovedOnce = true
+                            progressBar.visibility = View.GONE  // Hide the ProgressBar when location is found
                         }
                     }
                 },
@@ -740,6 +744,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
             if(!cameraMovedOnce) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                progressBar.visibility = View.GONE
             }
         }
     }

@@ -405,10 +405,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         var amountGoing = event.peopleGoing.size
         Log.d("showEventCard", "People going ${amountGoing}")
-        val goingButton = dialog.findViewById<TextView>(R.id.going_button)
-        goingButton.text = "Going (${amountGoing})"
+        val goingText = dialog.findViewById<TextView>(R.id.going_text)
+        goingText.text = "Going (${amountGoing})"
 
-        goingButton.setOnClickListener {
+        goingText.setOnClickListener {
             fetchUsersGoingToEvent(event.id) { users ->
                 // You could use another Dialog or a RecyclerView within the current Dialog to show the list of users
                 val usersDialog = Dialog(requireContext())
@@ -420,18 +420,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
         }
 
-        val checkmarkButton = dialog.findViewById<Button>(R.id.checkmark_button)
-        checkmarkButton.setOnClickListener {
+        val goingButton = dialog.findViewById<Button>(R.id.going_button)
+        goingButton.setOnClickListener {
             // Add the user's ID to the list of people going
             val currentUserId = getCurrentUserId()
             if (currentUserId != null) {
                 addUserIdToEvent(event.id, currentUserId)
 
                 amountGoing++
-                goingButton.text = "Going (${amountGoing})"
+                goingText.text = "Going (${amountGoing})"
             }
         }
-
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.show()
     }
 
@@ -513,6 +513,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         locationResult.lastLocation?.let { location ->
                             // Handle location update
                             onLocationChanged(location)
+                            cameraMovedOnce = true
                             progressBar.visibility = View.GONE  // Hide the ProgressBar when location is found
                         }
                     }

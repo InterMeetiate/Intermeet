@@ -408,11 +408,44 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
+
+        fetchUsersGoingToEvent(event.id) { users ->
+            if(users.isNotEmpty()) {
+                fetchUserDetails(users[0]) { user ->
+                    val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).into(participant1) }
+                    }
+                }
+            }
+
+            if(users.size > 1) {
+                fetchUserDetails(users[1]) { user ->
+                    val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let {
+                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant2)
+                        }
+                    }
+                }
+            }
+
+            if(users.size > 2) {
+                fetchUserDetails(users[2]) { user ->
+                    val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let {
+                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant3)
+                        }
+                    }
+                }
+            }
+        }
+
         goingText.setOnClickListener {
             fetchUsersGoingToEvent(event.id) { users ->
-                // You could use another Dialog or a RecyclerView within the current Dialog to show the list of users
                 val usersDialog = Dialog(requireContext())
-                usersDialog.setContentView(R.layout.users_list_dialog) // Assume you have a layout for this
+                usersDialog.setContentView(R.layout.users_list_dialog)
                 val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
                 val adapter = UserAdapter(requireContext(), users)
                 usersListView.adapter = adapter
@@ -433,6 +466,22 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.show()
+    }
+
+    private fun fetchUserDetails(userId: String, callback: (UserAdapter.User) -> Unit) {
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val firstName = snapshot.child("firstName").getValue(String::class.java) ?: ""
+                val lastName = snapshot.child("lastName").getValue(String::class.java) ?: ""
+                val photoDownloadUrls = snapshot.child("photoDownloadUrls").children.mapNotNull { it.getValue(String::class.java) }
+                callback(UserAdapter.User(userId, firstName, lastName, photoDownloadUrls))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("UserAdapter", "Failed to fetch user details: ${error.message}")
+            }
+        })
     }
 
     private fun getCurrentUserId(): String? {

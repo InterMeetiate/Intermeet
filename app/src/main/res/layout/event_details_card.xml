@@ -109,7 +109,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.0"
         android:contentDescription="@string/participant" />
 
@@ -121,7 +121,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.46"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.23000002"
         android:contentDescription="@string/participant"/>
 
@@ -133,7 +133,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.235"
         android:contentDescription="@string/participant"/>
 
@@ -145,7 +145,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.58"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.235"
         android:contentDescription="@string/participant"/>
 
@@ -159,7 +159,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.0" />
 
     <Button
@@ -172,6 +172,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/going_text"
+        app:layout_constraintTop_toBottomOf="@+id/going_button"
         app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

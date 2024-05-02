@@ -1,13 +1,14 @@
 package com.intermeet.android
 
 import DiscoverFragment
-import android.annotation.SuppressLint
+import android.annotation.SuppressLint import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
@@ -33,7 +34,6 @@ class DiscoverActivity : AppCompatActivity() {
     private lateinit var tvEthnicity: TextView
     private lateinit var relativeLayout: RelativeLayout
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //val view = inflater.inflate(R.layout.fragment_discover, container, false)

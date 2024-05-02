@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/frame_2"
+        android:layout_width="177dp"
+        android:layout_height="38dp"
+        android:background="@drawable/discover_bar"
+        android:clipToOutline="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/discover"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.06999999" />
+
+    <View
+        android:id="@+id/return_button"
+        android:layout_width="42dp"
+        android:layout_height="38dp"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:background="@drawable/resource_return"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.069" />
+
+    <TextView
+        android:id="@+id/likes_page"
+        android:layout_width="162dp"
+        android:layout_height="55dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/likes_page"
+        android:textAppearance="@style/likes_page"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.146" />
+
+    <TextView
+        android:id="@+id/see_who_lik"
+        android:layout_width="178dp"
+        android:layout_height="45dp"
+        android:gravity="center_horizontal|top"
+        android:text="@string/see_who_lik"
+        android:textAppearance="@style/see_who_lik"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.115"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.198" />
+
+    <GridLayout
+        android:id="@+id/likesGridView"
+        android:layout_width="393dp"
+        android:layout_height="531dp"
+        android:layout_margin="10dp"
+        android:columnCount="2"
+        android:rowCount="3"
+        app:layout_constraintBottom_toBottomOf='parent'
+        app:layout_constraintEnd_toEndOf='parent'
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf='parent'
+        app:layout_constraintTop_toTopOf='parent'
+        app:layout_constraintVertical_bias="1.0">
+
+        <!--<androidx.cardview.widget.CardView
+            android:id="@+id/likesCard1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="0dp">
+
+            <RelativeLayout
+                android:layout_width="200dp"
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp">
+
+                </ImageView>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>-->
+
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

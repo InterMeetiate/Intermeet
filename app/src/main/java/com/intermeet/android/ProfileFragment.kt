@@ -1,6 +1,7 @@
 package com.intermeet.android
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
@@ -52,6 +54,7 @@ class ProfileFragment : Fragment() {
 
         // ValueEventListener to read the "firstName" and "photoDownloadURLs" data
         userRef.addValueEventListener(object : ValueEventListener {
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // Get the value of "firstName"
                 val userData = dataSnapshot.getValue(UserData::class.java)
@@ -65,10 +68,12 @@ class ProfileFragment : Fragment() {
 
                     // Setting profile photo if available
                     user.photoDownloadUrls?.firstOrNull()?.let { url ->
-                        Glide.with(this@ProfileFragment)
-                            .load(url)
-                            .circleCrop()
-                            .into(ivUserProfilePhoto)
+                        if (isAdded) { // Check if the fragment is currently added to an activity
+                            Glide.with(this@ProfileFragment)
+                                .load(url)
+                                .circleCrop()
+                                .into(ivUserProfilePhoto)
+                        }
                     }
                 }
             }
@@ -95,6 +100,25 @@ class ProfileFragment : Fragment() {
             }
             startActivity(intent)
         }
+        val editUserInfo : Button = view.findViewById(R.id.editProfileButton)
+        editUserInfo.setOnClickListener {
+            // In the calling Activity
+            val intent = Intent(activity, EditProfile::class.java).apply {
+                putExtra("isEditMode", true) // true if editing, false or absent if signing up
+            }
+            startActivity(intent)
+        }
+        val tipCenterButton : Button = view.findViewById(R.id.tipCenter)
+        tipCenterButton.setOnClickListener {
+            val intent = Intent(activity, TipCenter::class.java)
+            startActivity(intent)
+        }
+        val helpCenterButton : Button = view.findViewById(R.id.helpCeter)
+        helpCenterButton.setOnClickListener {
+            val intent = Intent(activity, HelpCenterActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     private fun navigateToSettings() {
@@ -102,7 +126,21 @@ class ProfileFragment : Fragment() {
         // This could be using findNavController().navigate() if using Navigation Component
         // or activity supportFragmentManager for manual transactions
     }
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "${this::class.java.simpleName} resumed")
+        Log.d("NavigationStatus", "${this::class.java.simpleName} is now visible")
 
+        //view?.findViewById<View>(R.id.main_content)?.visibility = View.VISIBLE
+        //view?.findViewById<View>(R.id.nested_nav_host_fragment)?.visibility = View.GONE
+    }
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "${this::class.java.simpleName} paused")
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun calculateAge(birthday: String?): Int {
         // Implement logic to calculate age based on birthday
         // Example: Parse birthday string, calculate age based on current date, and return age

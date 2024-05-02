@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-    id ("androidx.navigation.safeargs.kotlin")
+    id("androidx.navigation.safeargs.kotlin")
     // Other plugins
 
 }
@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 26
+        minSdk = 21
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -86,7 +86,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     // AndroidX Navigation UI
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-    implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.libraries.places:places:3.4.0")
     implementation("com.google.maps.android:android-maps-utils:2.2.0")
@@ -95,5 +94,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.firebase:geofire-android:3.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation("com.squareup.picasso:picasso:2.8")
 }
 

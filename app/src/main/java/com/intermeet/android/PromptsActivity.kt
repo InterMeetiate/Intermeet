@@ -39,7 +39,7 @@ class PromptsActivity : AppCompatActivity() {
         val userDataRepository = getUserDataRepository()
         promptList.addAll(UserDataRepository.userData?.prompts ?: listOf())
 
-        val adapter = CustomAdapter(this, promptList)
+        val adapter = CustomAdapter(this, promptList, listView)
         listView.adapter = adapter
 
         enter.setOnClickListener {

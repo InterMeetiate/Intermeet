@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserDetailFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+        <TextView
+            android:id="@+id/frame_2"
+            android:layout_width="177dp"
+            android:layout_height="38dp"
+            android:background="@drawable/discover_bar"
+            android:text="@string/likes"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal|top"/>
+
+        <!-- New Return Button at top left -->
+
+        <!-- CardView showing user details -->
+        <View
+            android:id="@+id/return_button"
+            android:layout_width="42dp"
+            android:layout_height="38dp"
+            android:layout_alignTop="@id/frame_2"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginRight="49dp"
+            android:layout_toLeftOf="@id/frame_2"
+            android:background="@drawable/left_arrow__2_" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/frame_2"
+            android:layout_marginTop="8dp"
+            android:layout_margin="23dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="550dp"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_margin="9dp"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardView"
+            android:layout_margin="23dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/tvEducation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="California State University, Long Beach"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:padding="12dp"/>
+
+                <HorizontalScrollView
+                    android:id="@+id/hsvAttributes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvEducation"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/llAttributes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:divider="?android:attr/listDivider"
+                        android:showDividers="middle"
+                        android:dividerPadding="4dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvHeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/tvEducation"
+                            android:text="5'8"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Long Beach, CA"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvPronouns"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="He/him"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvGender"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Male"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvSexuality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Straight"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+
+                        <TextView
+                            android:id="@+id/tvEthnicity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pomeranian-Husky"
+                            android:textSize="15sp"
+                            android:padding="12dp"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+
+
+                <TextView
+                    android:id="@+id/tvAboutMeHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hsvAttributes"
+                    android:text="About me"
+                    android:textStyle="bold"
+                    android:padding="12dp"/>
+
+                <TextView
+                    android:id="@+id/tvAboutMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvAboutMeHeader"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="24dp"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam finibus porta justo, sed maximus erat accumsan id. Vivamus venenatis tortor sit amet purus dictum dapibus. Aliquam sed semper nisl, sit amet imperdiet leo. Quisque at commodo est." />
+
+                <TextView
+                    android:id="@+id/tvInterestsHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvAboutMe"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/interests"
+                    android:textStyle="bold"
+                    android:padding="12dp"/>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</ScrollView>

@@ -4,12 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ProfileFragment">
+
+        <View
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/white"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/frame_2"
@@ -25,26 +31,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.06999999" />
+            app:layout_constraintVertical_bias="0.023" />
 
         <Button
             android:id="@+id/settingButton"
-            android:layout_width="34.24dp"
-            android:layout_height="35dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="35dp"
             android:background="@drawable/setting"
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
+
             app:layout_constraintStart_toEndOf="@+id/frame_2"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.06999999" />
+            app:layout_constraintVertical_bias="0.015" />
 
         <ImageView
             android:id="@+id/ivUserProfilePhoto"
             android:layout_width="126dp"
             android:layout_height="120dp"
             android:layout_marginStart="140dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="40dp"
             android:contentDescription="@string/user_profile_photo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/frame_2" />
@@ -53,7 +63,7 @@
             android:id="@+id/tvUserFirstName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:text="Name will show here"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -62,6 +72,7 @@
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivUserProfilePhoto" />
+
         <Button
             android:id="@+id/preferenceButton"
             android:layout_width="150dp"
@@ -74,7 +85,7 @@
             app:layout_constraintHorizontal_bias="0.877"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvUserFirstName"
-            app:layout_constraintVertical_bias="0.066" />
+            app:layout_constraintVertical_bias="0.078" />
 
         <Button
             android:id="@+id/editProfileButton"
@@ -88,12 +99,12 @@
             app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvUserFirstName"
-            app:layout_constraintVertical_bias="0.066" />
+            app:layout_constraintVertical_bias="0.078" />
 
         <Button
             android:id="@+id/tipCenter"
             android:layout_width="150dp"
-            android:layout_height="140dp"
+            android:layout_height="150dp"
             android:background="@drawable/big_rectangle"
             android:text="@string/tipCenter"
             android:textColor="@android:color/black"
@@ -102,12 +113,12 @@
             app:layout_constraintHorizontal_bias="0.455"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvUserFirstName"
-            app:layout_constraintVertical_bias="0.347" />
+            app:layout_constraintVertical_bias="0.389" />
 
         <Button
             android:id="@+id/helpCeter"
             android:layout_width="150dp"
-            android:layout_height="140dp"
+            android:layout_height="150dp"
             android:background="@drawable/big_rectangle"
             android:text="@string/helpCenter"
             android:textColor="@android:color/black"
@@ -116,10 +127,7 @@
             app:layout_constraintHorizontal_bias="0.877"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvUserFirstName"
-            app:layout_constraintVertical_bias="0.347" />
-
-
-
+            app:layout_constraintVertical_bias="0.389" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

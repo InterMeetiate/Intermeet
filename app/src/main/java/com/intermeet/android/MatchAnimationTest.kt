@@ -11,6 +11,7 @@ class MatchAnimationTest : AppCompatActivity() {
         setContentView(R.layout.activity_match_animation)
 
         val button: Button = findViewById(R.id.button)
+        val button2: Button = findViewById(R.id.likebutton)
 
         // Ensure the fragment is properly managed
         var fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as MatchAnimation?
@@ -20,6 +21,16 @@ class MatchAnimationTest : AppCompatActivity() {
                 .add(R.id.fragmentContainer, fragment)
                 .commit()
         }
+        var fragment2 = supportFragmentManager.findFragmentById(R.id.fragmentContainer2) as LikeAnimation?
+        if (fragment2 == null){
+            fragment2 = LikeAnimation()  // Use '=' for assignment
+            if (fragment2 != null) {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer2, fragment2)
+                    .commit()
+            }
+        }
+
 
         button.setOnClickListener {
             fragment.loadImages("3MuNR6f5DJZXYtpe92nq89LgCCV2", "ASpSWWVctpdsCYZPfxOdTmSJ4e72")
@@ -27,5 +38,10 @@ class MatchAnimationTest : AppCompatActivity() {
             fragment.toggleHeartVisibility()
             //fragment.toggleCurves()
         }
+        button2.setOnClickListener{
+            fragment2.toggleBackgroundAnimation()
+            fragment2.animateLike()
+        }
+
     }
 }

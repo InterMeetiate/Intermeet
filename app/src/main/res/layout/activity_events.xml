@@ -45,8 +45,8 @@
 
     <Button
         android:id="@+id/events_debug"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="top|start"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
@@ -99,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_event_list"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
+        app:layout_behavior="com.intermeet.android.LockableBottomSheetBehavior" >
 
         <LinearLayout
             android:layout_width="match_parent"

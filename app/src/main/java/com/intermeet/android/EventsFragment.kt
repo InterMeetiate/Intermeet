@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
@@ -24,6 +25,7 @@ import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -68,6 +70,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.intermeet.android.LockableBottomSheetBehavior
 import com.intermeet.android.UserAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.util.UUID
@@ -107,6 +110,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -204,10 +208,16 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             showDropdownMenu()
         }
 
+        val behavior = LockableBottomSheetBehavior.from(bottomSheet)
+        eventList.setOnScrollChangeListener { _, _, _, _, _ ->
+            behavior.isDraggable = !eventList.canScrollVertically(-1) // The bottom sheet is draggable only when the ListView is not scrollable upwards
+        }
+
         // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
             val eventMarker = eventMarkersMap[event.title]
+
             eventMarker?.let { marker ->
                 // Move the camera to the position of the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
@@ -860,11 +870,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         if (googleMap.mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             // Switch to satellite view
             googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            mapButton.text = "Switch to Normal"
         } else {
             // Switch to normal view
             googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            mapButton.text = "Switch to Satellite"
         }
     }
 

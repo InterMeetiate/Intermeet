@@ -45,7 +45,7 @@ class DiscoverFragment : Fragment() {
             }
         }
 
-        fetchUsers()
+        fetchUsers(autoRefresh = false)
     }
 
     private fun setupViews(view: View) {
@@ -84,37 +84,54 @@ class DiscoverFragment : Fragment() {
         }
 
         btnRefresh.setOnClickListener {
-            fetchUsers()
+            fetchUsers(autoRefresh = false)
         }
     }
 
-    private fun fetchUsers() {
+    private fun fetchUsers(autoRefresh: Boolean) {
         progressBar.visibility = View.VISIBLE
         noUsersTextView.visibility = View.GONE
         btnRefresh.visibility = View.GONE
         viewModel.clearSeenUsers()
         viewModel.fetchAndFilterUsers()
+
+        if (autoRefresh) {
+            viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+                if (userIds.isEmpty()) {
+                    displayNoUsers(autoRefresh = false)
+                }
+            }
+        }
     }
+
 
     private fun displayUserList(userIds: List<String>) {
-        noUsersTextView.visibility = View.GONE
-        viewPager.visibility = View.VISIBLE
-        btnRefresh.visibility = View.GONE
-        btnLike.visibility = View.VISIBLE
-        btnPass.visibility = View.VISIBLE
-        returnButton.visibility = View.VISIBLE
-        adapter.setUserIds(userIds)
-        adapter.notifyDataSetChanged()
-        viewPager.currentItem = 0
+        if (userIds.isEmpty()) {
+            fetchUsers(autoRefresh = true)
+        } else {
+            noUsersTextView.visibility = View.GONE
+            viewPager.visibility = View.VISIBLE
+            btnRefresh.visibility = View.GONE
+            btnLike.visibility = View.VISIBLE
+            btnPass.visibility = View.VISIBLE
+            returnButton.visibility = View.VISIBLE
+            adapter.setUserIds(userIds)
+            adapter.notifyDataSetChanged()
+            viewPager.currentItem = 0
+        }
     }
 
-    private fun displayNoUsers() {
-        noUsersTextView.visibility = View.VISIBLE
-        viewPager.visibility = View.GONE
-        btnRefresh.visibility = View.VISIBLE
-        btnLike.visibility = View.GONE
-        btnPass.visibility = View.GONE
-        returnButton.visibility = View.GONE
+    private fun displayNoUsers(autoRefresh: Boolean = false) {
+        if (autoRefresh) {
+            fetchUsers(autoRefresh = true)
+        } else {
+            noUsersTextView.visibility = View.VISIBLE
+            viewPager.visibility = View.GONE
+            btnRefresh.visibility = View.VISIBLE
+            btnLike.visibility = View.GONE
+            btnPass.visibility = View.GONE
+            returnButton.visibility = View.GONE
+        }
     }
 
     private fun navigateToNextUser() {

@@ -408,41 +408,68 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
-
+        val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
+        val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
+        val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
+        val moreParticipantsText = dialog.findViewById<TextView>(R.id.more_participants)
         fetchUsersGoingToEvent(event.id) { users ->
             if(users.isNotEmpty()) {
                 fetchUserDetails(users[0]) { user ->
-                    val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
                     if (user.photoDownloadUrls.isNotEmpty()) {
-                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).into(participant1) }
+                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant1) }
                     }
                 }
             }
-
             if(users.size > 1) {
                 fetchUserDetails(users[1]) { user ->
-                    val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
                     if (user.photoDownloadUrls.isNotEmpty()) {
                         context?.let {
-                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant2)
+                            Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant2)
                         }
                     }
                 }
             }
-
             if(users.size > 2) {
                 fetchUserDetails(users[2]) { user ->
-                    val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
                     if (user.photoDownloadUrls.isNotEmpty()) {
                         context?.let {
-                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant3)
+                            Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant3)
                         }
                     }
                 }
+            }
+            if (users.size > 3) {
+                val additionalCount = users.size - 3
+                moreParticipantsText.text = "+$additionalCount"
+                moreParticipantsText.visibility = View.VISIBLE
+            } else {
+                moreParticipantsText.visibility = View.GONE
             }
         }
 
-        goingText.setOnClickListener {
+        participant1.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog)
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
+        participant2.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog)
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
+        participant3.setOnClickListener {
             fetchUsersGoingToEvent(event.id) { users ->
                 val usersDialog = Dialog(requireContext())
                 usersDialog.setContentView(R.layout.users_list_dialog)

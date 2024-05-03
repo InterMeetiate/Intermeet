@@ -74,6 +74,10 @@
             android:exported="false" />
         <activity
             android:name=".BeginningActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".MatchAnimationTest"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

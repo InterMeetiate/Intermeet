@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"

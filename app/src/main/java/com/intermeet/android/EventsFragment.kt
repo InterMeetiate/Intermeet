@@ -15,7 +15,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -99,10 +98,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
     private var userMarker: Marker? = null
-    private var selectedPlaceText: String? = null
-    private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
-    private val EARTH_RADIUS_KM = 6371.0
 
     private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
@@ -146,7 +142,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // Optionally handle slide events
             }
         })
 
@@ -189,7 +184,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         // Fills the database when events based on the currently logged in user's current location
-        // Temporarily set to the top right menu bar in the events page
         debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
@@ -414,6 +408,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showEventCard(event: Event) {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.event_details_card)
@@ -789,15 +784,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val locationList: List<Any>? = dataSnapshot.value as? List<Any>
+                val locationList: List<*>? = dataSnapshot.value as? List<*>
                 if (locationList != null && locationList.size >= 2) {
                     val latitude = (locationList[0] as? Double) ?: return
                     val longitude = (locationList[1] as? Double) ?: return
                     val userLocation = performReverseGeocoding(LatLng(latitude, longitude))
-                    callback(userLocation) // Invoke the callback with the retrieved location
+                    callback(userLocation)
                 } else {
                     Log.d("Location", "Location data not found or incomplete.")
-                    callback("") // Invoke the callback with an empty string if location data is incomplete
+                    callback("")
                 }
             }
 

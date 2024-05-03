@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -90,6 +91,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var currentCoords: LatLng
     private lateinit var progressBar: ProgressBar
+    private lateinit var rectangleBackground: View
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -114,10 +116,35 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
+        rectangleBackground = view.findViewById<View>(R.id.rectangleBackground)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // Check if the new state is expanded or collapsed
+                when (newState) {
+                    BottomSheetBehavior.STATE_DRAGGING, BottomSheetBehavior.STATE_EXPANDED -> {
+                        // Hide the buttons when bottom sheet is expanded or dragging
+                        mapButton.visibility = View.GONE
+                        myLocation.visibility = View.GONE
+                        rectangleBackground.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // Show the buttons when bottom sheet is collapsed
+                        mapButton.visibility = View.VISIBLE
+                        myLocation.visibility = View.VISIBLE
+                        rectangleBackground.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Optionally handle slide events
+            }
+        })
 
         mapButton = view.findViewById(R.id.events_mapIcon)
         mapButton.setOnClickListener {

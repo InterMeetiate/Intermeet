@@ -30,7 +30,7 @@
     <ImageView
         android:id="@+id/curve1"
         android:layout_width="160dp"
-        android:layout_height="164dp"
+        android:layout_height="160dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="84dp"
         android:background="@drawable/curve_line"
@@ -42,7 +42,7 @@
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="160dp"
-        android:layout_height="164dp"
+        android:layout_height="160dp"
         android:layout_marginTop="224dp"
         android:layout_marginEnd="216dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +54,7 @@
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="160dp"
-        android:layout_height="164dp"
+        android:layout_height="160dp"
         android:layout_marginStart="216dp"
         android:layout_marginBottom="224dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,9 +65,9 @@
 
     <ImageView
         android:id="@+id/matchHeart"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:background="@drawable/heart__4_"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/broken_link"
         app:layout_constraintBottom_toBottomOf="@+id/imageView1"
         app:layout_constraintEnd_toEndOf="@+id/imageView1"
         app:layout_constraintStart_toStartOf="@+id/imageView2"
@@ -77,7 +77,7 @@
     <ImageView
         android:id="@+id/curve2"
         android:layout_width="160dp"
-        android:layout_height="164dp"
+        android:layout_height="160dp"
         android:layout_marginStart="216dp"
         android:layout_marginTop="80dp"
         android:background="@drawable/curve_line"

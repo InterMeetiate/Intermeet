@@ -24,6 +24,8 @@ class MatchAnimationTest : AppCompatActivity() {
         button.setOnClickListener {
             fragment.loadImages("3MuNR6f5DJZXYtpe92nq89LgCCV2", "ASpSWWVctpdsCYZPfxOdTmSJ4e72")
             fragment.toggleBackgroundAnimation()
+            fragment.toggleHeartVisibility()
+            //fragment.toggleCurves()
         }
     }
 }

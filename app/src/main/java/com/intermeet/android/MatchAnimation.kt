@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -28,6 +29,11 @@ class MatchAnimation : Fragment() {
 
     private lateinit var imageView1: ImageView
     private lateinit var imageView2: ImageView
+    private lateinit var curve1: ImageView
+    private lateinit var curve2: ImageView
+    private lateinit var itsMatch: TextView
+    private lateinit var letsMeet: TextView
+    private lateinit var matchHeartImageView: ImageView
     private lateinit var constraintLayout: ConstraintLayout
     private lateinit var animationDrawable: AnimationDrawable
 
@@ -38,6 +44,12 @@ class MatchAnimation : Fragment() {
         val view = inflater.inflate(R.layout.fragment_match_animation, container, false)
         imageView1 = view.findViewById(R.id.imageView1)
         imageView2 = view.findViewById(R.id.imageView2)
+        curve1 = view.findViewById(R.id.curve1)
+        curve2 = view.findViewById(R.id.curve2)
+        itsMatch = view.findViewById(R.id.itsMatch)
+        letsMeet = view.findViewById(R.id.letsMeet)
+
+        matchHeartImageView = view.findViewById(R.id.matchHeart)
         constraintLayout = view.findViewById(R.id.matchanimation)
         constraintLayout.setBackgroundResource(android.R.color.transparent)
         return view
@@ -68,20 +80,22 @@ class MatchAnimation : Fragment() {
                             // Start fade-in animation
                             imageView.alpha = 0f
                             val fadeIn = ObjectAnimator.ofFloat(imageView, "alpha", 0f, 1f)
+                            toggleCurves()
+                            toggleText()
                             fadeIn.duration = 500
                             fadeIn.start()
 
                             // Set the image to fade out after 5 seconds
                             Handler(Looper.getMainLooper()).postDelayed({
                                 val fadeOut = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f)
-                                fadeOut.duration = 700
+                                fadeOut.duration = 1000
                                 fadeOut.start()
                                 fadeOut.addListener(object : AnimatorListenerAdapter() {
                                     override fun onAnimationEnd(animation: Animator) {
                                         imageView.setImageDrawable(null) // Clear the image after fade out
                                     }
                                 })
-                            }, 1500)
+                            }, 2500)
                         }
                     }
                 }
@@ -110,7 +124,7 @@ class MatchAnimation : Fragment() {
         // Delay to view the gradient, then fade out
         Handler(Looper.getMainLooper()).postDelayed({
             ObjectAnimator.ofFloat(constraintLayout, "alpha", 1f, 0f).apply {
-                duration = 700
+                duration = 1000
                 start()
                 addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
@@ -119,11 +133,104 @@ class MatchAnimation : Fragment() {
                     }
                 })
             }
-        }, 1500) // Total visible duration of the gradient background
+        }, 2500) // Total visible duration of the gradient background
     }
 
-    data class UserData(
-        val firstName: String? = null,
-        val photoDownloadUrls: List<String>? = null
-    )
+    fun toggleHeartVisibility() {
+        matchHeartImageView.visibility = View.VISIBLE
+
+        // Fade in the heart
+        matchHeartImageView.alpha = 0f
+        matchHeartImageView.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start()
+
+        // Set the ImageView to fade out and become invisible after 'duration' milliseconds
+        Handler(Looper.getMainLooper()).postDelayed({
+            matchHeartImageView.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .withEndAction {
+                    matchHeartImageView.visibility = View.INVISIBLE
+                }
+                .start()
+        }, 2500)
+    }
+
+    fun toggleCurves(){
+        curve1.visibility = View.VISIBLE
+        curve2.visibility = View.VISIBLE
+
+
+        // Fade in the heart
+        curve1.alpha = 0f
+        curve2.alpha = 0f
+
+        curve1.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start()
+        curve2.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start()
+
+        // Set the ImageView to fade out and become invisible after 'duration' milliseconds
+        Handler(Looper.getMainLooper()).postDelayed({
+            curve1.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .withEndAction {
+                    curve1.visibility = View.INVISIBLE
+                }
+                .start()
+            curve2.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .withEndAction {
+                    curve2.visibility = View.INVISIBLE
+                }
+                .start()
+        }, 2500)
+    }
+    fun toggleText(){
+        itsMatch.visibility = View.VISIBLE
+        letsMeet.visibility = View.VISIBLE
+
+
+        // Fade in the heart
+        itsMatch.alpha = 0f
+        letsMeet.alpha = 0f
+
+        itsMatch.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start()
+        letsMeet.animate()
+            .alpha(1f)
+            .setDuration(500)
+            .start()
+
+        // Set the ImageView to fade out and become invisible after 'duration' milliseconds
+        Handler(Looper.getMainLooper()).postDelayed({
+            itsMatch.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .withEndAction {
+                    itsMatch.visibility = View.INVISIBLE
+                }
+                .start()
+            letsMeet.animate()
+                .alpha(0f)
+                .setDuration(1000)
+                .withEndAction {
+                    letsMeet.visibility = View.INVISIBLE
+                }
+                .start()
+        }, 2500)
+    }
+
+
+
 }

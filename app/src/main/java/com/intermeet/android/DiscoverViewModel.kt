@@ -1,6 +1,8 @@
 package com.intermeet.android
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.async
@@ -29,6 +32,34 @@ class DiscoverViewModel : ViewModel() {
 
     val filteredUserIdsLiveData = MutableLiveData<List<String>>()
 
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    private val userReference: DatabaseReference = database.getReference("users")
+
+    fun getUserById(userId: String): LiveData<UserDataModel> {
+        val liveData = MutableLiveData<UserDataModel>()
+
+        userReference.child(userId).addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val user = snapshot.getValue(UserDataModel::class.java)
+                liveData.value = user!!
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+            }
+        })
+
+        return liveData
+    }
+
+    fun addPass(passedUserId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        val passTimestamp = System.currentTimeMillis()
+        val dbRef = FirebaseDatabase.getInstance().getReference("users/$passedUserId/passes")
+        dbRef.updateChildren(mapOf(userId to passTimestamp))
+    }
+
+
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
             val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -45,6 +76,7 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun fetchAndFilterUsers() {
         fetchCurrentUserLocationAndQueryNearbyUsers()  // Fetch nearby users first
         _nearbyUserIdsLiveData.observeForever { userIds ->
@@ -93,6 +125,7 @@ class DiscoverViewModel : ViewModel() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
@@ -144,20 +177,21 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
         return (
-                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
-                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
-                        (currentUser.ethnicityPreference == "Open to all" || currentUser.ethnicityPreference == user.ethnicity) &&
-                        (currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
-                        (currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
-                        (currentUser.politicsPreference == "Open to anything" || currentUser.politicsPreference == user.politics) &&
-                        (currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
-                        ageWithinRange(
-                            user.birthday,
-                            currentUser.minAgePreference,
-                            currentUser.maxAgePreference
-                        )
+                (doesGenderMatch(user.gender, currentUser.genderPreference) //&&
+                        //(currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
+                        //(currentUser.ethnicityPreference == "Open to all" || currentUser.ethnicityPreference == user.ethnicity) &&
+                        //(currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
+                        //(currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
+                        //(currentUser.politicsPreference == "Open to anything" || currentUser.politicsPreference == user.politics) &&
+                        //(currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
+                        //ageWithinRange(
+                        //    user.birthday,
+                        //    currentUser.minAgePreference,
+                        //    currentUser.maxAgePreference
+                        //)
                         ))
     }
 
@@ -171,6 +205,7 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun ageWithinRange(birthday: String?, minAge: Int?, maxAge: Int?): Boolean {
         if (birthday == null) return false
         return try {

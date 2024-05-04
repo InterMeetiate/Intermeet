@@ -379,6 +379,7 @@
     <string name="event_image">Event Image</string>
     <string name="going">Going</string>
     <string name="review">Review</string>
+    <string name="no_participant_text">Looks like no is currently going. Be the first!</string>
 
 
 </resources>

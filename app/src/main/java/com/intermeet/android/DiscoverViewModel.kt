@@ -1,6 +1,8 @@
 package com.intermeet.android
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,6 +47,7 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun fetchAndFilterUsers() {
         fetchCurrentUserLocationAndQueryNearbyUsers()  // Fetch nearby users first
         _nearbyUserIdsLiveData.observeForever { userIds ->
@@ -99,6 +102,7 @@ class DiscoverViewModel : ViewModel() {
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
@@ -151,7 +155,9 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
+
 //        return (
 //                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
 //                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
@@ -167,7 +173,6 @@ class DiscoverViewModel : ViewModel() {
 //                        )
 //                        ))
         return true
-    }
 //
 //    private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
 //        return when (userPreference) {

@@ -329,7 +329,7 @@
     <string name="search">Search...</string>
     <string name="handle_bar" />
     <string name="search_maps" />
-    <string name="no_users">"You've seen all the users in your area."</string>
+    <string name="no_users">"You've seen all the users in your area, would you like to review your passed ones?"</string>
     <string name="refresh">Refresh</string>
     <string name="remove_photo">Remove Photo</string>
     <string name="EditProfileTitle">Lets change your profile a bit!</string>
@@ -375,6 +375,10 @@
     <string name="chat">Chats</string>
     <string name="likes">Likes You</string>
     <string name="seelikes">See Who Likes You!</string>
+    <string name="participant">Participant</string>
+    <string name="event_image">Event Image</string>
+    <string name="going">Going</string>
+    <string name="review">Review</string>
 
 
 </resources>

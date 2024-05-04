@@ -37,9 +37,11 @@ class LikesPageFragment : Fragment() {
         // Clear the list before adding items to avoid duplicates
         recyclerDataArrayList.clear() //NEED TO CHANGE WAY OF CLEARING IT
         // added data to array list
-        recyclerDataArrayList.add("Xqi01fgXQNMdzdQEQEVJ6iB4wDu2")
-        recyclerDataArrayList.add("CPzvj0777RUav4ACjiiS6BECxm82")
-        recyclerDataArrayList.add("DK6LQRJYmxarqxOHCdy4MKS63Pp2")
+        //recyclerDataArrayList.add("Xqi01fgXQNMdzdQEQEVJ6iB4wDu2")
+        //recyclerDataArrayList.add("CPzvj0777RUav4ACjiiS6BECxm82")
+        //recyclerDataArrayList.add("DK6LQRJYmxarqxOHCdy4MKS63Pp2")
+        recyclerDataArrayList.add("zvBTjLExxwNMRcirJ6YS1rwLWcv2")
+
 
         // added data from arraylist to adapter class.
         val adapter = RecyclerViewAdapter(recyclerDataArrayList, this, DiscoverActivity())

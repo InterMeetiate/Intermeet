@@ -1,3 +1,4 @@
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -30,6 +32,7 @@ class DiscoverFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_discover, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -62,6 +65,7 @@ class DiscoverFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -88,6 +92,7 @@ class DiscoverFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchUsers(autoRefresh: Boolean) {
         progressBar.visibility = View.VISIBLE
         noUsersTextView.visibility = View.GONE
@@ -105,6 +110,7 @@ class DiscoverFragment : Fragment() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun displayUserList(userIds: List<String>) {
         if (userIds.isEmpty()) {
             fetchUsers(autoRefresh = true)
@@ -121,6 +127,7 @@ class DiscoverFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun displayNoUsers(autoRefresh: Boolean = false) {
         if (autoRefresh) {
             fetchUsers(autoRefresh = true)
@@ -134,6 +141,7 @@ class DiscoverFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun navigateToNextUser() {
         if (viewPager.currentItem < adapter.itemCount - 1) {
             viewPager.currentItem += 1

@@ -12,10 +12,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="95dp"
-        android:layout_marginTop="49dp"
+        android:layout_marginStart="94dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="98dp"
-        android:layout_marginBottom="622dp"
+        android:layout_marginBottom="641dp"
         android:background="@drawable/discover_bar"
         android:clipToOutline="true"
         android:gravity="center_horizontal|top"
@@ -38,34 +38,34 @@
         android:layout_marginEnd="20dp"/>
 
     <ListView
-        android:id="@+id/eventList"
-        android:layout_width="420dp"
-        android:layout_height="547dp"
+        android:id="@+id/usersList"
+        android:layout_width="match_parent"
+        android:layout_height="574dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="176dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="157dp"
+        android:layout_marginBottom="0dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <EditText
         android:id="@+id/search_edit_text"
-        android:layout_width="354dp"
-        android:layout_height="41dp"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="561dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="102dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="596dp"
         android:background="@drawable/rounded_corners"
         android:hint="@string/search"
         android:importantForAutofill="no"
         android:inputType="textAutoCorrect"
         android:padding="10dp"
         android:textColor="@android:color/black"
-        android:textSize="16sp" />
-
-
+        android:textSize="13sp" />
 
 
 </RelativeLayout>

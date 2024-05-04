@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.async
@@ -31,34 +30,6 @@ class DiscoverViewModel : ViewModel() {
     val userData: MutableLiveData<UserDataModel?> = _userData
 
     val filteredUserIdsLiveData = MutableLiveData<List<String>>()
-
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private val userReference: DatabaseReference = database.getReference("users")
-
-    fun getUserById(userId: String): LiveData<UserDataModel> {
-        val liveData = MutableLiveData<UserDataModel>()
-
-        userReference.child(userId).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(UserDataModel::class.java)
-                liveData.value = user!!
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
-
-        return liveData
-    }
-
-    fun addPass(passedUserId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val passTimestamp = System.currentTimeMillis()
-        val dbRef = FirebaseDatabase.getInstance().getReference("users/$passedUserId/passes")
-        dbRef.updateChildren(mapOf(userId to passTimestamp))
-    }
-
 
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
@@ -186,6 +157,7 @@ class DiscoverViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
+
 //        return (
 //                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
 //                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
@@ -201,6 +173,7 @@ class DiscoverViewModel : ViewModel() {
 //                        )
 //                        ))
         return true
+    }
 //
 //    private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
 //        return when (userPreference) {
@@ -226,42 +199,42 @@ class DiscoverViewModel : ViewModel() {
 //        }
 //    }
 
-    fun addLike(likedUserId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val likeTimestamp = System.currentTimeMillis()
-        val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
-        dbRef.updateChildren(mapOf(userId to likeTimestamp))
-    }
-
-    fun markAsSeen(seenUserId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val seenTimestamp = System.currentTimeMillis()
-        val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
-        dbRef.updateChildren(mapOf(seenUserId to seenTimestamp))
-    }
-
-    private fun commonInterestsCount(
-        userInterests: List<String>?,
-        currentUserInterests: List<String>?
-    ): Int {
-        if (userInterests == null || currentUserInterests == null) {
-            Log.e("DiscoverViewModel", "One or both users have null interests")
-            return 0
+        fun addLike(likedUserId: String) {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            val likeTimestamp = System.currentTimeMillis()
+            val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
+            dbRef.updateChildren(mapOf(userId to likeTimestamp))
         }
 
-        val commonInterests = userInterests.intersect(currentUserInterests.toSet())
-        Log.d(
-            "DiscoverViewModel",
-            "Comparing interests: User interests = ${userInterests.joinToString()}, Current user interests = ${currentUserInterests.joinToString()}"
-        )
-        Log.d("DiscoverViewModel", "Common interests: ${commonInterests.joinToString()}")
-        Log.d("DiscoverViewModel", "Common interests count: ${commonInterests.size}")
-        return commonInterests.size
-    }
+        fun markAsSeen(seenUserId: String) {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            val seenTimestamp = System.currentTimeMillis()
+            val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
+            dbRef.updateChildren(mapOf(seenUserId to seenTimestamp))
+        }
 
-    fun clearSeenUsers() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val seenRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
-        seenRef.removeValue()
+        private fun commonInterestsCount(
+            userInterests: List<String>?,
+            currentUserInterests: List<String>?
+        ): Int {
+            if (userInterests == null || currentUserInterests == null) {
+                Log.e("DiscoverViewModel", "One or both users have null interests")
+                return 0
+            }
+
+            val commonInterests = userInterests.intersect(currentUserInterests.toSet())
+            Log.d(
+                "DiscoverViewModel",
+                "Comparing interests: User interests = ${userInterests.joinToString()}, Current user interests = ${currentUserInterests.joinToString()}"
+            )
+            Log.d("DiscoverViewModel", "Common interests: ${commonInterests.joinToString()}")
+            Log.d("DiscoverViewModel", "Common interests count: ${commonInterests.size}")
+            return commonInterests.size
+        }
+
+        fun clearSeenUsers() {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+            val seenRef = FirebaseDatabase.getInstance().getReference("users/$userId/seen")
+            seenRef.removeValue()
+        }
     }
-}

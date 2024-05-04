@@ -33,9 +33,11 @@ class ChatFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
-        listView=view.findViewById(R.id.usersList)
+
         // Initialize UI elements t)
-        searchEditText = view.findViewById(R.id.search_edit_text)
+        searchEditText = view.findViewById(R.id.searchbox)
+        listView = view.findViewById(R.id.usersList)
+
         // Set up your list view adapter and other UI interactions here
         val currentUser = getCurrentUserId()
         if (currentUser != null) {
@@ -56,12 +58,12 @@ class ChatFragment : Fragment() {
         val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("likes")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val likedUsers = snapshot.children.mapNotNull { it.getValue(String::class.java) }
-                callback(likedUsers)
+                val likedUserIds = snapshot.children.mapNotNull { it.key }
+                callback(likedUserIds)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("FetchLikedUsers", "Error fetching users: ${error.message}")
+                Log.e("FetchLikedUsers", "Error fetching liked user IDs: ${error.message}")
                 callback(emptyList()) // Return an empty list in case of error
             }
         })

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +46,13 @@ class MainActivity : AppCompatActivity() {
                     val likesFragment = LikesPageFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, likesFragment)
+                        .commit()
+                    true
+                }
+                R.id.navigation_chat -> {
+                    val chatFragment = ChatFragment.newInstance() // Assuming your ChatFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, chatFragment)
                         .commit()
                     true
                 }

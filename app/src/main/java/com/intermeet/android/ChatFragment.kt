@@ -1,4 +1,71 @@
 package com.intermeet.android
 
-class ChatFragment {
+import android.app.Dialog
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import android.widget.ListView
+import android.widget.EditText
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+
+class ChatFragment : Fragment() {
+
+    companion object {
+        fun newInstance(): ChatFragment {
+            return ChatFragment()
+        }
+    }
+
+    // Define your UI elements
+    private lateinit var listView: ListView
+    private lateinit var searchEditText: EditText
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_chat, container, false)
+        listView=view.findViewById(R.id.usersList)
+        // Initialize UI elements t)
+        searchEditText = view.findViewById(R.id.search_edit_text)
+        // Set up your list view adapter and other UI interactions here
+        val currentUser = getCurrentUserId()
+        if (currentUser != null) {
+            fetchLikedUsers(currentUser) {users->
+                val adapter = ChatAdapter(requireContext(), users)
+                listView.adapter = adapter
+            }
+        }
+
+        return view
+    }
+    private fun getCurrentUserId(): String? {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        return currentUser?.uid
+    }
+
+    private fun fetchLikedUsers(userID: String, callback: (List<String>) -> Unit) {
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("likes")
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val likedUsers = snapshot.children.mapNotNull { it.getValue(String::class.java) }
+                callback(likedUsers)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FetchLikedUsers", "Error fetching users: ${error.message}")
+                callback(emptyList()) // Return an empty list in case of error
+            }
+        })
+    }
+
+    // You can add more methods/functions here as needed
 }

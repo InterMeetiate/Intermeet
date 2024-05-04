@@ -1,9 +1,13 @@
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.location.Location
 import android.os.Build
@@ -94,6 +98,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var currentCoords: LatLng
     private lateinit var progressBar: ProgressBar
     private lateinit var rectangleBackground: View
+    private lateinit var participantText: TextView
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -412,6 +417,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private fun showEventCard(event: Event) {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.event_details_card)
+        //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
         Glide.with(requireContext())
@@ -444,6 +450,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
         val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
         val moreParticipantsText = dialog.findViewById<TextView>(R.id.more_participants)
+        participantText = dialog.findViewById(R.id.participant_text)
         fetchUsersGoingToEvent(event.id) { users ->
             if(users.isNotEmpty()) {
                 fetchUserDetails(users[0]) { user ->
@@ -451,31 +458,44 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                         context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant1) }
                     }
                 }
-            }
-            if(users.size > 1) {
-                fetchUserDetails(users[1]) { user ->
-                    if (user.photoDownloadUrls.isNotEmpty()) {
-                        context?.let {
-                            Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant2)
+
+                // One participant
+                if(users.size > 1) {
+                    fetchUserDetails(users[1]) { user ->
+                        if (user.photoDownloadUrls.isNotEmpty()) {
+                            context?.let {
+                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant2)
+                            }
                         }
                     }
                 }
-            }
-            if(users.size > 2) {
-                fetchUserDetails(users[2]) { user ->
-                    if (user.photoDownloadUrls.isNotEmpty()) {
-                        context?.let {
-                            Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant3)
+
+                // Two participants
+                if(users.size > 2) {
+                    fetchUserDetails(users[2]) { user ->
+                        if (user.photoDownloadUrls.isNotEmpty()) {
+                            context?.let {
+                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant3)
+                            }
                         }
                     }
                 }
+
+                // Three or more participants
+                if (users.size > 3) {
+                    val additionalCount = users.size - 3
+                    moreParticipantsText.text = "+$additionalCount"
+                    moreParticipantsText.visibility = View.VISIBLE
+                } else {
+                    moreParticipantsText.visibility = View.GONE
+                }
             }
-            if (users.size > 3) {
-                val additionalCount = users.size - 3
-                moreParticipantsText.text = "+$additionalCount"
-                moreParticipantsText.visibility = View.VISIBLE
-            } else {
-                moreParticipantsText.visibility = View.GONE
+            else {
+                participantText.visibility = View.VISIBLE
+                participant1.visibility = View.GONE
+                participant2.visibility = View.GONE
+                participant3.visibility = View.GONE
+
             }
         }
 
@@ -541,6 +561,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 Log.e("UserAdapter", "Failed to fetch user details: ${error.message}")
             }
         })
+    }
+
+    private fun dpToPx(dp: Int, context: Context): Int {
+        return (dp * context.resources.displayMetrics.density).toInt()
     }
 
     private fun getCurrentUserId(): String? {
@@ -857,8 +881,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
         }
     }
-
-
 
     // Method to toggle between map types
     private fun toggleMapType() {

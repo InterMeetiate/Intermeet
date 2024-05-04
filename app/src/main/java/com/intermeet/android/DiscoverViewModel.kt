@@ -145,20 +145,42 @@ class DiscoverViewModel : ViewModel() {
     }
 
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
-        return (
-                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
-                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
-                        (currentUser.ethnicityPreference == "Open to all" || currentUser.ethnicityPreference == user.ethnicity) &&
-                        (currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
-                        (currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
-                        (currentUser.politicsPreference == "Open to anything" || currentUser.politicsPreference == user.politics) &&
-                        (currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
-                        ageWithinRange(
-                            user.birthday,
-                            currentUser.minAgePreference,
-                            currentUser.maxAgePreference
-                        )
-                        ))
+        // Define the preference fields to check, similar to Code2
+        val preferenceFields = listOf(
+            "smoking", "ethnicity", "politics", "drugs", "drinking", "religion"
+        )
+
+        // Initialize score
+        var score = 0
+
+        // Check age range
+        if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
+            return false // Return 0 score if age does not match
+        }
+
+        // Check gender preference
+        if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
+            return false // Return 0 score if gender does not match
+        }
+
+        // Check each preference field
+        for (field in preferenceFields) {
+            val userValue = user::class.java.getDeclaredField(field).get(user) as String
+            val currentUserPreferenceField = "${field}Preference"
+            val currentUserPreference = currentUser::class.java.getDeclaredField(currentUserPreferenceField).get(currentUser) as String?
+
+            // If the preference is "Open to all" or matches the user's value, increase score
+            if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
+                score++
+            }
+        }
+        if (score >= 3){
+            return true
+        }
+        else{
+            return false
+        }
+
     }
 
     private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {

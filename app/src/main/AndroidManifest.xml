@@ -81,6 +81,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MatchAnimationTest"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".PaymentsActivity"
             android:exported="false">
         </activity>

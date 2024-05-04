@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.async
@@ -31,34 +30,6 @@ class DiscoverViewModel : ViewModel() {
     val userData: MutableLiveData<UserDataModel?> = _userData
 
     val filteredUserIdsLiveData = MutableLiveData<List<String>>()
-
-    private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
-    private val userReference: DatabaseReference = database.getReference("users")
-
-    fun getUserById(userId: String): LiveData<UserDataModel> {
-        val liveData = MutableLiveData<UserDataModel>()
-
-        userReference.child(userId).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(UserDataModel::class.java)
-                liveData.value = user!!
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-            }
-        })
-
-        return liveData
-    }
-
-    fun addPass(passedUserId: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        val passTimestamp = System.currentTimeMillis()
-        val dbRef = FirebaseDatabase.getInstance().getReference("users/$passedUserId/passes")
-        dbRef.updateChildren(mapOf(userId to passTimestamp))
-    }
-
 
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
@@ -186,6 +157,7 @@ class DiscoverViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
+
 //        return (
 //                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
 //                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&

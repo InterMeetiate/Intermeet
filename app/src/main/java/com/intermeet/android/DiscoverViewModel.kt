@@ -173,6 +173,7 @@ class DiscoverViewModel : ViewModel() {
 //                        )
 //                        ))
         return true
+    }
 //
 //    private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
 //        return when (userPreference) {

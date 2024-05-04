@@ -12,6 +12,8 @@ class MatchAnimationTest : AppCompatActivity() {
 
         val button: Button = findViewById(R.id.button)
         val button2: Button = findViewById(R.id.likebutton)
+        val button3: Button = findViewById(R.id.passbutton)
+
 
         // Ensure the fragment is properly managed
         var fragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer) as MatchAnimation?
@@ -30,6 +32,15 @@ class MatchAnimationTest : AppCompatActivity() {
                     .commit()
             }
         }
+        var fragment3 = supportFragmentManager.findFragmentById(R.id.fragmentContainer3) as PassAnimation?
+        if (fragment3 == null){
+            fragment3 = PassAnimation()  // Use '=' for assignment
+            if (fragment3 != null) {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer2, fragment3)
+                    .commit()
+            }
+        }
 
 
         button.setOnClickListener {
@@ -41,6 +52,10 @@ class MatchAnimationTest : AppCompatActivity() {
         button2.setOnClickListener{
             fragment2.toggleBackgroundAnimation()
             fragment2.animateLike()
+        }
+        button3.setOnClickListener{
+            fragment3.toggleBackgroundAnimation()
+            fragment3.animatePass()
         }
 
     }

@@ -1,16 +1,11 @@
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.location.Location
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
@@ -28,7 +23,6 @@ import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -73,7 +67,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
-import com.intermeet.android.LockableBottomSheetBehavior
 import com.intermeet.android.UserAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
 import java.util.UUID
@@ -97,13 +90,14 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var currentCoords: LatLng
     private lateinit var progressBar: ProgressBar
-    private lateinit var rectangleBackground: View
-    private lateinit var participantText: TextView
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
     private var userMarker: Marker? = null
+    private var selectedPlaceText: String? = null
+    private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
+    private val EARTH_RADIUS_KM = 6371.0
 
     private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
@@ -111,7 +105,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -121,34 +114,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
-        rectangleBackground = view.findViewById<View>(R.id.rectangleBackground)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
-
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // Check if the new state is expanded or collapsed
-                when (newState) {
-                    BottomSheetBehavior.STATE_DRAGGING, BottomSheetBehavior.STATE_EXPANDED -> {
-                        // Hide the buttons when bottom sheet is expanded or dragging
-                        mapButton.visibility = View.GONE
-                        myLocation.visibility = View.GONE
-                        rectangleBackground.visibility = View.GONE
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        // Show the buttons when bottom sheet is collapsed
-                        mapButton.visibility = View.VISIBLE
-                        myLocation.visibility = View.VISIBLE
-                        rectangleBackground.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-        })
 
         mapButton = view.findViewById(R.id.events_mapIcon)
         mapButton.setOnClickListener {
@@ -189,6 +158,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         // Fills the database when events based on the currently logged in user's current location
+        // Temporarily set to the top right menu bar in the events page
         debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
@@ -207,16 +177,10 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             showDropdownMenu()
         }
 
-        val behavior = LockableBottomSheetBehavior.from(bottomSheet)
-        eventList.setOnScrollChangeListener { _, _, _, _, _ ->
-            behavior.isDraggable = !eventList.canScrollVertically(-1) // The bottom sheet is draggable only when the ListView is not scrollable upwards
-        }
-
         // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
             val eventMarker = eventMarkersMap[event.title]
-
             eventMarker?.let { marker ->
                 // Move the camera to the position of the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
@@ -413,11 +377,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun showEventCard(event: Event) {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.event_details_card)
-        //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
         Glide.with(requireContext())
@@ -446,82 +408,41 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
-        val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
-        val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
-        val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
-        val moreParticipantsText = dialog.findViewById<TextView>(R.id.more_participants)
-        participantText = dialog.findViewById(R.id.participant_text)
+
         fetchUsersGoingToEvent(event.id) { users ->
             if(users.isNotEmpty()) {
                 fetchUserDetails(users[0]) { user ->
+                    val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
                     if (user.photoDownloadUrls.isNotEmpty()) {
-                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant1) }
+                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).into(participant1) }
                     }
                 }
+            }
 
-                // One participant
-                if(users.size > 1) {
-                    fetchUserDetails(users[1]) { user ->
-                        if (user.photoDownloadUrls.isNotEmpty()) {
-                            context?.let {
-                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant2)
-                            }
+            if(users.size > 1) {
+                fetchUserDetails(users[1]) { user ->
+                    val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let {
+                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant2)
                         }
                     }
                 }
+            }
 
-                // Two participants
-                if(users.size > 2) {
-                    fetchUserDetails(users[2]) { user ->
-                        if (user.photoDownloadUrls.isNotEmpty()) {
-                            context?.let {
-                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant3)
-                            }
+            if(users.size > 2) {
+                fetchUserDetails(users[2]) { user ->
+                    val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let {
+                            Glide.with(it).load(user.photoDownloadUrls[0]).into(participant3)
                         }
                     }
                 }
-
-                // Three or more participants
-                if (users.size > 3) {
-                    val additionalCount = users.size - 3
-                    moreParticipantsText.text = "+$additionalCount"
-                    moreParticipantsText.visibility = View.VISIBLE
-                } else {
-                    moreParticipantsText.visibility = View.GONE
-                }
-            }
-            else {
-                participantText.visibility = View.VISIBLE
-                participant1.visibility = View.GONE
-                participant2.visibility = View.GONE
-                participant3.visibility = View.GONE
-
             }
         }
 
-        participant1.setOnClickListener {
-            fetchUsersGoingToEvent(event.id) { users ->
-                val usersDialog = Dialog(requireContext())
-                usersDialog.setContentView(R.layout.users_list_dialog)
-                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
-                val adapter = UserAdapter(requireContext(), users)
-                usersListView.adapter = adapter
-                usersDialog.show()
-            }
-        }
-
-        participant2.setOnClickListener {
-            fetchUsersGoingToEvent(event.id) { users ->
-                val usersDialog = Dialog(requireContext())
-                usersDialog.setContentView(R.layout.users_list_dialog)
-                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
-                val adapter = UserAdapter(requireContext(), users)
-                usersListView.adapter = adapter
-                usersDialog.show()
-            }
-        }
-
-        participant3.setOnClickListener {
+        goingText.setOnClickListener {
             fetchUsersGoingToEvent(event.id) { users ->
                 val usersDialog = Dialog(requireContext())
                 usersDialog.setContentView(R.layout.users_list_dialog)
@@ -561,10 +482,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 Log.e("UserAdapter", "Failed to fetch user details: ${error.message}")
             }
         })
-    }
-
-    private fun dpToPx(dp: Int, context: Context): Int {
-        return (dp * context.resources.displayMetrics.density).toInt()
     }
 
     private fun getCurrentUserId(): String? {
@@ -808,15 +725,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val locationList: List<*>? = dataSnapshot.value as? List<*>
+                val locationList: List<Any>? = dataSnapshot.value as? List<Any>
                 if (locationList != null && locationList.size >= 2) {
                     val latitude = (locationList[0] as? Double) ?: return
                     val longitude = (locationList[1] as? Double) ?: return
                     val userLocation = performReverseGeocoding(LatLng(latitude, longitude))
-                    callback(userLocation)
+                    callback(userLocation) // Invoke the callback with the retrieved location
                 } else {
                     Log.d("Location", "Location data not found or incomplete.")
-                    callback("")
+                    callback("") // Invoke the callback with an empty string if location data is incomplete
                 }
             }
 
@@ -882,14 +799,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
+
+
     // Method to toggle between map types
     private fun toggleMapType() {
         if (googleMap.mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             // Switch to satellite view
             googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            mapButton.text = "Switch to Normal"
         } else {
             // Switch to normal view
             googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            mapButton.text = "Switch to Satellite"
         }
     }
 

@@ -98,5 +98,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.github.yuyakaido:CardStackView:v2.3.4")
 }
 

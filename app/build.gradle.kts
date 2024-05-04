@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -62,6 +62,7 @@ android {
 dependencies {
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.fragment:fragment:1.6.2")
+    implementation("androidx.core:core-animation:1.0.0")
     val lifecycle_version = "2.3.1"
     val fragment_version = "1.6.2"
     val nav_version = "2.3.5"

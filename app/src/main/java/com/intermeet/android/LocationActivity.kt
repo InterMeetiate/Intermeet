@@ -15,57 +15,90 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.intermeet.android.helperFunc.getUserDataRepository
 
-
 class LocationActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationPermissionRequest: androidx.activity.result.ActivityResultLauncher<Array<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        ButtonFunc()
+
+        initializePermissionRequest()
+        setupButtons()
     }
 
-    private fun ButtonFunc() {
-        val agreeButton: Button = findViewById(R.id.allow)
-        agreeButton.setOnClickListener {
+    override fun onResume() {
+        super.onResume()
+        checkPermissionAndGetLocation() // Check permissions every time the activity resumes
+    }
+
+    private fun initializePermissionRequest() {
+        locationPermissionRequest = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+            val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+            if (fineLocationGranted) {
+                // Precise location access granted
+                Toast.makeText(this, "Fine location access granted.", Toast.LENGTH_SHORT).show()
+                getCurrentLocation()
+            } else if (coarseLocationGranted) {
+                // Only approximate location access granted
+                Toast.makeText(this, "Coarse location access granted.", Toast.LENGTH_SHORT).show()
+                getCurrentLocation()
+            } else {
+                // No location access granted
+                Toast.makeText(this, "Location access denied.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun setupButtons() {
+        findViewById<Button>(R.id.allow).setOnClickListener {
             checkPermissionAndGetLocation()
-            val intent = Intent(this, NotificationActivity::class.java)
-            startActivity(intent)
         }
-        val signUpButton: Button = findViewById(R.id.dont_allow)
-        signUpButton.setOnClickListener {
-            val intent = Intent(this, NotificationActivity::class.java)
-            startActivity(intent)
+        findViewById<Button>(R.id.dont_allow).setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
         }
     }
-
 
     private fun checkPermissionAndGetLocation() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                // Permission is already granted, proceed with getting the location
-                getCurrentLocation()
-            }
+        val hasFineLocationPermission = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
-            else -> {
-                // Permission not granted, request it
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-            }
+        val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasFineLocationPermission || !hasCoarseLocationPermission) {
+            // Request both permissions if not already granted
+            locationPermissionRequest.launch(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+            )
+        } else {
+            // Permissions are already granted
+            getCurrentLocation()
         }
     }
 
     private fun getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return
         }
 
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null).addOnSuccessListener(this) { location: Location? ->
+            location?.let {
+                val userDataRepository = getUserDataRepository()
+                val userData = userDataRepository.userData ?: UserDataModel()
+                userData.latitude = location.latitude
+                userData.longitude = location.longitude
+                Log.d("LocationActivity", "Location: ${location.latitude}, ${location.longitude}")
+                startActivity(Intent(this, NotificationActivity::class.java))
+            } ?: Toast.makeText(this, "Failed to get current location.", Toast.LENGTH_SHORT).show()
+=======
         fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
             .addOnSuccessListener(this) { location ->
                 if (location != null) {
@@ -90,4 +123,5 @@ class LocationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Location permission denied", Toast.LENGTH_LONG).show()
             }
         }
+    }
 }

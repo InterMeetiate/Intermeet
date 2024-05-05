@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -14,13 +15,16 @@ import com.intermeet.android.DiscoverViewModel
 import com.intermeet.android.R
 import com.intermeet.android.UsersPagerAdapter
 
-
 class DiscoverFragment : Fragment() {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: UsersPagerAdapter
     private lateinit var noUsersTextView: TextView
     private lateinit var btnRefresh: Button
+    private lateinit var btnLike: Button
+    private lateinit var btnPass: Button
+    private lateinit var returnButton: View
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,26 +36,47 @@ class DiscoverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupViews(view)
+        setupListeners()
+
+        viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+            progressBar.visibility = View.GONE
+            if (userIds.isNotEmpty()) {
+                displayUserList(userIds)
+            } else {
+                displayNoUsers()
+            }
+        }
+
+        fetchUsers(autoRefresh = false)
+    }
+=======
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val btnPass: Button = view.findViewById(R.id.btnPass)
         val returnButton: View = view.findViewById(R.id.retrieve_lastuser)
         btnRefresh = view.findViewById(R.id.btnRefresh)
 
+    private fun setupViews(view: View) {
+        btnRefresh = view.findViewById(R.id.btnRefresh)
+        btnLike = view.findViewById(R.id.btnLike)
+        btnPass = view.findViewById(R.id.btnPass)
+        returnButton = view.findViewById(R.id.return_button)
         viewPager = view.findViewById(R.id.usersViewPager)
         viewPager.isUserInputEnabled = false
         adapter = UsersPagerAdapter(this)
         viewPager.adapter = adapter
         noUsersTextView = view.findViewById(R.id.tvNoUsers)
+        progressBar = view.findViewById(R.id.loadingProgressBar)
 
-        // Marking user as seen
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupListeners() {
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                val userId = adapter.getUserId(position)
-                viewModel.markAsSeen(userId)
+                viewModel.markAsSeen(adapter.getUserId(position))
             }
         })
-
 
         btnLike.setOnClickListener {
             returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
@@ -63,53 +88,72 @@ class DiscoverFragment : Fragment() {
             returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return_black))
             navigateToNextUser()
         }
+
         returnButton.setOnClickListener {
             returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
             navigateToPreviousUser()
         }
 
         btnRefresh.setOnClickListener {
-            viewModel.clearSeenUsers()
-            if (isAdded) {
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, newInstance())
-                    .commit()
-            }
+            fetchUsers(autoRefresh = false)
         }
+    }
 
-        // Observe the filtered user IDs LiveData
-        viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
-            if (userIds.isNotEmpty()) {
-                noUsersTextView.visibility = View.GONE
-                viewPager.visibility = View.VISIBLE
-                btnRefresh.visibility = View.GONE
-                adapter.setUserIds(userIds)
-                adapter.notifyDataSetChanged()
-                viewPager.currentItem = 0
-
-                // Log the filtered user IDs
-                Log.d("DiscoverFragment", "Filtered User IDs: $userIds")
-            } else {
-                noUsersTextView.visibility = View.VISIBLE
-                viewPager.visibility = View.GONE
-                btnRefresh.visibility = View.VISIBLE
-
-                // Log when no user IDs are available
-                Log.d("DiscoverFragment", "No filtered user IDs available")
-            }
-        }
-        // Trigger the fetching and filtering of users
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fetchUsers(autoRefresh: Boolean) {
+        progressBar.visibility = View.VISIBLE
+        noUsersTextView.visibility = View.GONE
+        btnRefresh.visibility = View.GONE
+        viewModel.clearSeenUsers()
         viewModel.fetchAndFilterUsers()
+
+        if (autoRefresh) {
+            viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+                if (userIds.isEmpty()) {
+                    displayNoUsers(autoRefresh = false)
+                }
+            }
+        }
     }
 
 
-    private fun navigateToNextUser() {
-        if (viewPager.currentItem < adapter.itemCount - 1) {
-            viewPager.currentItem += 1
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun displayUserList(userIds: List<String>) {
+        if (userIds.isEmpty()) {
+            fetchUsers(autoRefresh = true)
+        } else {
+            noUsersTextView.visibility = View.GONE
+            viewPager.visibility = View.VISIBLE
+            btnRefresh.visibility = View.GONE
+            btnLike.visibility = View.VISIBLE
+            btnPass.visibility = View.VISIBLE
+            returnButton.visibility = View.VISIBLE
+            adapter.setUserIds(userIds)
+            adapter.notifyDataSetChanged()
+            viewPager.currentItem = 0
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun displayNoUsers(autoRefresh: Boolean = false) {
+        if (autoRefresh) {
+            fetchUsers(autoRefresh = true)
         } else {
             noUsersTextView.visibility = View.VISIBLE
             viewPager.visibility = View.GONE
             btnRefresh.visibility = View.VISIBLE
+            btnLike.visibility = View.GONE
+            btnPass.visibility = View.GONE
+            returnButton.visibility = View.GONE
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun navigateToNextUser() {
+        if (viewPager.currentItem < adapter.itemCount - 1) {
+            viewPager.currentItem += 1
+        } else {
+            displayNoUsers()
         }
     }
 
@@ -118,7 +162,6 @@ class DiscoverFragment : Fragment() {
             viewPager.currentItem -= 1
         }
     }
-
 
     companion object {
         fun newInstance() = DiscoverFragment()

@@ -4,33 +4,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ImageButton
-        android:id="@+id/return_button"
-        android:layout_width="40dp"
-        android:layout_height="38dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="19dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="333dp"
-        android:layout_marginBottom="703dp"
-        android:background="@drawable/resource_return"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06999999" />
-
-    <androidx.appcompat.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="1dp"
-        android:background="#33000000" />
+        android:background="#33000000">
 
+        <ImageView
+            android:id="@+id/back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:paddingStart="16dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"/>
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/back_arrow"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/profile_image"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:text="User Name"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+    </RelativeLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/message_input_layout"
+        android:orientation="horizontal" />
 
     <RelativeLayout
         android:id="@+id/message_input_layout"
@@ -47,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/send_button"
-            android:hint="Type your message..."
+            android:hint="Type a message..."
             android:maxLines="3"
             android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
             android:imeOptions="actionSend" />

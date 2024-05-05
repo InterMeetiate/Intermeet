@@ -1,6 +1,5 @@
 package com.intermeet.android
 
-
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
@@ -18,9 +17,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-
 class ChatFragment : Fragment() {
-
 
     companion object {
         fun newInstance(): ChatFragment {
@@ -28,11 +25,9 @@ class ChatFragment : Fragment() {
         }
     }
 
-
     // Define your UI elements
     private lateinit var listView: ListView
     private lateinit var searchEditText: EditText
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,18 +36,15 @@ class ChatFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
 
-
         // Initialize UI elements t)
         searchEditText = view.findViewById(R.id.searchbox)
         listView = view.findViewById(R.id.usersList)
-
 
         // Set up your list view adapter and other UI interactions here
         val currentUser = getCurrentUserId()
         if (currentUser != null) {
             fetchLikedUsers(currentUser) { users ->
                 val adapter = ChatAdapter(requireContext(), users) { userId ->
-                    // Handle item click here
                     startChatWithUser(userId)
                 }
                 listView.adapter = adapter
@@ -63,7 +55,6 @@ class ChatFragment : Fragment() {
             val userId = listView.getItemAtPosition(position) as String
             startChatWithUser(userId)
         }
-
 
         return view
     }
@@ -78,7 +69,6 @@ class ChatFragment : Fragment() {
         return currentUser?.uid
     }
 
-
     private fun fetchLikedUsers(userID: String, callback: (List<String>) -> Unit) {
         val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("likes")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -87,14 +77,12 @@ class ChatFragment : Fragment() {
                 callback(likedUserIds)
             }
 
-
             override fun onCancelled(error: DatabaseError) {
                 Log.e("FetchLikedUsers", "Error fetching liked user IDs: ${error.message}")
                 callback(emptyList()) // Return an empty list in case of error
             }
         })
     }
-
 
     // You can add more methods/functions here as needed
 }

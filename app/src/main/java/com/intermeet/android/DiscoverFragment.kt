@@ -1,3 +1,4 @@
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -5,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
@@ -26,12 +28,13 @@ class DiscoverFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_discover, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val btnLike: Button = view.findViewById(R.id.btnLike)
         val btnPass: Button = view.findViewById(R.id.btnPass)
-        val returnButton: View = view.findViewById(R.id.return_button)
+        val returnButton: View = view.findViewById(R.id.retrieve_lastuser)
         btnRefresh = view.findViewById(R.id.btnRefresh)
 
         viewPager = view.findViewById(R.id.usersViewPager)
@@ -50,18 +53,18 @@ class DiscoverFragment : Fragment() {
         })
 
 
-
-
         btnLike.setOnClickListener {
-            val likedUserId = adapter.getUserId(viewPager.currentItem)
-            viewModel.addLike(likedUserId)
-            navigateToNextUser()
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
+            /*val likedUserId = adapter.getUserId(viewPager.currentItem)
+            viewModel.addLike(likedUserId)*/
         }
 
         btnPass.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return_black))
             navigateToNextUser()
         }
         returnButton.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
             navigateToPreviousUser()
         }
 

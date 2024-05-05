@@ -1,7 +1,6 @@
 package com.intermeet.android
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
@@ -11,7 +10,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
-import com.intermeet.android.Home_Page.Test_to_home
+import androidx.appcompat.app.AppCompatActivity
 import com.intermeet.android.helperFunc.getUserDataRepository
 
 class PromptsActivity : AppCompatActivity() {
@@ -20,13 +19,12 @@ class PromptsActivity : AppCompatActivity() {
     lateinit var enter: ImageView
     lateinit var promptDropdown: Spinner
     lateinit var promptList: ArrayList<String>
-    private lateinit var backButton: Button
-
+    private lateinit var nextButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_prompts)
-        backButton = findViewById(R.id.next_button)
+        nextButton = findViewById(R.id.next_button)
 
 
         listView = findViewById(R.id.listView)
@@ -63,10 +61,10 @@ class PromptsActivity : AppCompatActivity() {
                 promptTextbox.setText("")
             }
         }
-        backButton.setOnClickListener {
+        nextButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
             Log.d("PhotoActivity", "Current userData: ${UserDataRepository.userData}")
-            val intent = Intent(this, Test_to_home::class.java)
+            val intent = Intent(this, AccountCreationActivity::class.java)
             startActivity(intent)
         }
     }

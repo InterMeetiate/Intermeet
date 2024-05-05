@@ -1,6 +1,6 @@
+
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,17 +50,12 @@ class DiscoverFragment : Fragment() {
 
         fetchUsers(autoRefresh = false)
     }
-=======
-        val btnLike: Button = view.findViewById(R.id.btnLike)
-        val btnPass: Button = view.findViewById(R.id.btnPass)
-        val returnButton: View = view.findViewById(R.id.retrieve_lastuser)
-        btnRefresh = view.findViewById(R.id.btnRefresh)
 
     private fun setupViews(view: View) {
         btnRefresh = view.findViewById(R.id.btnRefresh)
         btnLike = view.findViewById(R.id.btnLike)
         btnPass = view.findViewById(R.id.btnPass)
-        returnButton = view.findViewById(R.id.return_button)
+        returnButton = view.findViewById(R.id.retrieve_lastuser)
         viewPager = view.findViewById(R.id.usersViewPager)
         viewPager.isUserInputEnabled = false
         adapter = UsersPagerAdapter(this)

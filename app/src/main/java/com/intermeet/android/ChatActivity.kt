@@ -1,9 +1,8 @@
 package com.intermeet.android
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
-import com.google.firebase.database.*
 
 class ChatActivity : AppCompatActivity() {
 
@@ -22,9 +21,21 @@ class ChatActivity : AppCompatActivity() {
         // Enable the back button in the toolbar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-
         // Fetch the user's name and set it as the toolbar title
         //fetchUserName(userId)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle toolbar item clicks
+        when (item.itemId) {
+            android.R.id.home -> {
+                // Respond to the back button click
+                onBackPressedDispatcher.onBackPressed()
+                return true
+            }
+            // Add more cases for other toolbar items if needed
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     /*private fun fetchUserName(userId: String) {
@@ -42,18 +53,5 @@ class ChatActivity : AppCompatActivity() {
                 // Handle database error
             }
         })
-    }*/
-
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle toolbar item clicks
-        when (item.itemId) {
-            android.R.id.home -> {
-                // Respond to the back button click
-                onBackPressed()
-                return true
-            }
-            // Add more cases for other toolbar items if needed
-        }
-        return super.onOptionsItemSelected(item)
     }*/
 }

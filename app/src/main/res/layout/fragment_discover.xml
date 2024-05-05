@@ -10,11 +10,20 @@
         android:layout_below="@+id/frame_2"
         android:layout_marginTop="-38dp" />
 
-    <View
+    <!--<View
         android:id="@+id/return_button"
         android:layout_width="40dp"
         android:layout_height="38dp"
         android:background="@drawable/resource_return"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginStart="23dp"/>-->
+
+    <View
+        android:id="@+id/retrieve_lastuser"
+        android:layout_width="40dp"
+        android:layout_height="38dp"
+        android:background="@drawable/arrow_return"
         android:layout_marginEnd="48dp"
         android:layout_marginTop="45dp"
         android:layout_marginStart="23dp"/>

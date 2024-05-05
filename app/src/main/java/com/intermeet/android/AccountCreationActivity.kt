@@ -2,6 +2,7 @@ package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.geofire.GeoFire
@@ -26,7 +27,7 @@ class AccountCreationActivity : AppCompatActivity() {
 
     private fun registerUser() {
 
-        val userData = userDataRepository.userData
+        val userData = UserDataRepository.userData
         val email = userData?.email ?: ""
         val password = userData?.password ?: ""
         val latitude = userData?.latitude
@@ -62,7 +63,7 @@ class AccountCreationActivity : AppCompatActivity() {
     }
 
     private fun uploadImagesToFirebaseStorage(userId: String, onCompletion: (Boolean) -> Unit) {
-        val imageUris = userDataRepository.userData?.photoUris ?: listOf()
+        val imageUris = UserDataRepository.userData?.photoUris ?: listOf()
         val storageRef = FirebaseStorage.getInstance().reference.child("users/$userId/images")
         val imageDownloadUrls = mutableListOf<String>()
 
@@ -87,7 +88,7 @@ class AccountCreationActivity : AppCompatActivity() {
             Tasks.whenAll(uploadTasks).addOnCompleteListener {
                 if (it.isSuccessful) {
                     // Update UserDataModel with the download URLs
-                    userDataRepository.userData?.photoDownloadUrls = imageDownloadUrls
+                    UserDataRepository.userData?.photoDownloadUrls = imageDownloadUrls
                     onCompletion(true)
                 } else {
                     // Handle failure
@@ -102,12 +103,14 @@ class AccountCreationActivity : AppCompatActivity() {
 
 
     private fun storeUserDataToFirebaseDatabase(userId: String) {
-            val userData = userDataRepository.userData?.apply {
+            val userData = UserDataRepository.userData?.apply {
             // Clear sensitive information before storing in the database
             email = null
             password = null
-            userDataRepository.userData?.photoUris?.clear()
+            UserDataRepository.userData?.photoUris?.clear()
         }
+
+        Log.d("UserData", "${UserDataRepository.userData.toString()}")
 
         userData?.let {
             FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -136,6 +139,6 @@ class AccountCreationActivity : AppCompatActivity() {
     private fun navigateToNextActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        finish()
+        //finish()
     }
 }

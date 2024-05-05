@@ -50,6 +50,11 @@ class DiscoverFragment : Fragment() {
 
         fetchUsers(autoRefresh = false)
     }
+=======
+        val btnLike: Button = view.findViewById(R.id.btnLike)
+        val btnPass: Button = view.findViewById(R.id.btnPass)
+        val returnButton: View = view.findViewById(R.id.retrieve_lastuser)
+        btnRefresh = view.findViewById(R.id.btnRefresh)
 
     private fun setupViews(view: View) {
         btnRefresh = view.findViewById(R.id.btnRefresh)
@@ -74,16 +79,18 @@ class DiscoverFragment : Fragment() {
         })
 
         btnLike.setOnClickListener {
-            val likedUserId = adapter.getUserId(viewPager.currentItem)
-            viewModel.addLike(likedUserId)
-            navigateToNextUser()
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
+            /*val likedUserId = adapter.getUserId(viewPager.currentItem)
+            viewModel.addLike(likedUserId)*/
         }
 
         btnPass.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return_black))
             navigateToNextUser()
         }
 
         returnButton.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
             navigateToPreviousUser()
         }
 

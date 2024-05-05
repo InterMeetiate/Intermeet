@@ -57,12 +57,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    afterEvaluate {
+        val mergeDebugResources = tasks.getByName("mergeDebugResources")
+        val processDebugGoogleServices = tasks.getByName("processDebugGoogleServices")
+        mergeDebugResources.dependsOn(processDebugGoogleServices)
+    }
 }
 
 dependencies {
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.fragment:fragment:1.6.2")
     implementation("androidx.core:core-animation:1.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
     val lifecycle_version = "2.3.1"
     val fragment_version = "1.6.2"
     val nav_version = "2.3.5"

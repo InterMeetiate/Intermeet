@@ -1,5 +1,6 @@
 package com.intermeet.android
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -209,7 +210,24 @@ class DiscoverViewModel : ViewModel() {
         val likeTimestamp = System.currentTimeMillis()
         val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
         dbRef.updateChildren(mapOf(userId to likeTimestamp))
+
+        // Notify liked user
+        val notificationRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/notifications")
+        val notification = mapOf(
+            "fromUserId" to userId,
+            "type" to "like",
+            "timestamp" to likeTimestamp
+        )
+        notificationRef.push().setValue(notification)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification successfully created for user $likedUserId")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Failed to create notification for user $likedUserId", it)
+            }
+
     }
+
 
     fun markAsSeen(seenUserId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid

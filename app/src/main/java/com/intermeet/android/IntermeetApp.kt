@@ -2,9 +2,40 @@ package com.intermeet.android
 
 import android.app.Application
 import android.net.Uri
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.provider.Settings.Global.getString
+import androidx.core.content.ContextCompat.getSystemService
+import android.content.Context
+import android.provider.Settings
+import androidx.core.content.ContextCompat
 
 class IntermeetApp : Application() {
     val userDataRepository = UserDataRepository
+    override fun onCreate() {
+        super.onCreate()
+        setupNotificationChannels()
+    }
+
+    private fun setupNotificationChannels() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Channel details
+            val channelId = "LikeChannel"
+            val channelName = getString(R.string.channel_name) // Fetching from strings.xml
+            val channelDescription = getString(R.string.channel_description) // Fetching from strings.xml
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+
+            // Creating the notification channel
+            val channel = NotificationChannel(channelId, channelName, importance).apply {
+                description = channelDescription
+            }
+
+            // Registering the channel with the system
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 }
 
 object UserDataRepository {
@@ -18,6 +49,10 @@ object UserDataRepository {
         return ""
     }
 }
+
+
+
+
 
 
 data class UserDataModel(

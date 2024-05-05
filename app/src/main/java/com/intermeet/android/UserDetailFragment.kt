@@ -48,7 +48,7 @@ class UserDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_userdetails_cardstack, container, false)
+        return inflater.inflate(R.layout.fragment_user_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

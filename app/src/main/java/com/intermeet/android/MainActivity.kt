@@ -48,6 +48,13 @@ class MainActivity : AppCompatActivity() {
                         .commit()
                     true
                 }
+                R.id.navigation_chat -> {
+                    val chatFragment = ChatFragment.newInstance() // Assuming your ProfileFragment also has a newInstance method
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, chatFragment)
+                        .commit()
+                    true
+                }
                 // Handle other navigation items if you have more
                 else -> false
             }

@@ -26,6 +26,7 @@ class ChatAdapter(context: Context, private val userIds: List<String>,  private 
         val userId = getItem(position)
         if (userId != null) {
             fetchUserDetails(userId) { user ->
+                Log.d("ChatAdapter", "${user.firstName} ${user.lastName}")
                 textView.text = "${user.firstName} ${user.lastName}"
                 if (user.photoDownloadUrls.isNotEmpty()) {
                     Glide.with(context).load(user.photoDownloadUrls[0]).into(imageView)

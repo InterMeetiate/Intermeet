@@ -18,6 +18,7 @@ class SettingsActivity : AppCompatActivity() {
         val emailButton: Button = findViewById(R.id.Email)
         val paymentsButton: Button = findViewById(R.id.Payments)
         val phoneNumberButton: Button = findViewById(R.id.PhoneNumber)
+        val logout: Button = findViewById(R.id.LogOut)
 
         // Set click listener for the toolbar navigation icon (back button)
         toolbar.setNavigationOnClickListener {
@@ -49,5 +50,11 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(this, PhoneNumberActivity::class.java)
             startActivity(intent)
         }
+
+        logout.setOnClickListener{
+            val intent = Intent(this, BeginningActivity::class.java)
+            startActivity(intent  )
+        }
+
     }
 }

@@ -45,7 +45,6 @@ class ChatFragment : Fragment() {
         if (currentUser != null) {
             fetchLikedUsers(currentUser) { users ->
                 val adapter = ChatAdapter(requireContext(), users) { userId ->
-                    // Handle item click here
                     startChatWithUser(userId)
                 }
                 listView.adapter = adapter

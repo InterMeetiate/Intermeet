@@ -380,8 +380,13 @@
     <string name="going">Going</string>
     <string name="review">Review</string>
     <string name="no_participant_text">Looks like no is currently going. Be the first!</string>
+
+    <string name="channel_name">App Notifications</string>
+    <string name="channel_description">Notifications for general purposes</string>
+
     <string name="received_message_placeholder">This is a received message</string>
     <string name="sent_message_placeholder">This is a sent message</string>
+
 
 
 </resources>

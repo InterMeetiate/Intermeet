@@ -2,19 +2,26 @@ package com.intermeet.android
 
 //import LikesPageFragment
 import LikesPageFragment
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         Places.initialize(applicationContext, "@string/google_maps_key")
+        updateFCMToken()
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottom_nav)
         bottomNav.setOnItemSelectedListener { item ->
@@ -59,6 +66,17 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+            // Log and toast
+            Log.d("FCM", "FCM Token: $token")
+        }
 
         // Set default selection (optional, if you want to show a particular tab on launch)
         if (savedInstanceState == null) {
@@ -72,5 +90,25 @@ class MainActivity : AppCompatActivity() {
             bottomNav.selectedItemId = R.id.profileFragment // Assume this is the ID for the profile in the BottomNavigationView
         }
     }
+    private fun updateFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+            // Get new FCM registration token
+            val newToken = task.result
+            Log.d("FCM", "FCM Token: $newToken")
+
+            // Optionally send the token to your server
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            userId?.let {
+                val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId/fcmToken")
+                databaseReference.setValue(newToken)
+            }
+        }
+    }
+
+
 }
 //test

@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class ChatAdapter(context: Context, private val userIds: List<String>) : ArrayAdapter<String>(context, 0, userIds) {
+class ChatAdapter(context: Context, private val userIds: List<String>,  private val onItemClick: (String) -> Unit) : ArrayAdapter<String>(context, 0, userIds) {
     private val inflater = LayoutInflater.from(context)
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -31,6 +31,9 @@ class ChatAdapter(context: Context, private val userIds: List<String>) : ArrayAd
                     Glide.with(context).load(user.photoDownloadUrls[0]).into(imageView)
                 }
             }
+        }
+        view.setOnClickListener {
+            onItemClick(userIds[position]) // Pass the clicked user ID to the callback
         }
 
         return view

@@ -130,6 +130,7 @@
             android:name=".HelpCenterActivity"
             android:exported="false">
         </activity>
+        <activity android:name=".ChatActivity" />
 
     </application>
 

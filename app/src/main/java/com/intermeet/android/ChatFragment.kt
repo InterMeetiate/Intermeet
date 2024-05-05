@@ -1,11 +1,13 @@
 package com.intermeet.android
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import android.widget.ListView
 import android.widget.EditText
@@ -41,13 +43,27 @@ class ChatFragment : Fragment() {
         // Set up your list view adapter and other UI interactions here
         val currentUser = getCurrentUserId()
         if (currentUser != null) {
-            fetchLikedUsers(currentUser) {users->
-                val adapter = ChatAdapter(requireContext(), users)
+            fetchLikedUsers(currentUser) { users ->
+                val adapter = ChatAdapter(requireContext(), users) { userId ->
+                    // Handle item click here
+                    startChatWithUser(userId)
+                }
                 listView.adapter = adapter
             }
         }
+        // Set item click listener for list view
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val userId = listView.getItemAtPosition(position) as String
+            startChatWithUser(userId)
+        }
 
         return view
+    }
+    private fun startChatWithUser(userId: String) {
+        // Start a new chat activity with the user identified by userId
+        val intent = Intent(requireContext(), ChatActivity::class.java)
+        intent.putExtra("userId", userId)
+        startActivity(intent)
     }
     private fun getCurrentUserId(): String? {
         val currentUser = FirebaseAuth.getInstance().currentUser

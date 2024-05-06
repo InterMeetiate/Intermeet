@@ -163,8 +163,8 @@ class CardStackAdapter(private val context: Context, private var users: List<Use
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val user = users[position]
-        holder.bind(user)
+        holder.itemView.alpha = 0f  // Start fully transparent or semi-transparent
+        holder.bind(users[position])
     }
 
     override fun getItemCount(): Int = users.size

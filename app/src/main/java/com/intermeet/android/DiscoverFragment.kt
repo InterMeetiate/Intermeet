@@ -15,6 +15,7 @@ import com.intermeet.android.DiscoverViewModel
 import com.intermeet.android.R
 import com.intermeet.android.UserDataModel
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
 
@@ -24,8 +25,6 @@ class DiscoverFragment : Fragment() {
     private lateinit var adapter: CardStackAdapter
     private lateinit var noUsersTextView: TextView
     private lateinit var btnRefresh: Button
-    private lateinit var btnLike: Button
-    private lateinit var btnPass: Button
     private lateinit var returnButton: View
     private lateinit var progressBar: ProgressBar
 
@@ -41,6 +40,7 @@ class DiscoverFragment : Fragment() {
 
         setupViews(view)
         setupListeners()
+        setupCardStackView()
 
         viewModel.filteredUsers.observe(viewLifecycleOwner) { users ->
             progressBar.visibility = View.GONE
@@ -59,8 +59,6 @@ class DiscoverFragment : Fragment() {
         cardStackView = view.findViewById(R.id.usersCardStackView)
         noUsersTextView = view.findViewById(R.id.tvNoUsers)
         btnRefresh = view.findViewById(R.id.btnRefresh)
-        btnLike = view.findViewById(R.id.btnLike)
-        btnPass = view.findViewById(R.id.btnPass)
         returnButton = view.findViewById(R.id.return_button)
         progressBar = view.findViewById(R.id.loadingProgressBar)
 
@@ -69,22 +67,6 @@ class DiscoverFragment : Fragment() {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() {
-        cardStackView.layoutManager = CardStackLayoutManager(context).apply {
-            setDirections(Direction.HORIZONTAL)
-            setCanScrollVertical(false)
-            setCanScrollHorizontal(true)
-        }
-
-        btnLike.setOnClickListener {
-            val swipedDirection = Direction.Right
-            cardStackView.swipe()
-        }
-
-        btnPass.setOnClickListener {
-            val swipedDirection = Direction.Left
-            cardStackView.swipe()
-        }
-
         returnButton.setOnClickListener {
         }
 
@@ -105,8 +87,6 @@ class DiscoverFragment : Fragment() {
     private fun displayNoUsers() {
         noUsersTextView.visibility = View.VISIBLE
         btnRefresh.visibility = View.VISIBLE
-        btnLike.visibility = View.GONE
-        btnPass.visibility = View.GONE
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -118,6 +98,42 @@ class DiscoverFragment : Fragment() {
             cardStackView.visibility = View.VISIBLE
             noUsersTextView.visibility = View.GONE
         }
+    }
+
+    private fun setupCardStackView() {
+        val manager = CardStackLayoutManager(context, object : CardStackListener {
+            override fun onCardDragging(direction: Direction, ratio: Float) {
+                // You can leave this empty or add some logging if you want
+            }
+
+            override fun onCardSwiped(direction: Direction) {
+                // Handle card swipe if necessary
+            }
+
+            override fun onCardRewound() {
+                // Handle rewind if necessary
+            }
+
+            override fun onCardCanceled() {
+                // Handle card cancel if necessary
+            }
+
+            override fun onCardAppeared(view: View, position: Int) {
+                // Fade in the card as it appears
+                view.animate().alpha(1.0f).setDuration(300).start()
+            }
+
+            override fun onCardDisappeared(view: View, position: Int) {
+            }
+        }).apply {
+            setDirections(Direction.HORIZONTAL)
+            setCanScrollVertical(false)
+            setCanScrollHorizontal(true)
+        }
+
+
+        cardStackView.layoutManager = manager
+        cardStackView.adapter = adapter
     }
 
 

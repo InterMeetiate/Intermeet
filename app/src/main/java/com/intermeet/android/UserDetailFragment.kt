@@ -1,5 +1,7 @@
+
 package com.intermeet.android
 
+import InterestsAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +13,10 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 
 import com.intermeet.android.helperFunc.calculateAgeWithCalendar
 
@@ -28,6 +33,7 @@ class UserDetailFragment : Fragment() {
     private lateinit var tvInterestsHeader: TextView
     private lateinit var tvEthnicity: TextView
     private lateinit var relativeLayout: RelativeLayout
+    private lateinit var recyclerViewInterests: RecyclerView
     private val viewModel: DiscoverViewModel by viewModels()
 
     private var userId: String? = null
@@ -66,6 +72,11 @@ class UserDetailFragment : Fragment() {
                 userData?.let { updateUserUI(it) }
             }
         }
+        recyclerViewInterests = view.findViewById(R.id.rvInterests)
+        val layoutManager = FlexboxLayoutManager(context).apply {
+            justifyContent = JustifyContent.CENTER
+        }
+        recyclerViewInterests.layoutManager = layoutManager
 
     }
 
@@ -75,9 +86,12 @@ class UserDetailFragment : Fragment() {
         tvLocation.text = "${user.latitude}, ${user.longitude}"
         tvPronouns.text = user.pronouns
         tvGender.text = user.gender
-        tvAboutMeHeader.visibility = if (user.aboutMeIntro?.isNotEmpty() == true) View.VISIBLE else View.GONE
+        tvAboutMeHeader.visibility =
+            if (user.aboutMeIntro?.isNotEmpty() == true) View.VISIBLE else View.GONE
         tvAboutMe.text = user.aboutMeIntro
         tvEthnicity.text = user.ethnicity
+
+        recyclerViewInterests.adapter = InterestsAdapter(user.interests)
 
         val imageView1 = view?.findViewById<ImageView>(R.id.imageView1)
         Glide.with(this)
@@ -195,4 +209,3 @@ class UserDetailFragment : Fragment() {
             }
     }
 }
-

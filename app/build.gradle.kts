@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -51,17 +51,26 @@ android {
         }
     }
     compileOptions {
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    afterEvaluate {
+        val mergeDebugResources = tasks.getByName("mergeDebugResources")
+        val processDebugGoogleServices = tasks.getByName("processDebugGoogleServices")
+        mergeDebugResources.dependsOn(processDebugGoogleServices)
+    }
 }
 
 dependencies {
     implementation("androidx.activity:activity:1.8.0")
     implementation("androidx.fragment:fragment:1.6.2")
+    implementation("androidx.core:core-animation:1.0.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:24.0.0")
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
     val lifecycle_version = "2.3.1"
     val fragment_version = "1.6.2"
     val nav_version = "2.3.5"
@@ -97,6 +106,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.picasso:picasso:2.8")
+
     implementation("androidx.compose.ui:ui-text-google-fonts:1.6.1")
+    implementation("com.kizitonwose.calendar:view:2.0.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
 

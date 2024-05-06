@@ -1,5 +1,6 @@
 package com.intermeet.android
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -145,20 +146,39 @@ class DiscoverViewModel : ViewModel() {
     }
 
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
-        return (
-                (doesGenderMatch(user.gender, currentUser.genderPreference) &&
-                        (currentUser.religionPreference == "Open to all" || currentUser.religionPreference == user.religion) &&
-                        (currentUser.ethnicityPreference == "Open to all" || currentUser.ethnicityPreference == user.ethnicity) &&
-                        (currentUser.drinkingPreference == null || currentUser.drinkingPreference == user.drinking) &&
-                        (currentUser.smokingPreference == null || currentUser.smokingPreference == user.smoking) &&
-                        (currentUser.politicsPreference == "Open to anything" || currentUser.politicsPreference == user.politics) &&
-                        (currentUser.drugsPreference == null || currentUser.drugsPreference == user.drugs) &&
-                        ageWithinRange(
-                            user.birthday,
-                            currentUser.minAgePreference,
-                            currentUser.maxAgePreference
-                        )
-                        ))
+
+        val preferenceFields = listOf(
+            "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
+        )
+
+        var score = 0
+        val user_name = user.firstName
+        Log.d("DiscoverViewModel", "Score rn $user_name")
+
+        // Assume ageWithinRange and doesGenderMatch methods are defined elsewhere
+        if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
+            return false
+            Log.d("DiscoverViewModel", "Score rn $score")
+
+        }
+
+        if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
+            return false
+        }
+
+        for (prefField in preferenceFields) {
+            val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as String
+            val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as String
+
+            if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
+                score++
+                Log.d("DiscoverViewModel", "Score rn $score")
+            }
+        }
+        Log.d("DiscoverViewModel", "Total Score rn ${score}")
+        return score >= 3
+
+
     }
 
     private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
@@ -190,7 +210,24 @@ class DiscoverViewModel : ViewModel() {
         val likeTimestamp = System.currentTimeMillis()
         val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
         dbRef.updateChildren(mapOf(userId to likeTimestamp))
+
+        // Notify liked user
+        val notificationRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/notifications")
+        val notification = mapOf(
+            "fromUserId" to userId,
+            "type" to "like",
+            "timestamp" to likeTimestamp
+        )
+        notificationRef.push().setValue(notification)
+            .addOnSuccessListener {
+                Log.d(TAG, "Notification successfully created for user $likedUserId")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Failed to create notification for user $likedUserId", it)
+            }
+
     }
+
 
     fun markAsSeen(seenUserId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid

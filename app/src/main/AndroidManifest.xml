@@ -81,6 +81,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".MatchAnimationTest"
+            android:exported="false">
+        </activity>
+        <activity
             android:name=".PaymentsActivity"
             android:exported="false">
         </activity>
@@ -126,7 +130,14 @@
             android:name=".HelpCenterActivity"
             android:exported="false">
         </activity>
-
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <activity android:name=".ChatActivity" />
     </application>
 
 </manifest>

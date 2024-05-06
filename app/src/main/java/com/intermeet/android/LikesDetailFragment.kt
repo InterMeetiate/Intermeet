@@ -1,5 +1,6 @@
 package com.intermeet.android
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,13 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.view.setMargins
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 
-import com.intermeet.android.helperFunc.calculateAgeWithCalendar
+//import com.intermeet.android.helperFunc.calculateAgeWithCalendar
 
 class LikesDetailFragment : Fragment() {
     private lateinit var textViewName: TextView
@@ -45,6 +47,7 @@ class LikesDetailFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_likes_detail, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         textViewName = view.findViewById(R.id.textViewName)
@@ -75,8 +78,9 @@ class LikesDetailFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateUserUI(user: UserDataModel) {
-        textViewName.text = "${user.firstName}, ${calculateAgeWithCalendar(user.birthday)}"
+        textViewName.text = "${user.firstName}, ${calculateAge(user.birthday)}"
         tvEducation.text = user.school
         tvLocation.text = "${user.latitude}, ${user.longitude}"
         tvPronouns.text = user.pronouns
@@ -188,6 +192,46 @@ class LikesDetailFragment : Fragment() {
         cardView.addView(textView)
 
         return cardView
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun calculateAge(birthday: String?): Int {
+        // Implement logic to calculate age based on birthday
+        // Example: Parse birthday string, calculate age based on current date, and return age
+        // For brevity, a simplified implementation is shown here:
+        // Note: You may need to handle date parsing and calculation more accurately in a real app.
+
+        if (birthday.isNullOrEmpty()) return 0 // Default age if birthday is not provided
+        var day: Int? = null
+        var month: Int? = null
+        var year: Int? = null
+        val parts = birthday.split("-")
+
+        if (parts.size == 3) {
+            day = parts[0].toIntOrNull()
+            month = parts[1].toIntOrNull()
+            year = parts[2].toIntOrNull()
+
+            if (day != null && month != null && year != null) {
+                println("Day: $day")
+                println("Month: $month")
+                println("Year: $year")
+            }
+        }
+
+        val currentYear = java.time.LocalDate.now().year
+        val currentMonth = java.time.LocalDate.now().monthValue
+        val currentDay = java.time.LocalDate.now().dayOfMonth
+        var currentAge = currentYear - year!!
+        if(currentMonth < month!!) {
+            currentAge -= 1
+        }
+        else if(currentMonth == month!!) {
+            if(currentDay < day!!) {
+                currentAge -= 1
+            }
+        }
+
+        return currentAge
     }
 
     companion object {

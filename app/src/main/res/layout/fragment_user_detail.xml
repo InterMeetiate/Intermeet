@@ -162,6 +162,13 @@
                     android:text="@string/interests"
                     android:textStyle="bold"
                     android:padding="12dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvInterests"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tvInterestsHeader"
+                    android:padding="12dp"/>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>

@@ -329,7 +329,7 @@
     <string name="search">Search...</string>
     <string name="handle_bar" />
     <string name="search_maps" />
-    <string name="no_users">"You've seen all the users in your area."</string>
+    <string name="no_users">"You've seen all the users in your area, would you like to review your passed ones?"</string>
     <string name="refresh">Refresh</string>
     <string name="remove_photo">Remove Photo</string>
     <string name="EditProfileTitle">Lets change your profile a bit!</string>
@@ -376,6 +376,22 @@
     <string name="likes">Likes You</string>
     <string name="seelikes">See Who Likes You!</string>
     <string name="TOSyPP">By signing up, you agree to our Terms. See how we use your data in our Private Policy</string>
+    <string name="participant">Participant</string>
+    <string name="event_image">Event Image</string>
+    <string name="going">Going</string>
+    <string name="review">Review</string>
+    <string name="no_participant_text">Looks like no is currently going. Be the first!</string>
+
+    <string name="channel_name">App Notifications</string>
+    <string name="channel_description">Notifications for general purposes</string>
+
+    <string name="received_message_placeholder">This is a received message</string>
+    <string name="sent_message_placeholder">This is a sent message</string>
+    <string name="like_channel_name">LikeChannel</string>
+    <string name="like_channel_description">Channel for Likes</string>
+    <string name="chat_channel_name">Chat Channel\n</string>
+    <string name="chat_channel_description">Notification for chats</string>
+
 
 
 </resources>

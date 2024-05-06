@@ -1,11 +1,16 @@
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.text.Editable
@@ -20,8 +25,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -66,7 +73,10 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.intermeet.android.LockableBottomSheetBehavior
+import com.intermeet.android.UserAdapter
 import kotlinx.coroutines.DelicateCoroutinesApi
+import java.util.UUID
 import kotlin.math.*
 
 class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
@@ -84,21 +94,24 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var debugButton: Button
     private lateinit var autocompleteAdapter: AutocompleteAdapter
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var currentCoords: LatLng
+    private lateinit var progressBar: ProgressBar
+    private lateinit var rectangleBackground: View
+    private lateinit var participantText: TextView
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
     private var userMarker: Marker? = null
-    private var selectedPlaceText: String? = null
-    private var locationGiven: Boolean = false
     private var permissionCallback: PermissionCallback? = null
-    private val EARTH_RADIUS_KM = 6371.0
-    private lateinit var currentCoords: LatLng
+
     private val eventMarkersMap: MutableMap<String, Marker?> = mutableMapOf()
 
     interface PermissionCallback {
         fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -108,10 +121,34 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
-        BottomSheetBehavior.from(bottomSheet).apply {
+        rectangleBackground = view.findViewById<View>(R.id.rectangleBackground)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 320
-            this.state=BottomSheetBehavior.STATE_COLLAPSED
+            state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // Check if the new state is expanded or collapsed
+                when (newState) {
+                    BottomSheetBehavior.STATE_DRAGGING, BottomSheetBehavior.STATE_EXPANDED -> {
+                        // Hide the buttons when bottom sheet is expanded or dragging
+                        mapButton.visibility = View.GONE
+                        myLocation.visibility = View.GONE
+                        rectangleBackground.visibility = View.GONE
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        // Show the buttons when bottom sheet is collapsed
+                        mapButton.visibility = View.VISIBLE
+                        myLocation.visibility = View.VISIBLE
+                        rectangleBackground.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+        })
 
         mapButton = view.findViewById(R.id.events_mapIcon)
         mapButton.setOnClickListener {
@@ -131,6 +168,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         eventsTitleTextView = view.findViewById(R.id.events_title)
         eventsMenuBarButton = view.findViewById(R.id.events_menuBar)
         mapView = view.findViewById(R.id.mapView)
+        progressBar = view.findViewById(R.id.mapProgressBar)
         debugButton = view.findViewById(R.id.events_debug)
         searchBar = view.findViewById(R.id.search_edit_text)
         eventList = view.findViewById(R.id.eventList)
@@ -151,12 +189,17 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         // Fills the database when events based on the currently logged in user's current location
-        // Temporarily set to the top right menu bar in the events page
         debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
                 getEventsByLocation(city)
+            }
+
+            fetchEventsFromDatabase { fetchedEventsList ->
+                eventsList = fetchedEventsList
+                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                eventList.adapter = eventAdapter
             }
         }
 
@@ -164,13 +207,22 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             showDropdownMenu()
         }
 
+        val behavior = LockableBottomSheetBehavior.from(bottomSheet)
+        eventList.setOnScrollChangeListener { _, _, _, _, _ ->
+            behavior.isDraggable = !eventList.canScrollVertically(-1) // The bottom sheet is draggable only when the ListView is not scrollable upwards
+        }
+
         // Clicking any event in the bottom sheet will bring up its respective event card
         eventList.setOnItemClickListener { parent, view, position, _ ->
             val event = parent.adapter.getItem(position) as Event
             val eventMarker = eventMarkersMap[event.title]
+
             eventMarker?.let { marker ->
                 // Move the camera to the position of the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 15f))
+
+                // Collapse the bottom sheet after an event is clicked
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
 
@@ -361,9 +413,11 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showEventCard(event: Event) {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.event_details_card)
+        //dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val eventCardImage = dialog.findViewById<ImageView>(R.id.event_image)
         Glide.with(requireContext())
@@ -387,12 +441,171 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val coords = performGeocoding(fullAddress)
         eventCardDistance.text = "${calculateDistance(currentCoords, coords).toString()} mi"
 
-        // Hard coded to 1 person going until we figure out how to keep track of that
-        val amountGoing = 1
+        var amountGoing = event.peopleGoing.size
+        Log.d("showEventCard", "People going ${amountGoing}")
         val goingText = dialog.findViewById<TextView>(R.id.going_text)
         goingText.text = "Going (${amountGoing})"
 
+        val participant1 = dialog.findViewById<ImageView>(R.id.participant1)
+        val participant2 = dialog.findViewById<ImageView>(R.id.participant2)
+        val participant3 = dialog.findViewById<ImageView>(R.id.participant3)
+        val moreParticipantsText = dialog.findViewById<TextView>(R.id.more_participants)
+        participantText = dialog.findViewById(R.id.participant_text)
+        fetchUsersGoingToEvent(event.id) { users ->
+            if(users.isNotEmpty()) {
+                fetchUserDetails(users[0]) { user ->
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        context?.let { Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant1) }
+                    }
+                }
+
+                // One participant
+                if(users.size > 1) {
+                    fetchUserDetails(users[1]) { user ->
+                        if (user.photoDownloadUrls.isNotEmpty()) {
+                            context?.let {
+                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant2)
+                            }
+                        }
+                    }
+                }
+
+                // Two participants
+                if(users.size > 2) {
+                    fetchUserDetails(users[2]) { user ->
+                        if (user.photoDownloadUrls.isNotEmpty()) {
+                            context?.let {
+                                Glide.with(it).load(user.photoDownloadUrls[0]).circleCrop().into(participant3)
+                            }
+                        }
+                    }
+                }
+
+                // Three or more participants
+                if (users.size > 3) {
+                    val additionalCount = users.size - 3
+                    moreParticipantsText.text = "+$additionalCount"
+                    moreParticipantsText.visibility = View.VISIBLE
+                } else {
+                    moreParticipantsText.visibility = View.GONE
+                }
+            }
+            else {
+                participantText.visibility = View.VISIBLE
+                participant1.visibility = View.GONE
+                participant2.visibility = View.GONE
+                participant3.visibility = View.GONE
+
+            }
+        }
+
+        participant1.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog)
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
+        participant2.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog)
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
+        participant3.setOnClickListener {
+            fetchUsersGoingToEvent(event.id) { users ->
+                val usersDialog = Dialog(requireContext())
+                usersDialog.setContentView(R.layout.users_list_dialog)
+                val usersListView = usersDialog.findViewById<ListView>(R.id.users_list)
+                val adapter = UserAdapter(requireContext(), users)
+                usersListView.adapter = adapter
+                usersDialog.show()
+            }
+        }
+
+        val goingButton = dialog.findViewById<Button>(R.id.going_button)
+        goingButton.setOnClickListener {
+            // Add the user's ID to the list of people going
+            val currentUserId = getCurrentUserId()
+            if (currentUserId != null) {
+                addUserIdToEvent(event.id, currentUserId)
+
+                amountGoing++
+                goingText.text = "Going (${amountGoing})"
+            }
+        }
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.show()
+    }
+
+    private fun fetchUserDetails(userId: String, callback: (UserAdapter.User) -> Unit) {
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
+        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val firstName = snapshot.child("firstName").getValue(String::class.java) ?: ""
+                val lastName = snapshot.child("lastName").getValue(String::class.java) ?: ""
+                val photoDownloadUrls = snapshot.child("photoDownloadUrls").children.mapNotNull { it.getValue(String::class.java) }
+                callback(UserAdapter.User(userId, firstName, lastName, photoDownloadUrls))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("UserAdapter", "Failed to fetch user details: ${error.message}")
+            }
+        })
+    }
+
+    private fun dpToPx(dp: Int, context: Context): Int {
+        return (dp * context.resources.displayMetrics.density).toInt()
+    }
+
+    private fun getCurrentUserId(): String? {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        return currentUser?.uid
+    }
+
+    private fun addUserIdToEvent(eventId: String, userId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("events")
+
+        // Reference the specific event by its ID
+        val eventRef = databaseReference.child(eventId)
+
+        // Add the user ID to the peopleGoing list in the event object
+        eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val selectedEvent = dataSnapshot.getValue(Event::class.java)
+                selectedEvent?.let { event ->
+                    // Add the user ID to the peopleGoing list if it's not already there
+                    if (!event.peopleGoing.contains(userId)) {
+                        event.peopleGoing.add(userId)
+                        // Update the event object in Firebase
+                        eventRef.setValue(event)
+                            .addOnSuccessListener {
+                                Log.d("AddUserIdToEvent", "User added to event: $eventId")
+                            }
+                            .addOnFailureListener {
+                                Log.e("AddUserIdToEvent", "Failed to add user to event: $eventId")
+                            }
+                    } else {
+                        Log.d("AddUserIdToEvent", "User already exists in event: $eventId")
+                    }
+                } ?: run {
+                    Log.e("AddUserIdToEvent", "Event not found: $eventId")
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.e("AddUserIdToEvent", "Database query cancelled: ${databaseError.message}")
+            }
+        })
     }
 
     private fun Location.distanceToInMiles(dest: Location): Int {
@@ -433,14 +646,13 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                             // Handle location update
                             onLocationChanged(location)
                             cameraMovedOnce = true
+                            progressBar.visibility = View.GONE  // Hide the ProgressBar when location is found
                         }
                     }
                 },
                 Looper.getMainLooper() // Looper for handling callbacks on main thread
             )
         } else {
-            // Handle the case when permission is not granted
-            // You can prompt the user to grant permission again, show a message, or take any other appropriate action
             Toast.makeText(requireContext(), "Location permission not granted", Toast.LENGTH_SHORT).show()
         }
     }
@@ -551,7 +763,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             val link = eventObject.getString("link")
             val description = eventObject.getString("description")
             val thumbnail = eventObject.getString("thumbnail")
-            val event = Event(title, startDate, whenInfo, addressList, link, description, thumbnail, 0)
+            val peopleGoing = mutableListOf<String>()
+            peopleGoing.add(0,"dummy")
+            val event = Event("", title, startDate, whenInfo, addressList, link, description, thumbnail, peopleGoing)
             uploadEvent(event)
         }
     }
@@ -567,11 +781,13 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     // Event already exists, do not add it again
                     Log.d("Add Event", "Event already exists in database")
                 } else {
-                    // Event does not exist, add it
-                    val eventRef = databaseReference.push()
+                    // Event does not exist, generate random ID and add it
+                    val eventId = UUID.randomUUID().toString() // Generate random UUID
+                    val eventRef = databaseReference.child(eventId)
+                    event.id = eventId // Set the generated ID to the event
                     eventRef.setValue(event)
                         .addOnSuccessListener {
-                            Log.d("Add Event", "Event added successfully with key: ${eventRef.key}")
+                            Log.d("Add Event", "Event added successfully with ID: $eventId")
                         }
                         .addOnFailureListener {
                             Log.d("Add Event", "Could not add event")
@@ -592,15 +808,15 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val locationList: List<Any>? = dataSnapshot.value as? List<Any>
+                val locationList: List<*>? = dataSnapshot.value as? List<*>
                 if (locationList != null && locationList.size >= 2) {
                     val latitude = (locationList[0] as? Double) ?: return
                     val longitude = (locationList[1] as? Double) ?: return
                     val userLocation = performReverseGeocoding(LatLng(latitude, longitude))
-                    callback(userLocation) // Invoke the callback with the retrieved location
+                    callback(userLocation)
                 } else {
                     Log.d("Location", "Location data not found or incomplete.")
-                    callback("") // Invoke the callback with an empty string if location data is incomplete
+                    callback("")
                 }
             }
 
@@ -637,7 +853,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Check if the Fragment is attached to a context
         if (isAdded) {
             // Fragment is attached, safe to access resources
-            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.latitude}")
+            Log.d("onLocationChanged", "Current Latitude: ${location.latitude} Current Longitude: ${location.longitude}")
             currentCoords = LatLng(location.latitude, location.longitude)
             val latLng = LatLng(location.latitude, location.longitude)
 
@@ -661,22 +877,19 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
             if(!cameraMovedOnce) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f))
+                progressBar.visibility = View.GONE
             }
         }
     }
-
-
 
     // Method to toggle between map types
     private fun toggleMapType() {
         if (googleMap.mapType == GoogleMap.MAP_TYPE_TERRAIN) {
             // Switch to satellite view
             googleMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            mapButton.text = "Switch to Normal"
         } else {
             // Switch to normal view
             googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            mapButton.text = "Switch to Satellite"
         }
     }
 
@@ -702,6 +915,21 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 }
             }
         }
+    }
+
+    private fun fetchUsersGoingToEvent(eventId: String, callback: (List<String>) -> Unit) {
+        val eventRef = FirebaseDatabase.getInstance().getReference("events").child(eventId).child("peopleGoing")
+        eventRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val usersGoing = snapshot.children.mapNotNull { it.getValue(String::class.java) }
+                callback(usersGoing)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FetchUsersGoingToEvent", "Error fetching users: ${error.message}")
+                callback(emptyList()) // Return an empty list in case of error
+            }
+        })
     }
 
     companion object {

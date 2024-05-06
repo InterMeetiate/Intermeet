@@ -31,19 +31,32 @@
         android:ems="15"
         android:layout_centerHorizontal="true"
         android:inputType="text"
-        android:text="Hangout Name" />
+        android:hint="Hangout Name" />
 
-    <EditText
-        android:id="@+id/hangout_time_text"
+    <TextView
+        android:id="@+id/hangout_time_begin_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
         android:layout_below="@id/hangout_name_text"
-        android:ems="15"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="12:00 AM"
+        android:textSize="19sp"
+        android:timePickerMode="spinner" />
+
+    <TextView
+        android:id="@+id/hangout_time_end_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hangout_name_text"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_centerHorizontal="true"
-        android:inputType="text"
-        android:text="Hangout Time" />
+        android:text="- 01:00 AM"
+        android:textSize="19sp"
+        android:timePickerMode="spinner" />
 
     <EditText
         android:id="@+id/hangout_location_text"
@@ -51,11 +64,11 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_below="@id/hangout_time_text"
+        android:layout_below="@id/hangout_time_begin_text"
         android:ems="15"
         android:layout_centerHorizontal="true"
         android:inputType="text"
-        android:text="Hangout Location" />
+        android:hint="Hangout Location" />
 
     <EditText
         android:id="@+id/hangout_description_text"
@@ -67,7 +80,7 @@
         android:ems="15"
         android:layout_centerHorizontal="true"
         android:inputType="text"
-        android:text="Hangout Description" />
+        android:hint="Hangout Description" />
 
     <Button
         android:id="@+id/save_event_button"

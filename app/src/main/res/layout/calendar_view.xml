@@ -17,6 +17,16 @@
         android:fontFamily="@font/outfitsemibold"
         android:textColor="@color/black" />
 
+    <ImageButton
+        android:id="@+id/add_hangout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="10dp"
+        android:src="@drawable/baseline_add_24" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -30,14 +40,44 @@
         android:layout_below="@id/calendar_title"
         android:focusedMonthDateColor="@color/app_gradient"/>
 
-    <ImageButton
-        android:id="@+id/add_hangout_button"
+    <TextView
+        android:id="@+id/selected_hangout_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:padding="10dp"
-        android:src="@drawable/baseline_add_24" />
+        android:text="Title"
+        android:layout_below="@id/calendar_view"
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/selected_hangout_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00 - 00:00"
+        android:layout_below="@id/selected_hangout_name"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/selected_hangout_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:layout_below="@id/selected_hangout_time"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/selected_hangout_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:layout_below="@id/selected_hangout_location"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

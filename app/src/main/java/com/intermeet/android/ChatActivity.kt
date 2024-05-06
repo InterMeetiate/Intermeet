@@ -115,4 +115,13 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
+    override fun onResume() {
+        super.onResume()
+        AppState.isChatActivityVisible = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppState.isChatActivityVisible = false
+    }
 }

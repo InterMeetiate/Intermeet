@@ -58,6 +58,11 @@ object UserDataRepository {
 
 
 
+object AppState {
+    var isChatFragmentActive: Boolean = false
+    var isChatActivityVisible: Boolean = false
+}
+
 
 
 

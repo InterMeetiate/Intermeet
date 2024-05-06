@@ -83,6 +83,15 @@ class ChatFragment : Fragment() {
             }
         })
     }
+    override fun onResume() {
+        super.onResume()
+        AppState.isChatFragmentActive = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        AppState.isChatFragmentActive = false
+    }
 
     // You can add more methods/functions here as needed
 }

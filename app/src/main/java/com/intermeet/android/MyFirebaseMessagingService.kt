@@ -50,7 +50,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun showNotification(title: String, message: String, channelId: String) {
-        Log.d(TAG, "Showing notification - Title: $title, Message: $message, Channel: $channelId")
+        Log.d(TAG, "Trying to show notification - Title: $title, Message: $message, Channel: $channelId")
+
+        // Don't show chat notifications if the ChatFragment or ChatActivity is active
+        if (channelId == "ChatChannel" && (AppState.isChatFragmentActive || AppState.isChatActivityVisible)) {
+            Log.d(TAG, "Chat UI is active. Not showing chat notification.")
+            return
+        }
+
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = System.currentTimeMillis().toInt()
 
@@ -71,7 +78,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
 
         notificationManager.notify(notificationID, notification)
+        Log.d(TAG, "Notification shown: ID $notificationID")
     }
+
+
 
     private fun handleNow(data: Map<String, String>) {
         Log.d(TAG, "Short lived task is done.")

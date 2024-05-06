@@ -9,6 +9,7 @@ import android.provider.Settings.Global.getString
 import androidx.core.content.ContextCompat.getSystemService
 import android.content.Context
 import android.provider.Settings
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 
 class IntermeetApp : Application() {
@@ -20,21 +21,26 @@ class IntermeetApp : Application() {
 
     private fun setupNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Channel details
-            val channelId = "LikeChannel"
-            val channelName = getString(R.string.channel_name) // Fetching from strings.xml
-            val channelDescription = getString(R.string.channel_description) // Fetching from strings.xml
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            createNotificationChannel(
+                channelId = "LikeChannel",
+                channelName = getString(R.string.like_channel_name),
+                channelDescription = getString(R.string.like_channel_description)
+            )
 
-            // Creating the notification channel
-            val channel = NotificationChannel(channelId, channelName, importance).apply {
-                description = channelDescription
-            }
-
-            // Registering the channel with the system
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+            createNotificationChannel(
+                channelId = "ChatChannel",
+                channelName = getString(R.string.chat_channel_name),
+                channelDescription = getString(R.string.chat_channel_description)
+            )
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(channelId: String, channelName: String, channelDescription: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(channelId, channelName, importance)
+        channel.description = channelDescription
+        getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
     }
 }
 

@@ -37,22 +37,23 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
+        Log.d(TAG, "Message received - Title: ${remoteMessage.notification?.title}, Body: ${remoteMessage.notification?.body}")
+
         remoteMessage.notification?.let {
-            Log.d(TAG, "Notification received - Title: ${it.title}, Body: ${it.body}")
-            showNotification(it.title ?: "New Like", it.body ?: "You've been liked!")
+            val channel = if (it.title?.contains("like", true) == true) "LikeChannel" else "ChatChannel"
+            showNotification(it.title ?: "New Notification", it.body ?: "You have a new message", channel)
         }
+
         if (remoteMessage.data.isNotEmpty()) {
             Log.d(TAG, "Message data payload: " + remoteMessage.data)
         }
     }
-    private fun showNotification(title: String, message: String) {
-        Log.d(TAG, "Showing notification - Title: $title, Message: $message")
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationID = System.currentTimeMillis().toInt()  // Unique ID for each notification
+    private fun showNotification(title: String, message: String, channelId: String) {
+        Log.d(TAG, "Showing notification - Title: $title, Message: $message, Channel: $channelId")
+        val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationID = System.currentTimeMillis().toInt()
 
-        // Intent that restarts the app or brings it to the front. Modify as needed for your app.
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -60,13 +61,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val notification = NotificationCompat.Builder(this, "LikeChannel")
-            .setSmallIcon(R.drawable.intermeet_png_72ppi_icon)  // Your app icon or any other drawable
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.intermeet_png_72ppi_icon)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)  // Removes the notification after tapping
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(notificationID, notification)

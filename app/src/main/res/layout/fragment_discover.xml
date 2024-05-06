@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/usersViewPager"
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/usersCardStackView"
         android:layout_width="match_parent"
         android:layout_height="687dp"
         android:layout_below="@+id/frame_2"

@@ -101,13 +101,13 @@
         android:gravity="center_horizontal|top"
         android:text="@string/app_motto"
         android:textAppearance="@style/app_moto"
-        android:textSize="18dp"
+        android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_name"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintVertical_bias="0.069" />
 
     <TextView
         android:id="@+id/sign_up_button"
@@ -146,8 +146,8 @@
     <TextView
         android:layout_width="245dp"
         android:layout_height="61dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="50dp"
         android:fontFamily="@font/outfitregular"
         android:gravity="center"
         android:text="@string/TOSyPP"

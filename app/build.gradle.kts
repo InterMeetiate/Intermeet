@@ -106,6 +106,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.picasso:picasso:2.8")
+
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.1")
     implementation("com.kizitonwose.calendar:view:2.0.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

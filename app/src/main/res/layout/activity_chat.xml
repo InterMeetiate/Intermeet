@@ -26,6 +26,7 @@
             android:id="@+id/profile_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:src="@drawable/image_placeholder"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/back_arrow"
             android:scaleType="centerCrop" />
@@ -39,6 +40,15 @@
             android:layout_marginStart="5dp"
             android:text="User Name"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+        <ImageView
+            android:id="@+id/calendar_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/calendar_icon"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_centerVertical="true" />
 
     </RelativeLayout>
 

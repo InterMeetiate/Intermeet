@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.intermeet.android"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 3
         versionName = "1.0"
@@ -105,5 +105,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.google.firebase:firebase-appcheck-safetynet:16.1.2")
 }
 

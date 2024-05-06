@@ -10,12 +10,27 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.content.Context
 import android.provider.Settings
 import androidx.core.content.ContextCompat
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 
 class IntermeetApp : Application() {
     val userDataRepository = UserDataRepository
     override fun onCreate() {
         super.onCreate()
+
+        FirebaseApp.initializeApp(this)
+
+        setupFirebaseAppCheck()
+
         setupNotificationChannels()
+    }
+
+    private fun setupFirebaseAppCheck() {
+        val appCheck = FirebaseAppCheck.getInstance()
+        appCheck.installAppCheckProviderFactory(
+            SafetyNetAppCheckProviderFactory.getInstance()
+        )
     }
 
     private fun setupNotificationChannels() {

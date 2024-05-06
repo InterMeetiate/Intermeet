@@ -1,18 +1,28 @@
 package com.intermeet.android
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.CalendarView
+import android.widget.CalendarView.OnDateChangeListener
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 
 class ChatActivity : AppCompatActivity() {
@@ -28,10 +38,17 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageList: ArrayList<Message>
     private lateinit var mDbRef: DatabaseReference
     private lateinit var userName: TextView
+    private lateinit var calenderIcon: ImageView
+    private lateinit var calendarView: CalendarView
+    private lateinit var eventNameText: EditText
+    private lateinit var saveEventButton: Button
+    private lateinit var stringDateSelected: String
+    private lateinit var addHangoutButton: ImageButton
 
     var receiverRoom: String? = null
     var senderRoom: String? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -43,6 +60,7 @@ class ChatActivity : AppCompatActivity() {
         messageList = ArrayList()
         userName = findViewById(R.id.user_name)
         backButton = findViewById(R.id.back_arrow)
+        calenderIcon = findViewById(R.id.calendar_icon)
         messageAdapter = MessageAdapter(this, messageList)
 
         chatView.layoutManager = LinearLayoutManager(this)
@@ -92,6 +110,10 @@ class ChatActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
+
+        calenderIcon.setOnClickListener {
+            showCalendarDialog()
+        }
     }
 
 
@@ -114,5 +136,61 @@ class ChatActivity : AppCompatActivity() {
                 // Handle database error
             }
         })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showCalendarDialog() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.calendar_view)
+
+        calendarView = dialog.findViewById(R.id.calendar_view)
+        addHangoutButton = dialog.findViewById(R.id.add_hangout_button)
+
+        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
+            stringDateSelected = "$year-${month + 1}-$dayOfMonth"
+            Log.d("Calendar", stringDateSelected)
+            //calendarClicked()
+        }
+
+        addHangoutButton.setOnClickListener {
+            showAddHangout()
+        }
+
+        dialog.show()
+    }
+
+//    private fun calendarClicked() {
+//        mDbRef.child("chats").child(senderRoom!!).child(stringDateSelected).addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                if (snapshot.value != null) {
+//                    editText.setText(snapshot.value.toString())
+//                } else {
+//                    editText.setText("null")
+//                }
+//            }
+//
+//            override fun onCancelled(databaseError: DatabaseError) {
+//                // Handle possible errors
+//            }
+//        })
+//    }
+
+    private fun buttonSaveEvent() {
+        mDbRef.child("chats").child(senderRoom!!).child("calendar").child(stringDateSelected).child("hangoutName")
+            .setValue(eventNameText.text.toString())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun epochToDateString(epochMilli: Long, zoneId: String = "UTC"): String {
+        val dateTime = Instant.ofEpochMilli(epochMilli).atZone(ZoneId.of(zoneId))
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return dateTime.format(formatter)
+    }
+
+    private fun showAddHangout() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.add_hangout_view)
+
+        dialog.show()
     }
 }

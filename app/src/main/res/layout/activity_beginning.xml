@@ -26,55 +26,6 @@
         android:textStyle="bold"/>
 -->
 
-    <TextView
-        android:id="@+id/logo"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/intermeet_png_72ppi_icon"
-        android:gravity="center_horizontal|top"
-        android:textAppearance="@style/logo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.095" />
-
-    <ImageView
-        android:id="@+id/app_name"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/intermeetlogo"
-        android:gravity="center_horizontal|top"
-        android:text="@string/app_name"
-        android:textAppearance="@style/app_name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
-        app:layout_constraintVertical_bias="0.029" />
-
-    <TextView
-        android:id="@+id/where_we_in"
-        android:layout_width="259dp"
-        android:layout_height="61dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:fontFamily="@font/outfitsemibold"
-        android:gravity="center_horizontal|top"
-        android:text="@string/app_motto"
-        android:textAppearance="@style/app_moto"
-        android:textStyle="bold"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_name"
-        app:layout_constraintVertical_bias="0.023" />
     <!--
     <Button
         android:id="@+id/sign_up_button"
@@ -109,6 +60,56 @@
         -->
 
     <TextView
+        android:id="@+id/logo"
+        android:layout_width="233dp"
+        android:layout_height="233dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/intermeet_png_72ppi_icon"
+        android:gravity="center_horizontal|top"
+        android:textAppearance="@style/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.204" />
+
+    <ImageView
+        android:id="@+id/app_name"
+        android:layout_width="275dp"
+        android:layout_height="75dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/intermeetlogo"
+        android:gravity="center_horizontal|top"
+        android:text="@string/app_name"
+        android:textAppearance="@style/app_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintVertical_bias="0.123" />
+
+    <TextView
+        android:id="@+id/where_we_in"
+        android:layout_width="259dp"
+        android:layout_height="61dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:fontFamily="@font/outfitsemibold"
+        android:gravity="center_horizontal|top"
+        android:text="@string/app_motto"
+        android:textAppearance="@style/app_moto"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_name"
+        app:layout_constraintVertical_bias="0.031" />
+
+    <TextView
         android:id="@+id/sign_up_button"
         android:layout_width="300dp"
         android:layout_height="50dp"
@@ -120,10 +121,10 @@
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/where_we_in"
-        app:layout_constraintVertical_bias="0.668" />
+        app:layout_constraintVertical_bias="0.084" />
 
     <TextView
         android:id="@+id/sign_in_button"
@@ -137,15 +138,15 @@
         android:textSize="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_button"
-        app:layout_constraintVertical_bias="0.107" />
+        app:layout_constraintVertical_bias="0.108" />
 
     <TextView
         android:layout_width="245dp"
         android:layout_height="61dp"
-        android:layout_marginStart="72dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="12dp"
         android:fontFamily="@font/outfitregular"
         android:gravity="center"

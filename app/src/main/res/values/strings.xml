@@ -386,7 +386,10 @@
 
     <string name="received_message_placeholder">This is a received message</string>
     <string name="sent_message_placeholder">This is a sent message</string>
-
+    <string name="like_channel_name">LikeChannel</string>
+    <string name="like_channel_description">Channel for Likes</string>
+    <string name="chat_channel_name">Chat Channel\n</string>
+    <string name="chat_channel_description">Notification for chats</string>
 
 
 </resources>

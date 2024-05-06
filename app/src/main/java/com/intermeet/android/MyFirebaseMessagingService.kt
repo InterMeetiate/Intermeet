@@ -37,35 +37,50 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
-        Log.d(TAG, "Message received - Title: ${remoteMessage.notification?.title}, Body: ${remoteMessage.notification?.body}")
+        Log.d(TAG, "Notification received - Title: ${remoteMessage.notification?.title}, Body: ${remoteMessage.notification?.body}")
+        Log.d(TAG, "Data payload: ${remoteMessage.data}")
+
+        val userId = remoteMessage.data["userId"]
+        if (userId == null) {
+            Log.d(TAG, "No userId found in notification data")
+        } else {
+            Log.d(TAG, "UserId received with notification: $userId")
+        }
 
         remoteMessage.notification?.let {
             val channel = if (it.title?.contains("like", true) == true) "LikeChannel" else "ChatChannel"
-            showNotification(it.title ?: "New Notification", it.body ?: "You have a new message", channel)
-        }
-
-        if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.data)
+            if (channel == "ChatChannel" && AppState.isChatActivityVisible && AppState.currentChatUserId == userId) {
+                Log.d(TAG, "ChatActivity is active with the user. No notification needed.")
+            } else {
+                showNotification(it.title ?: "New Notification", it.body ?: "You have a new message", channel, userId)
+            }
         }
     }
 
-    private fun showNotification(title: String, message: String, channelId: String) {
-        Log.d(TAG, "Trying to show notification - Title: $title, Message: $message, Channel: $channelId")
 
-        // Don't show chat notifications if the ChatFragment or ChatActivity is active
+    private fun showNotification(title: String, message: String, channelId: String, userId: String?) {
+        Log.d(TAG, "Preparing to show notification. Channel: $channelId, UserId: $userId")
+
+        //if (channelId == "ChatChannel" && AppState.isChatActivityVisible && AppState.currentChatUserId == userId) {
+        //    Log.d(TAG, "ChatActivity is active with the user. No notification needed.")
+        //    return
+        //}
         if (channelId == "ChatChannel" && (AppState.isChatFragmentActive || AppState.isChatActivityVisible)) {
             Log.d(TAG, "Chat UI is active. Not showing chat notification.")
             return
         }
 
+
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = System.currentTimeMillis().toInt()
 
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val intent = Intent(this, ChatActivity::class.java).apply {
+            putExtra("userId", userId)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(this, channelId)
@@ -78,8 +93,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
 
         notificationManager.notify(notificationID, notification)
-        Log.d(TAG, "Notification shown: ID $notificationID")
+        Log.d(TAG, "Notification posted: ID=$notificationID")
     }
+
+
 
 
 

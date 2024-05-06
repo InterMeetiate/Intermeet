@@ -1,6 +1,8 @@
 package com.intermeet.android
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -31,6 +33,9 @@ class ChatActivity : AppCompatActivity() {
 
     var receiverRoom: String? = null
     var senderRoom: String? = null
+    companion object {
+        private const val TAG = "MyFirebaseMessagingService"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +53,11 @@ class ChatActivity : AppCompatActivity() {
         chatView.layoutManager = LinearLayoutManager(this)
         chatView.adapter = messageAdapter
 
-        // Retrieve the userId extra from the Intent
-        receiverUid = intent.getStringExtra("userId") ?: ""
+        Log.d(TAG, "ChatActivity: onCreate - Intent action: ${intent.action}")
+
+        receiverUid = intent.getStringExtra("userId") ?: throw IllegalArgumentException("User ID must be provided")
+        Log.d(TAG, "ChatActivity started with userId: $receiverUid")
+
 
         val senderUid = FirebaseAuth.getInstance().currentUser?.uid
         mDbRef = FirebaseDatabase.getInstance().getReference()
@@ -90,8 +98,9 @@ class ChatActivity : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            finish()
+            handleBackButton()
         }
+
     }
 
 
@@ -115,13 +124,25 @@ class ChatActivity : AppCompatActivity() {
             }
         })
     }
+    private fun handleBackButton() {
+        if (isTaskRoot) {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("openFragment", "chat")
+            }
+            startActivity(intent)
+        }
+        finish()
+    }
+
+
     override fun onResume() {
         super.onResume()
-        AppState.isChatActivityVisible = true
+        AppState.isChatActivityVisible = true  // Set when the activity comes into view
     }
 
     override fun onPause() {
         super.onPause()
-        AppState.isChatActivityVisible = false
+        AppState.isChatActivityVisible = false  // Reset when the activity goes out of view
     }
+
 }

@@ -61,7 +61,9 @@ object UserDataRepository {
 object AppState {
     var isChatFragmentActive: Boolean = false
     var isChatActivityVisible: Boolean = false
+    var currentChatUserId: String? = null  // Add this line
 }
+
 
 
 

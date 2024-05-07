@@ -21,6 +21,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/food"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -37,6 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/entertain"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -53,6 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/creativity"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -69,6 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/music"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -85,6 +89,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/social"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -101,6 +106,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/values"/>
 
             <!-- Container for tags, consider using a custom FlowLayout or FlexboxLayout -->
@@ -119,6 +125,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/customTag"/>
 
             <!-- Custom tags display area -->
@@ -139,6 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Enter custom tag"
+                android:fontFamily="@font/outfitregular"
                 android:imeOptions="actionDone"
                 android:inputType="text"/>
 
@@ -151,6 +159,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"
+        android:fontFamily="@font/outfitregular"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp" />

@@ -5,7 +5,9 @@ import android.graphics.drawable.AnimationDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import org.w3c.dom.Text
 
 //hihihi
 class BeginningActivity : AppCompatActivity() {
@@ -15,21 +17,21 @@ class BeginningActivity : AppCompatActivity() {
 
         val constraintLayout: ConstraintLayout = findViewById(R.id.beginningLayout)
 
-        val animationDrawable: AnimationDrawable = constraintLayout.background as AnimationDrawable
-        animationDrawable.setEnterFadeDuration(2500)
-        animationDrawable.setExitFadeDuration(5000)
-        animationDrawable.start()
+        //val animationDrawable: AnimationDrawable = constraintLayout.background as AnimationDrawable
+        //animationDrawable.setEnterFadeDuration(2500)
+        //animationDrawable.setExitFadeDuration(5000)
+        //animationDrawable.start()
         buttonFunc()
     }
     private
     fun buttonFunc(){
-        val signInButton: Button = findViewById(R.id.sign_in_button)
+        val signInButton: TextView = findViewById(R.id.sign_in_button)
         signInButton.setOnClickListener {
             // Intent to navigate to the SecondActivity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        val signUpButton: Button = findViewById(R.id.sign_up_button)
+        val signUpButton: TextView = findViewById(R.id.sign_up_button)
         signUpButton.setOnClickListener{
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)

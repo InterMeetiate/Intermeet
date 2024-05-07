@@ -21,6 +21,8 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:padding="8dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"
         android:textSize="16sp"/>
 
 

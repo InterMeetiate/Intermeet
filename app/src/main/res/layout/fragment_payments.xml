@@ -23,7 +23,8 @@
             android:theme="?attr/actionBarTheme"
             app:navigationIcon="?attr/homeAsUpIndicator"
             app:title="@string/payments_title"
-            app:titleTextColor="@android:color/black" />
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitsemibold" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,6 +32,8 @@
             android:text="@string/payment_methods"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitregular"
             android:layout_marginBottom="16dp"/>
 
         <!-- CardView for Add Credit or Debit Card -->
@@ -62,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/add_credit_or_debit_card"
                     android:textSize="16sp"
-                    android:textColor="@color/black"/>
+                    android:fontFamily="@font/outfitregular"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -81,6 +84,8 @@
             android:text="Subscriptions"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitregular"
             android:layout_marginBottom="16dp"/>
 
         <!-- Subscription list placeholders -->
@@ -89,6 +94,7 @@
             android:layout_height="wrap_content"
             android:text="Subscription 1"
             android:textSize="16sp"
+            android:fontFamily="@font/outfitregular"
             android:layout_marginBottom="8dp"/>
         <TextView
             android:layout_width="wrap_content"
@@ -99,6 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/outfitregular"
             android:text="Subscription 3"
             android:textSize="16sp"/>
 
@@ -108,6 +115,8 @@
             android:layout_height="wrap_content"
             android:text="@string/reach_out_to_support"
             android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitsemibold"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"/>
@@ -117,6 +126,7 @@
             android:layout_height="wrap_content"
             android:text="@string/if_you_have_any_questions_or_need_help_please_reach_out_to_us_at"
             android:textSize="16sp"
+            android:fontFamily="@font/outfitregular"
             android:layout_marginBottom="8dp"/>
     </LinearLayout>
 

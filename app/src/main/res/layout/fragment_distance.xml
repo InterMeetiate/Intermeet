@@ -11,11 +11,14 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="379dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         android:text="@string/distancemessage"
         android:textAppearance="@style/email_up"
-        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitsemibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.384"
@@ -25,9 +28,13 @@
 
     <TextView
         android:id="@+id/we_want_to_"
-        android:layout_width="match_parent"
+        android:layout_width="371dp"
         android:layout_height="55dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
         android:gravity="top"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"
         android:text="@string/we_want_to_"
         android:textAppearance="@style/sign_up_p1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitregular"
             android:text="@string/distanceset" />
 
         <com.google.android.material.slider.Slider
@@ -59,6 +68,7 @@
 
     <Button
         android:id="@+id/backButton"
+        android:fontFamily="@font/outfitregular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back" />

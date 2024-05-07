@@ -18,7 +18,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:title="@string/tipCenter"
+        app:title="@string/helpCenter"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitsemibold"
         app:titleMarginEnd="75dp"
         app:titleMarginStart="100dp"
         app:titleTextColor="@android:color/black" />
@@ -58,6 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/about_us"
+                android:fontFamily="@font/outfitsemibold"
+
                 android:textStyle="bold"
 
                 android:textSize="25sp"/>
@@ -78,6 +82,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/what_is_intermeet"
                 android:textStyle="bold"
+                android:fontFamily="@font/outfitregular"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:background="?android:attr/selectableItemBackground"
@@ -98,6 +103,8 @@
                     android:layout_height="wrap_content"
                     android:text="@string/missionStatment"
                     android:textColor="@android:color/black"
+                    android:fontFamily="@font/outfitregular"
+
                     android:textSize="14sp"/>
                 <!-- More content can be added here if necessary -->
             </LinearLayout>
@@ -116,6 +123,8 @@
                 android:id="@+id/dropdownTab2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
+
                 android:text="@string/minAgeQuestion"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -136,6 +145,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/minAgeAnswer"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -158,6 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/IntermeetAvailable"
+                android:fontFamily="@font/outfitregular"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -179,6 +190,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/IntermeetAnswer"
                     android:textColor="@android:color/black"
+                    android:fontFamily="@font/outfitregular"
                     android:textSize="14sp"/>
                 <!-- More content can be added here if necessary -->
             </LinearLayout>
@@ -197,6 +209,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/myAccountSet"
+                android:fontFamily="@font/outfitsemibold"
                 android:textStyle="bold"
                 android:textSize="25sp"/>
             <View
@@ -213,6 +226,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/cantLogin"
+                android:fontFamily="@font/outfitregular"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -232,18 +246,21 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/loginAnswer1"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/loginAnswer2"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/loginAnswer3"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -265,6 +282,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/changeEmailPhonePassNotifSub"
                 android:textStyle="bold"
+                android:fontFamily="@font/outfitregular"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
                 android:background="?android:attr/selectableItemBackground"
@@ -283,6 +301,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/changechangeEmailPhonePassAnswerNotifSub"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -303,6 +322,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/PauseDeleteLogoutAccount"
+                android:fontFamily="@font/outfitregular"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -313,6 +333,7 @@
 
             <LinearLayout
                 android:id="@+id/dropdownContent6"
+                android:fontFamily="@font/outfitregular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -324,6 +345,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/PauseDeleteLogoutAnswer"
                     android:textColor="@android:color/black"
+                    android:fontFamily="@font/outfitregular"
                     android:textSize="14sp"/>
 
                 <!-- More content can be added here if necessary -->
@@ -343,6 +365,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:fontFamily="@font/outfitsemibold"
                 android:text="@string/tuneProfile"
                 android:textStyle="bold"
                 android:textSize="25sp"/>
@@ -359,6 +382,7 @@
                 android:id="@+id/dropdownTab7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/outfitregular"
                 android:text="@string/howToEditProfile"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
@@ -379,6 +403,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="@string/editProfileAnswer"
                     android:textColor="@android:color/black"
                     android:textSize="14sp"/>
@@ -398,6 +423,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tunePreference"
+                android:fontFamily="@font/outfitregular"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"
                 android:textSize="16sp"
@@ -419,6 +445,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/tunrPreferenceAns"
                     android:textColor="@android:color/black"
+                    android:fontFamily="@font/outfitregular"
                     android:textSize="14sp"/>
 
 

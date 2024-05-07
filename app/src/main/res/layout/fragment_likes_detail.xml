@@ -14,15 +14,17 @@
 
         <TextView
             android:id="@+id/frame_2"
-            android:layout_width="177dp"
+            android:layout_width="wrap_content"
             android:layout_height="38dp"
-            android:background="@drawable/discover_bar"
-            android:text="@string/likes"
-            android:textColor="@color/white"
-            android:textSize="30sp"
-            android:layout_marginTop="16dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginStart="108dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/discover_bar"
+            android:text="@string/likes"
+            android:fontFamily="@font/outfitlight"
+            android:textColor="@color/white"
+            android:textSize="30sp"
             android:gravity="center_horizontal|top"/>
 
         <!-- New Return Button at top left -->
@@ -65,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|start"
                     android:layout_margin="9dp"
+                    android:fontFamily="@font/outfitlight"
                     android:textColor="@color/white"
                     android:textSize="30sp"
                     android:textStyle="bold" />
@@ -90,6 +93,7 @@
                     android:id="@+id/tvEducation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:text="California State University, Long Beach"
                     android:textStyle="bold"
                     android:textSize="15sp"
@@ -116,6 +120,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvEducation"
+                            android:fontFamily="@font/outfitregular"
                             android:text="5'8"
                             android:textSize="15sp"
                             android:padding="12dp"/>
@@ -125,6 +130,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Long Beach, CA"
+                            android:fontFamily="@font/outfitregular"
                             android:textSize="15sp"
                             android:padding="12dp"/>
 
@@ -132,6 +138,7 @@
                             android:id="@+id/tvPronouns"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/outfitregular"
                             android:text="He/him"
                             android:textSize="15sp"
                             android:padding="12dp"/>
@@ -142,12 +149,14 @@
                             android:layout_height="wrap_content"
                             android:text="Male"
                             android:textSize="15sp"
+                            android:fontFamily="@font/outfitregular"
                             android:padding="12dp"/>
 
                         <TextView
                             android:id="@+id/tvSexuality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/outfitregular"
                             android:text="Straight"
                             android:textSize="15sp"
                             android:padding="12dp"/>
@@ -156,6 +165,7 @@
                             android:id="@+id/tvEthnicity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/outfitregular"
                             android:text="Pomeranian-Husky"
                             android:textSize="15sp"
                             android:padding="12dp"/>
@@ -169,6 +179,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/hsvAttributes"
+                    android:fontFamily="@font/outfitregular"
                     android:text="About me"
                     android:textStyle="bold"
                     android:padding="12dp"/>
@@ -177,6 +188,7 @@
                     android:id="@+id/tvAboutMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/outfitregular"
                     android:layout_below="@id/tvAboutMeHeader"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="24dp"
@@ -189,6 +201,7 @@
                     android:layout_below="@id/tvAboutMe"
                     android:layout_marginTop="8dp"
                     android:text="@string/interests"
+                    android:fontFamily="@font/outfitregular"
                     android:textStyle="bold"
                     android:padding="12dp"/>
             </RelativeLayout>

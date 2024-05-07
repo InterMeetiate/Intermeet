@@ -454,7 +454,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
                 fetchUsersGoingToEvent(event.id) { users ->
                     if(users.isNotEmpty()) {
-                        participant1.visibility = View.VISIBLE
+                        participantText.visibility = View.GONE
                         fetchUserDetails(users[0]) { user ->
                             if (user.photoDownloadUrls.isNotEmpty()) {
                                 context?.let {
@@ -469,7 +469,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
                         // One participant
                         if(users.size > 1) {
-                            participant2.visibility = View.VISIBLE
                             fetchUserDetails(users[1]) { user ->
                                 if (user.photoDownloadUrls.isNotEmpty()) {
                                     context?.let {
@@ -485,7 +484,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
                         // Two participants
                         if(users.size > 2) {
-                            participant3.visibility = View.VISIBLE
                             fetchUserDetails(users[2]) { user ->
                                 if (user.photoDownloadUrls.isNotEmpty()) {
                                     context?.let {
@@ -523,6 +521,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         participantText = dialog.findViewById(R.id.participant_text)
         fetchUsersGoingToEvent(event.id) { users ->
             if(users.isNotEmpty()) {
+                participantText.visibility = View.GONE
                 fetchUserDetails(users[0]) { user ->
                     if (user.photoDownloadUrls.isNotEmpty()) {
                         context?.let {
@@ -576,10 +575,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
             else {
                 participantText.visibility = View.VISIBLE
-                participant1.visibility = View.GONE
-                participant2.visibility = View.GONE
-                participant3.visibility = View.GONE
-
             }
         }
 

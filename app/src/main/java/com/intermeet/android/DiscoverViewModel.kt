@@ -30,6 +30,10 @@ class DiscoverViewModel : ViewModel() {
 
     val filteredUserIdsLiveData = MutableLiveData<List<String>>()
 
+    private val _filteredUsers = MutableLiveData<List<UserDataModel>>()
+    val filteredUsers: LiveData<List<UserDataModel>> = _filteredUsers
+
+
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
             val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -104,8 +108,7 @@ class DiscoverViewModel : ViewModel() {
 
             val usersDataDeferred = userIds.map { userId ->
                 async {
-                    val userData =
-                        userRef.child(userId).get().await().getValue(UserDataModel::class.java)
+                    val userData = userRef.child(userId).get().await().getValue(UserDataModel::class.java)
                     if (userData != null && !seenUserIds.contains(userId)) {
                         userId to userData
                     } else {
@@ -138,7 +141,10 @@ class DiscoverViewModel : ViewModel() {
                 }
             }
 
-            filteredUserIdsLiveData.postValue(filteredAndSortedIds)
+            // Fetch full user details for the filtered and sorted IDs and update LiveData
+            val filteredUsers = fetchUsersData(filteredAndSortedIds)
+            _filteredUsers.postValue(filteredUsers) // Post the detailed data to LiveData
+            filteredUserIdsLiveData.postValue(filteredAndSortedIds) // Post filtered IDs for any other use
         }
     }
 
@@ -182,6 +188,18 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
+    private suspend fun fetchUsersData(userIds: List<String>): List<UserDataModel> {
+        val userRef = FirebaseDatabase.getInstance().getReference("users")
+        return userIds.mapNotNull { userId ->
+            try {
+                userRef.child(userId).get().await().getValue(UserDataModel::class.java)
+            } catch (e: Exception) {
+                Log.e("DiscoverViewModel", "Failed to fetch data for user $userId", e)
+                null
+            }
+        }
+    }
+    
     @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
 

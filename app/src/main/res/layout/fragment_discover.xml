@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/usersViewPager"
+
+
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/usersCardStackView"
         android:layout_width="match_parent"
         android:layout_height="687dp"
         android:layout_below="@+id/frame_2"
@@ -52,16 +54,6 @@
         android:padding="16dp" />
 
     <Button
-        android:id="@+id/btnLike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="72dp"
-        android:text="Like" />
-
-    <Button
         android:id="@+id/btnRefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,16 +62,6 @@
         android:visibility="gone"
         android:layout_centerHorizontal="true"/>
 
-    <Button
-        android:id="@+id/btnPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="72dp"
-        android:fontFamily="@font/outfitregular"
-        android:text="Pass" />
 
     <ProgressBar
         android:id="@+id/loadingProgressBar"
@@ -90,5 +72,17 @@
         android:indeterminate="true"
         android:fontFamily="@font/outfitregular"
         android:visibility="gone" />
+
+
+    <FrameLayout
+        android:id="@+id/like_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/pass_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </RelativeLayout>
 

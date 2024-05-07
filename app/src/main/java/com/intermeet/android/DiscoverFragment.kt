@@ -1,6 +1,9 @@
 
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,21 +13,26 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.viewpager2.widget.ViewPager2
+import com.intermeet.android.CardStackAdapter
 import com.intermeet.android.DiscoverViewModel
+import com.intermeet.android.LikeAnimation
+import com.intermeet.android.PassAnimation
 import com.intermeet.android.R
-import com.intermeet.android.UsersPagerAdapter
+import com.intermeet.android.UserDataModel
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.yuyakaido.android.cardstackview.CardStackListener
+import com.yuyakaido.android.cardstackview.CardStackView
+import com.yuyakaido.android.cardstackview.Direction
 
 class DiscoverFragment : Fragment() {
     private val viewModel: DiscoverViewModel by viewModels()
-    private lateinit var viewPager: ViewPager2
-    private lateinit var adapter: UsersPagerAdapter
+    private lateinit var cardStackView: CardStackView
+    private lateinit var adapter: CardStackAdapter
     private lateinit var noUsersTextView: TextView
     private lateinit var btnRefresh: Button
-    private lateinit var btnLike: Button
-    private lateinit var btnPass: Button
     private lateinit var returnButton: View
     private lateinit var progressBar: ProgressBar
+    private lateinit var manager: CardStackLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -38,125 +46,147 @@ class DiscoverFragment : Fragment() {
 
         setupViews(view)
         setupListeners()
+        setupCardStackView()
+        addLikeAnimationFragment()
+        addPassAnimationFragment()
 
-        viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
+        viewModel.filteredUsers.observe(viewLifecycleOwner) { users ->
             progressBar.visibility = View.GONE
-            if (userIds.isNotEmpty()) {
-                displayUserList(userIds)
+            if (users.isNotEmpty()) {
+                updateAdapter(users)
             } else {
                 displayNoUsers()
             }
         }
 
-        fetchUsers(autoRefresh = false)
+        fetchUsers()
     }
 
-    private fun setupViews(view: View) {
-        btnRefresh = view.findViewById(R.id.btnRefresh)
-        btnLike = view.findViewById(R.id.btnLike)
-        btnPass = view.findViewById(R.id.btnPass)
-        returnButton = view.findViewById(R.id.retrieve_lastuser)
-        viewPager = view.findViewById(R.id.usersViewPager)
-        viewPager.isUserInputEnabled = false
-        adapter = UsersPagerAdapter(this)
-        viewPager.adapter = adapter
+
+private fun setupViews(view: View) {
+        cardStackView = view.findViewById(R.id.usersCardStackView)
         noUsersTextView = view.findViewById(R.id.tvNoUsers)
+        btnRefresh = view.findViewById(R.id.btnRefresh)
+        returnButton = view.findViewById(R.id.return_button)
         progressBar = view.findViewById(R.id.loadingProgressBar)
 
+        adapter = CardStackAdapter(requireContext(), listOf())
+        cardStackView.adapter = adapter
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupListeners() {
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                viewModel.markAsSeen(adapter.getUserId(position))
-            }
-        })
-
-        btnLike.setOnClickListener {
-            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
-            val likedUserId = adapter.getUserId(viewPager.currentItem)
-            viewModel.addLike(likedUserId)
-            navigateToNextUser()
-        }
-
-        btnPass.setOnClickListener {
-            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return_black))
-            navigateToNextUser()
-        }
-
         returnButton.setOnClickListener {
-            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
-            navigateToPreviousUser()
+            cardStackView.rewind()
         }
 
         btnRefresh.setOnClickListener {
-            fetchUsers(autoRefresh = false)
+            fetchUsers()
         }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun fetchUsers(autoRefresh: Boolean) {
+    private fun fetchUsers() {
         progressBar.visibility = View.VISIBLE
         noUsersTextView.visibility = View.GONE
-        btnRefresh.visibility = View.GONE
         viewModel.clearSeenUsers()
         viewModel.fetchAndFilterUsers()
+    }
 
-        if (autoRefresh) {
-            viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
-                if (userIds.isEmpty()) {
-                    displayNoUsers(autoRefresh = false)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun displayNoUsers() {
+        noUsersTextView.visibility = View.VISIBLE
+        btnRefresh.visibility = View.VISIBLE
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateAdapter(users: List<UserDataModel>) {
+        adapter.setUsers(users)
+        if (users.isEmpty()) {
+            displayNoUsers()
+        } else {
+            cardStackView.visibility = View.VISIBLE
+            noUsersTextView.visibility = View.GONE
+        }
+    }
+
+    private fun setupCardStackView() {
+        val manager = CardStackLayoutManager(context, object : CardStackListener {
+            override fun onCardDragging(direction: Direction, ratio: Float) {
+            }
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            override fun onCardSwiped(direction: Direction) {
+                when (direction) {
+                    Direction.Right -> triggerLikeAnimation()
+                    Direction.Left -> triggerPassAnimation()
+                    else -> {}
                 }
             }
+
+            override fun onCardRewound() {
+            }
+
+            override fun onCardCanceled() {
+            }
+
+            override fun onCardAppeared(view: View, position: Int) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    view.animate().alpha(1.0f).setDuration(100).start()
+                }, 500)
+            }
+
+            override fun onCardDisappeared(view: View, position: Int) {
+            }
+        }).apply {
+            setDirections(Direction.HORIZONTAL)
+            setCanScrollVertical(false)
+            setCanScrollHorizontal(true)
         }
+
+
+        cardStackView.layoutManager = manager
+        cardStackView.adapter = adapter
+
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun displayUserList(userIds: List<String>) {
-        if (userIds.isEmpty()) {
-            fetchUsers(autoRefresh = true)
-        } else {
-            noUsersTextView.visibility = View.GONE
-            viewPager.visibility = View.VISIBLE
-            btnRefresh.visibility = View.GONE
-            btnLike.visibility = View.VISIBLE
-            btnPass.visibility = View.VISIBLE
-            returnButton.visibility = View.VISIBLE
-            adapter.setUserIds(userIds)
-            adapter.notifyDataSetChanged()
-            viewPager.currentItem = 0
+    private fun triggerLikeAnimation() {
+        val likeAnimationFragment =
+            childFragmentManager.findFragmentByTag("LikeAnimationFragment") as? LikeAnimation
+        likeAnimationFragment?.let {
+            it.animateLike()
+            it.toggleBackgroundAnimation()
+            Log.d("DiscoverFragment", "Animation triggered")
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun displayNoUsers(autoRefresh: Boolean = false) {
-        if (autoRefresh) {
-            fetchUsers(autoRefresh = true)
-        } else {
-            noUsersTextView.visibility = View.VISIBLE
-            viewPager.visibility = View.GONE
-            btnRefresh.visibility = View.VISIBLE
-            btnLike.visibility = View.GONE
-            btnPass.visibility = View.GONE
-            returnButton.visibility = View.GONE
+    private fun addLikeAnimationFragment() {
+        val transaction = childFragmentManager.beginTransaction()
+        val likeFragment = LikeAnimation()
+        transaction.add(R.id.like_animation_container, likeFragment, "LikeAnimationFragment")
+        transaction.commit()
+        Log.d("DiscoverFragment", "Like animation fragment added")
+    }
+
+    private fun triggerPassAnimation() {
+        val passAnimationFragment =
+            childFragmentManager.findFragmentByTag("PassAnimationFragment") as? PassAnimation
+        passAnimationFragment?.let {
+            it.animatePass()
+            it.toggleBackgroundAnimation()
+            Log.d("DiscoverFragment", "Animation triggered")
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun navigateToNextUser() {
-        if (viewPager.currentItem < adapter.itemCount - 1) {
-            viewPager.currentItem += 1
-        } else {
-            displayNoUsers()
-        }
-    }
-
-    private fun navigateToPreviousUser() {
-        if (viewPager.currentItem > 0) {
-            viewPager.currentItem -= 1
-        }
+    private fun addPassAnimationFragment() {
+        val transaction = childFragmentManager.beginTransaction()
+        val passFragment = PassAnimation()
+        transaction.add(R.id.like_animation_container, passFragment, "PassAnimationFragment")
+        transaction.commit()
+        Log.d("DiscoverFragment", "Pass animation fragment added")
     }
 
     companion object {

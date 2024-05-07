@@ -1,9 +1,8 @@
 package com.intermeet.android
 
 import android.content.ContentValues.TAG
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +16,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import queryNearbyUsers
+import java.time.Instant
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -50,7 +50,6 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun fetchAndFilterUsers() {
         fetchCurrentUserLocationAndQueryNearbyUsers()  // Fetch nearby users first
         _nearbyUserIdsLiveData.observeForever { userIds ->
@@ -99,7 +98,6 @@ class DiscoverViewModel : ViewModel() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
@@ -119,32 +117,18 @@ class DiscoverViewModel : ViewModel() {
 
             val usersData = usersDataDeferred.awaitAll().filterNotNull().toMap()
 
-
-
             // Filter and sort the users
-            val filteredAndSortedIds : MutableList<String> = usersData.filter {
+            val filteredAndSortedIds = usersData.filter {
                 userMeetsPreferences(it.value, currentUser)
             }.toList().sortedByDescending {
                 commonInterestsCount(it.second.interests, currentUser.interests)
-            }.map { it.first }.toMutableList()
-
-            var filterOutLikes : List<String> = emptyList()
-            fetchLikedUsers(getCurrentUser()!!){ filteredUsers ->
-                filterOutLikes = filteredUsers
-            }
-
-            for(i in filteredAndSortedIds)
-            {
-                if(filterOutLikes.contains(i))
-                {
-                    filteredAndSortedIds.removeAt(filteredAndSortedIds.indexOf(i))
-                }
-            }
+            }.map { it.first }
 
             // Fetch full user details for the filtered and sorted IDs and update LiveData
             val filteredUsers = fetchUsersData(filteredAndSortedIds)
             _filteredUsers.postValue(filteredUsers) // Post the detailed data to LiveData
             filteredUserIdsLiveData.postValue(filteredAndSortedIds) // Post filtered IDs for any other use
+
         }
     }
 
@@ -168,7 +152,6 @@ class DiscoverViewModel : ViewModel() {
             }
         })
     }
-
     private suspend fun fetchCurrentUserPreferences(): UserDataModel {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return UserDataModel()
         val prefRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -199,40 +182,39 @@ class DiscoverViewModel : ViewModel() {
             }
         }
     }
-    
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
 
-        val preferenceFields = listOf(
-            "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
-        )
+        //val preferenceFields = listOf(
+        //    "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
+        //)
 
-        var score = 0
-        val user_name = user.firstName
-        Log.d("DiscoverViewModel", "Score rn $user_name")
+        //var score = 0
+        //val user_name = user.firstName
+        //Log.d("DiscoverViewModel", "Score rn $user_name")
 
         // Assume ageWithinRange and doesGenderMatch methods are defined elsewhere
-        if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
-            return false
-            Log.d("DiscoverViewModel", "Score rn $score")
+        //if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
+        //    return false
+        //    Log.d("DiscoverViewModel", "Score rn $score")
 
-        }
+        //}
 
-        if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
-            return false
-        }
+        //if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
+        //    return false
+        //}
 
-        for (prefField in preferenceFields) {
-            val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as String
-            val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as String
+        //for (prefField in preferenceFields) {
+        //    val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as String
+        //    val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as String
 
-            if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
-                score++
-                Log.d("DiscoverViewModel", "Score rn $score")
-            }
-        }
-        Log.d("DiscoverViewModel", "Total Score rn ${score}")
-        return score >= 3
+         //   if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
+        //        score++
+        //        Log.d("DiscoverViewModel", "Score rn $score")
+        //    }
+        //}
+       // Log.d("DiscoverViewModel", "Total Score rn ${score}")
+       // return score >= 3
+        return true
 
 
     }
@@ -247,7 +229,6 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun ageWithinRange(birthday: String?, minAge: Int?, maxAge: Int?): Boolean {
         if (birthday == null) return false
         return try {

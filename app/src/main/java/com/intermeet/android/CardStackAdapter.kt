@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.intermeet.android.helperFunc.calculateAgeWithCalendar
 
-class CardStackAdapter(private val context: Context, private var users: List<UserDataModel>) :
+class CardStackAdapter(private val context: Context, private var users: MutableList<UserDataModel>) :
     RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(user: UserDataModel) {
+
             // Bind user data to the views
             val textViewName: TextView = view.findViewById(R.id.textViewName)
             textViewName.text = "${user.firstName}, ${calculateAgeWithCalendar(user.birthday)}"
@@ -163,13 +164,20 @@ class CardStackAdapter(private val context: Context, private var users: List<Use
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.alpha = 0f  // Start fully transparent or semi-transparent
+        holder.itemView.alpha = 0f  // Start fully transparent
         holder.bind(users[position])
+    }
+    fun removeUserAtPosition(position: Int) {
+        if (position >= 0 && position < users.size) {
+            users.removeAt(position)
+            notifyItemRemoved(position)
+
+        }
     }
 
     override fun getItemCount(): Int = users.size
     fun setUsers(newUsers: List<UserDataModel>) {
-        this.users = newUsers
+        this.users = newUsers.toMutableList()
         notifyDataSetChanged()
 
 

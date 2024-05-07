@@ -38,6 +38,8 @@
             android:layout_toEndOf="@id/profile_image"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitsemibold"
             android:text="User Name"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
@@ -59,7 +61,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:layout_above="@+id/message_input_layout"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"/>
 
     <RelativeLayout
         android:id="@+id/message_input_layout"
@@ -76,6 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@+id/send_button"
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitregular"
             android:hint="Type a message..."
             android:maxLines="3"
             android:inputType="textMultiLine|textCapSentences|textAutoCorrect"

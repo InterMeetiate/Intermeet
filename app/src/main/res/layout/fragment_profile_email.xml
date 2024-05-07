@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
             android:text="@string/settings_emailTitle"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="25sp"
@@ -38,6 +39,7 @@
         <EditText
             android:id="@+id/email_input"
             android:layout_width="0dp"
+            android:layout_margin="10dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:autofillHints="emailAddress"

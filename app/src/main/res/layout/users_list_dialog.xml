@@ -12,6 +12,7 @@
         android:text="Users Going"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:gravity="center"
+        android:fontFamily="@font/outfitregular"
         android:padding="8dp" />
 
     <ListView

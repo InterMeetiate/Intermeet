@@ -612,6 +612,23 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
 
         val goingButton = dialog.findViewById<Button>(R.id.going_button)
+
+        val currentUserId = getCurrentUserId()
+        eventRef.addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val peopleGoing = snapshot.children.mapNotNull { it.getValue(String::class.java)}
+                if(currentUserId in peopleGoing) {
+                    goingButton.text = "Already Going"
+                    goingButton.isEnabled = false
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+
+
         goingButton.setOnClickListener {
             // Add the user's ID to the list of people going
             val currentUserId = getCurrentUserId()

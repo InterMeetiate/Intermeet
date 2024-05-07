@@ -1,4 +1,5 @@
 //import com.intermeet.android.DiscoverFragment
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +14,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.intermeet.android.DiscoverActivity
-import com.intermeet.android.LikesDetailFragment
 import com.intermeet.android.R
 import com.intermeet.android.UserDetailAdapter
 
@@ -51,7 +51,8 @@ class LikesPageFragment(private var recyclerDataArrayList: List<String>) : Fragm
 
                 adapter.setOnClickListener(object : RecyclerViewAdapter.OnClickDetect {
                     override fun onClickDetect(position: Int, userId: String) {
-                        val likesDetailFragment = LikesDetailFragment.newInstance(userId)
+                        Log.d(TAG, "Clicking on userId: " + userId)
+                        val likesDetailFragment = LikesFragment.newInstance(userId)
                         parentFragmentManager.beginTransaction()
                             .replace(R.id.fragmentContainer, likesDetailFragment)
                             .addToBackStack(null)  // Optional: Add transaction to the back stack

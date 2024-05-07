@@ -1,6 +1,5 @@
 package com.intermeet.android
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.fragment.app.Fragment
-import android.widget.ListView
 import android.widget.EditText
+import android.widget.ListView
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -43,7 +42,7 @@ class ChatFragment : Fragment() {
         // Set up your list view adapter and other UI interactions here
         val currentUser = getCurrentUserId()
         if (currentUser != null) {
-            fetchLikedUsers(currentUser) { users ->
+            fetchMapUsers(currentUser) { users ->
                 val adapter = ChatAdapter(requireContext(), users) { userId ->
                     startChatWithUser(userId)
                 }
@@ -69,11 +68,11 @@ class ChatFragment : Fragment() {
         return currentUser?.uid
     }
 
-    private fun fetchLikedUsers(userID: String, callback: (List<String>) -> Unit) {
-        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("likes")
+    private fun fetchMapUsers(userID: String, callback: (List<String>) -> Unit) {
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("matches")
         userRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val likedUserIds = snapshot.children.mapNotNull { it.key }
+                val likedUserIds = snapshot.children.mapNotNull { it.value.toString() }
                 callback(likedUserIds)
             }
 

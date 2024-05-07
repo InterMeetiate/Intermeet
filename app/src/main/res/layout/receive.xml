@@ -12,6 +12,7 @@
 
         <TextView
             android:id="@+id/received_message"
+            android:fontFamily="@font/outfitregular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/received_message_placeholder"

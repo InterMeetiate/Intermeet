@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@drawable/gradient_list"
+    tools:context=".PhotoUploadActivity">
 
     <!-- Title TextView -->
     <TextView
@@ -12,7 +14,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="75dp"
         android:text="@string/photo_upload_title"
-        android:textColor="#000000"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitsemibold"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -97,6 +100,7 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/rounded_gradient_button"
         android:text="@string/next"
+        android:fontFamily="@font/outfitregular"
         android:textSize="30sp" />
 
 </RelativeLayout>

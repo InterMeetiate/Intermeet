@@ -19,26 +19,32 @@ class ChatAdapter(context: Context, private val userIds: List<String>,  private 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: inflater.inflate(R.layout.chat_users, parent, false)
-
         val imageView = view.findViewById<ImageView>(R.id.user_image)
         val textView = view.findViewById<TextView>(R.id.user_name)
-
         val userId = getItem(position)
+
+        view.tag = userId  // Tag the view with the current user ID
+
         if (userId != null) {
             fetchUserDetails(userId) { user ->
-                Log.d("ChatAdapter", "${user.firstName} ${user.lastName}")
-                textView.text = "${user.firstName} ${user.lastName}"
-                if (user.photoDownloadUrls.isNotEmpty()) {
-                    Glide.with(context).load(user.photoDownloadUrls[0]).into(imageView)
+                // Check if the view is still supposed to show data for this user
+                if (view.tag == userId) {
+                    Log.d("ChatAdapter", "${user.firstName} ${user.lastName}")
+                    textView.text = "${user.firstName} ${user.lastName}"
+                    if (user.photoDownloadUrls.isNotEmpty()) {
+                        Glide.with(context).load(user.photoDownloadUrls[0]).into(imageView)
+                    }
                 }
             }
         }
         view.setOnClickListener {
-            onItemClick(userIds[position]) // Pass the clicked user ID to the callback
+            if (userId != null) {
+                onItemClick(userId)
+            }
         }
-
         return view
     }
+
 
     private fun fetchUserDetails(userId: String, callback: (User) -> Unit) {
         val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)

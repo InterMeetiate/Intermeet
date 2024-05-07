@@ -12,11 +12,20 @@
         android:layout_below="@+id/frame_2"
         android:layout_marginTop="-38dp" />
 
-    <View
+    <!--<View
         android:id="@+id/return_button"
         android:layout_width="40dp"
         android:layout_height="38dp"
         android:background="@drawable/resource_return"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginStart="23dp"/>-->
+
+    <View
+        android:id="@+id/retrieve_lastuser"
+        android:layout_width="40dp"
+        android:layout_height="38dp"
+        android:background="@drawable/arrow_return"
         android:layout_marginEnd="48dp"
         android:layout_marginTop="45dp"
         android:layout_marginStart="23dp"/>
@@ -29,6 +38,7 @@
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
         android:text="@string/discover_homepage"
+        android:fontFamily="@font/outfitlight"
         android:textColor="@color/white"
         android:layout_margin="45dp"
         android:textSize="30sp" />
@@ -52,6 +62,7 @@
         android:visibility="gone"
         android:layout_centerHorizontal="true"/>
 
+
     <ProgressBar
         android:id="@+id/loadingProgressBar"
         android:layout_width="wrap_content"
@@ -59,6 +70,7 @@
         android:layout_centerInParent="true"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
         android:indeterminate="true"
+        android:fontFamily="@font/outfitregular"
         android:visibility="gone" />
 
 

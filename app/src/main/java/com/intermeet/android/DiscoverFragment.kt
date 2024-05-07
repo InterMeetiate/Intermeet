@@ -1,3 +1,4 @@
+
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -62,7 +63,7 @@ class DiscoverFragment : Fragment() {
     }
 
 
-    private fun setupViews(view: View) {
+private fun setupViews(view: View) {
         cardStackView = view.findViewById(R.id.usersCardStackView)
         noUsersTextView = view.findViewById(R.id.tvNoUsers)
         btnRefresh = view.findViewById(R.id.btnRefresh)
@@ -83,6 +84,7 @@ class DiscoverFragment : Fragment() {
             fetchUsers()
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchUsers() {

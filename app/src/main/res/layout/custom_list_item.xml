@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/prompt_rectangle"
         android:padding="8dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"
         android:textAppearance="?android:textAppearanceMedium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/deleteButton"

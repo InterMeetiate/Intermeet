@@ -32,6 +32,7 @@
 
                 <TextView
                     android:id="@+id/textViewName"
+                    android:fontFamily="@font/outfitregular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|start"
@@ -64,6 +65,7 @@
                     android:text="California State University, Long Beach"
                     android:textStyle="bold"
                     android:textSize="15sp"
+                    android:fontFamily="@font/outfitregular"
                     android:padding="12dp"/>
 
                 <HorizontalScrollView
@@ -88,11 +90,13 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvEducation"
                             android:text="5'8"
+                            android:fontFamily="@font/outfitregular"
                             android:textSize="15sp"
                             android:padding="12dp"/>
 
                         <TextView
                             android:id="@+id/tvLocation"
+                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Long Beach, CA"
@@ -104,11 +108,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="He/him"
+                            android:fontFamily="@font/outfitregular"
                             android:textSize="15sp"
                             android:padding="12dp"/>
 
                         <TextView
                             android:id="@+id/tvGender"
+                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Male"
@@ -117,6 +123,7 @@
 
                         <TextView
                             android:id="@+id/tvSexuality"
+                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Straight"
@@ -125,6 +132,7 @@
 
                         <TextView
                             android:id="@+id/tvEthnicity"
+                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Pomeranian-Husky"
@@ -141,6 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/hsvAttributes"
                     android:text="About me"
+                    android:fontFamily="@font/outfitregular"
                     android:textStyle="bold"
                     android:padding="12dp"/>
 
@@ -151,6 +160,7 @@
                     android:layout_below="@id/tvAboutMeHeader"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="24dp"
+                    android:fontFamily="@font/outfitregular"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam finibus porta justo, sed maximus erat accumsan id. Vivamus venenatis tortor sit amet purus dictum dapibus. Aliquam sed semper nisl, sit amet imperdiet leo. Quisque at commodo est." />
 
                 <TextView
@@ -160,6 +170,7 @@
                     android:layout_below="@id/tvAboutMe"
                     android:layout_marginTop="8dp"
                     android:text="@string/interests"
+                    android:fontFamily="@font/outfitregular"
                     android:textStyle="bold"
                     android:padding="12dp"/>
 

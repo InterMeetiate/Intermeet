@@ -16,6 +16,7 @@
         android:clipToOutline="true"
         android:gravity="center_horizontal|top"
         android:text="@string/profile_page"
+        android:fontFamily="@font/outfitlight"
         android:textColor="@color/white"
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -21,7 +21,8 @@
             android:theme="?attr/actionBarTheme"
             app:navigationIcon="?attr/homeAsUpIndicator"
             app:title="@string/phone_number"
-            app:titleTextColor="@android:color/black" />
+            android:textColor="@color/black"
+            android:fontFamily="@font/outfitsemibold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,6 +38,7 @@
                 android:text="@string/phone_number"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:fontFamily="@font/outfitregular"
                 android:layout_marginBottom="16dp"/>
 
             <!-- CardView to contain the phone number box -->
@@ -70,6 +72,7 @@
                         android:layout_height="wrap_content"
                         android:text="123-456-7890"
                         android:textSize="16sp"
+                        android:fontFamily="@font/outfitregular"
                         android:textColor="@color/black"/>
 
                 </LinearLayout>
@@ -80,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/update_phone_number"
+                android:fontFamily="@font/outfitregular"
                 android:background="@drawable/transparent_button"
                 android:textColor="@color/gradient_textcolor"
                 android:layout_gravity="center"/>

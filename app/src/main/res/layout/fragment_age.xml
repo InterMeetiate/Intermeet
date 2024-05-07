@@ -13,9 +13,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/ageSelect"
         android:textAppearance="@style/email_up"
-        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitsemibold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.384"
@@ -57,7 +60,8 @@
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back" />
+        android:text="Back"
+        android:fontFamily="@font/outfitregular"/>
 
 
 </LinearLayout>

@@ -10,6 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter your Pronoun"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"
         android:imeOptions="actionDone"
         android:inputType="text" />
     <!-- Additional UI elements -->

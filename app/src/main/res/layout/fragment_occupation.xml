@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:hint="Enter your occupation"
         android:imeOptions="actionDone"
+        android:textColor="@color/black"
+        android:fontFamily="@font/outfitregular"
         android:inputType="text" />
     <!-- Additional UI elements -->
 </LinearLayout>

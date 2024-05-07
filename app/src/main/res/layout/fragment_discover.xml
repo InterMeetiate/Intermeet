@@ -3,6 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/usersCardStackView"
         android:layout_width="match_parent"
@@ -58,5 +60,17 @@
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
         android:indeterminate="true"
         android:visibility="gone" />
+
+
+    <FrameLayout
+        android:id="@+id/like_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/pass_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </RelativeLayout>
 

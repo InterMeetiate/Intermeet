@@ -51,6 +51,7 @@ android {
         }
     }
     compileOptions {
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -106,5 +107,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.firebase:firebase-appcheck-safetynet:16.1.2")
+
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.1")
+    implementation("com.kizitonwose.calendar:view:2.0.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
 

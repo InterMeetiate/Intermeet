@@ -1,10 +1,13 @@
 package com.intermeet.android
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 
 class SettingsActivity : AppCompatActivity() {
     companion object {
@@ -51,9 +54,18 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        logout.setOnClickListener{
-            val intent = Intent(this, BeginningActivity::class.java)
-            startActivity(intent  )
+        logout.setOnClickListener {
+            // Show a loading indicator or a simple toast message
+            Toast.makeText(this, "Logging out...", Toast.LENGTH_SHORT).show()
+
+            FirebaseAuth.getInstance().signOut()
+            val intent = Intent(this, BeginningActivity::class.java).apply {
+                // Clear the activity stack.
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            val options = ActivityOptions.makeCustomAnimation(this, android.R.anim.fade_in, android.R.anim.fade_out)
+            startActivity(intent, options.toBundle())
         }
 
     }

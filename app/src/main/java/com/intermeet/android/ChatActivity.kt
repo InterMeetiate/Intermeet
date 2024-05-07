@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.content.Intent
 import android.view.MenuItem
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.widget.Button
@@ -17,15 +18,26 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TimePicker
 import androidx.annotation.RequiresApi
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.kizitonwose.calendar.core.CalendarDay
+import com.kizitonwose.calendar.core.DayPosition
+import com.kizitonwose.calendar.core.daysOfWeek
+import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
+import com.kizitonwose.calendar.view.MonthDayBinder
+import com.kizitonwose.calendar.view.ViewContainer
 import java.time.Instant
+import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 class ChatActivity : AppCompatActivity() {
@@ -42,7 +54,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var mDbRef: DatabaseReference
     private lateinit var userName: TextView
     private lateinit var calenderIcon: ImageView
-    private lateinit var calendarView: CalendarView
+    private lateinit var calendarMonth: TextView
+    private lateinit var calendarView: com.kizitonwose.calendar.view.CalendarView
     private lateinit var hangoutName: EditText
     private lateinit var hangoutTimeBegin: TextView
     private lateinit var hangoutTimeEnd: TextView
@@ -56,6 +69,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var currentHangoutTime: TextView
     private lateinit var currentHangoutLocation: TextView
     private lateinit var currentHangoutDescription: TextView
+    private var selectedDate: LocalDate? = null
 
     var receiverRoom: String? = null
     var senderRoom: String? = null
@@ -162,18 +176,62 @@ class ChatActivity : AppCompatActivity() {
     private fun showCalendarDialog() {
         val dialog = Dialog(this)
         dialog.setContentView(R.layout.calendar_view)
-
+        calendarMonth = dialog.findViewById(R.id.calendar_month)
         calendarView = dialog.findViewById(R.id.calendar_view)
         addHangoutButton = dialog.findViewById(R.id.add_hangout_button)
-        currentHangoutName = dialog.findViewById(R.id.selected_hangout_name)
-        currentHangoutTime = dialog.findViewById(R.id.selected_hangout_time)
-        currentHangoutLocation = dialog.findViewById(R.id.selected_hangout_location)
-        currentHangoutDescription = dialog.findViewById(R.id.selected_hangout_description)
+//        currentHangoutName = dialog.findViewById(R.id.selected_hangout_name)
+//        currentHangoutTime = dialog.findViewById(R.id.selected_hangout_time)
+//        currentHangoutLocation = dialog.findViewById(R.id.selected_hangout_location)
+//        currentHangoutDescription = dialog.findViewById(R.id.selected_hangout_description)
 
-        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            stringDateSelected = "$year-${month + 1}-$dayOfMonth"
-            Log.d("Calendar", stringDateSelected)
-            calendarClicked()
+//        calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
+//            stringDateSelected = "$year-${month + 1}-$dayOfMonth"
+//            Log.d("Calendar", stringDateSelected)
+//            calendarClicked()
+//        }
+
+
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay
+            val textView = view.findViewById<TextView>(R.id.calendarDayText)
+
+            init {
+                view.setOnClickListener {
+                    if(day.position == DayPosition.MonthDate) {
+                        selectDate(day.date)
+                    }
+                }
+            }
+        }
+
+        // Individual day cells
+        calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+
+            override fun bind(container: DayViewContainer, data: CalendarDay) {
+                container.textView.text = data.date.dayOfMonth.toString()
+            }
+        }
+
+        val currentMonth = YearMonth.now()
+        val startMonth = currentMonth.minusMonths(100)  // Adjust as needed
+        val endMonth = currentMonth.plusMonths(100)  // Adjust as needed
+        val daysOfWeek = daysOfWeek()
+        calendarView.setup(startMonth, endMonth, daysOfWeek.first())
+        calendarView.scrollToMonth(currentMonth)
+
+        val titlesContainer = dialog.findViewById<ViewGroup>(R.id.titlesContainer)
+        titlesContainer.children
+            .map { it as TextView }
+            .forEachIndexed { index, textView ->
+                val dayOfWeek = daysOfWeek[index]
+                val title = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+                textView.text = title
+            }
+
+        calendarView.monthScrollListener = {
+            val titleFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+            calendarMonth.text = titleFormatter.format(it.yearMonth)
         }
 
         addHangoutButton.setOnClickListener {
@@ -181,6 +239,21 @@ class ChatActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun selectDate(date: LocalDate) {
+        if(selectedDate != date) {
+            val oldDate = selectedDate
+            selectedDate = date
+            oldDate?.let {calendarView.notifyDateChanged(it)}
+            calendarView.notifyDateChanged(date)
+            updateAdapterForDate(date)
+        }
+    }
+
+    // Update RecycleView with list of Hangouts
+    private fun updateAdapterForDate(date: LocalDate) {
+
     }
 
     private fun calendarClicked() {

@@ -2,6 +2,8 @@ package com.intermeet.android
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.geofire.GeoFire
@@ -15,17 +17,26 @@ import com.intermeet.android.helperFunc.getUserDataRepository
 
 class AccountCreationActivity : AppCompatActivity() {
     private lateinit var userDataRepository: UserDataRepository
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_creation)
+        progressBar = findViewById(R.id.progressBar)
         userDataRepository = getUserDataRepository()
 
         registerUser()
     }
 
-    private fun registerUser() {
+    private fun showLoading() {
+        progressBar.visibility = View.VISIBLE
+    }
 
+    private fun hideLoading() {
+        progressBar.visibility = View.GONE
+    }
+    private fun registerUser() {
+        showLoading()
         val userData = userDataRepository.userData
         val email = userData?.email ?: ""
         val password = userData?.password ?: ""
@@ -35,6 +46,7 @@ class AccountCreationActivity : AppCompatActivity() {
 
         if (email.isBlank() || password.isBlank()) {
             Toast.makeText(this, "Email and password cannot be empty.", Toast.LENGTH_SHORT).show()
+            hideLoading()
             return
         }
 
@@ -51,12 +63,14 @@ class AccountCreationActivity : AppCompatActivity() {
                             }
                         } else {
                             Toast.makeText(this, "Failed to upload images.", Toast.LENGTH_SHORT).show()
+                            hideLoading()
                         }
                     }
                 }
             } else {
                 // If sign in fails, display a message to the user.
                 Toast.makeText(baseContext, "Authentication failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                hideLoading()
             }
         }
     }

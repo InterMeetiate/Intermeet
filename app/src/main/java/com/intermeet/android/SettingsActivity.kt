@@ -22,6 +22,20 @@ class SettingsActivity : AppCompatActivity() {
         val paymentsButton: Button = findViewById(R.id.Payments)
         val phoneNumberButton: Button = findViewById(R.id.PhoneNumber)
         val logout: Button = findViewById(R.id.LogOut)
+        val privacyPolicyButton: Button = findViewById(R.id.PrivacyPolicy)
+        val termsOfServiceButton: Button = findViewById(R.id.TOS)
+
+        privacyPolicyButton.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("url", "https://intermeetiate.github.io/InterMeetiatePrivatePolicy") // Your actual URL
+            startActivity(intent)
+        }
+
+        termsOfServiceButton.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("url", "https://intermeetiate.github.io/TermsOfService/") // Your actual URL
+            startActivity(intent)
+        }
 
         // Set click listener for the toolbar navigation icon (back button)
         toolbar.setNavigationOnClickListener {

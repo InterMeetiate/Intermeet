@@ -116,6 +116,7 @@ class DiscoverViewModel : ViewModel() {
 
             val usersData = usersDataDeferred.awaitAll().filterNotNull().toMap()
 
+
             // Filter and sort the users
             val filteredAndSortedIds : MutableList<String> = usersData.filter {
                 userMeetsPreferences(it.value, currentUser)

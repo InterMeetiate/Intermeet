@@ -184,37 +184,38 @@ class DiscoverViewModel : ViewModel() {
     }
     private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
 
-        //val preferenceFields = listOf(
-        //    "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
-        //)
+        val preferenceFields = listOf(
+            "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
+        )
 
-        //var score = 0
-        //val user_name = user.firstName
-        //Log.d("DiscoverViewModel", "Score rn $user_name")
+        var score = 0
+        val user_name = user.firstName
+        Log.d("DiscoverViewModel", "Score rn $user_name")
 
         // Assume ageWithinRange and doesGenderMatch methods are defined elsewhere
-        //if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
-        //    return false
-        //    Log.d("DiscoverViewModel", "Score rn $score")
+        if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
+            return false
+            Log.d("DiscoverViewModel", "Score rn $score")
 
-        //}
+        }
 
-        //if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
-        //    return false
-        //}
+        if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
+            return false
+        }
 
-        //for (prefField in preferenceFields) {
-        //    val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as String
-        //    val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as String
+        for (prefField in preferenceFields) {
+            val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as? String ?: "Default or Error Handling Value"
+            val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as? String ?: "Default or Error Handling Value"
 
-         //   if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
-        //        score++
-        //        Log.d("DiscoverViewModel", "Score rn $score")
-        //    }
-        //}
-       // Log.d("DiscoverViewModel", "Total Score rn ${score}")
-       // return score >= 3
-        return true
+
+            if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
+                score++
+                Log.d("DiscoverViewModel", "Score rn $score")
+            }
+        }
+        Log.d("DiscoverViewModel", "Total Score rn ${score}")
+        return score >= 3
+        //return true
 
 
     }

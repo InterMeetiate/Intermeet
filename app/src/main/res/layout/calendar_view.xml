@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/add_hangout_button"
-        android:text="Calendar"
+        android:text=""
         android:textAlignment="center"
         android:textSize="30sp"
         android:paddingStart="44dp"
@@ -34,6 +34,7 @@
         android:layout_below="@id/calendar_month" />
 
     <LinearLayout
+        android:id="@+id/calendar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -51,44 +52,11 @@
 
     </LinearLayout>
 
-<!--    <TextView-->
-<!--        android:id="@+id/selected_hangout_name"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Title"-->
-<!--        android:layout_below="@id/calendar_view"-->
-<!--        android:textSize="20dp"-->
-<!--        android:visibility="gone"-->
-<!--        android:layout_centerHorizontal="true"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/selected_hangout_time"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="00:00 - 00:00"-->
-<!--        android:layout_below="@id/selected_hangout_name"-->
-<!--        android:visibility="gone"-->
-<!--        android:textSize="20dp"-->
-<!--        android:layout_centerHorizontal="true"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/selected_hangout_location"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Location"-->
-<!--        android:layout_below="@id/selected_hangout_time"-->
-<!--        android:visibility="gone"-->
-<!--        android:textSize="20dp"-->
-<!--        android:layout_centerHorizontal="true"/>-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/selected_hangout_description"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Description"-->
-<!--        android:layout_below="@id/selected_hangout_location"-->
-<!--        android:visibility="gone"-->
-<!--        android:textSize="20dp"-->
-<!--        android:layout_centerHorizontal="true"/>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hangout_list"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/calendar_container"/>
 
 </RelativeLayout>

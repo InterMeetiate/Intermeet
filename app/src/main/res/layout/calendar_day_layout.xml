@@ -19,7 +19,7 @@
         android:id="@+id/hangoutDot"
         android:layout_width="4.5dp"
         android:layout_height="4.5dp"
-        android:layout_marginBottom="10dp"
         android:layout_gravity="bottom|center_horizontal"
+        android:visibility="gone"
         android:background="@drawable/hangout_dot" />
 </FrameLayout>

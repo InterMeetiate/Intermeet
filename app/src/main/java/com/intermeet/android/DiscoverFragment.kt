@@ -1,6 +1,6 @@
+
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +55,7 @@ class DiscoverFragment : Fragment() {
         btnRefresh = view.findViewById(R.id.btnRefresh)
         btnLike = view.findViewById(R.id.btnLike)
         btnPass = view.findViewById(R.id.btnPass)
-        returnButton = view.findViewById(R.id.return_button)
+        returnButton = view.findViewById(R.id.retrieve_lastuser)
         viewPager = view.findViewById(R.id.usersViewPager)
         viewPager.isUserInputEnabled = false
         adapter = UsersPagerAdapter(this)
@@ -74,16 +74,18 @@ class DiscoverFragment : Fragment() {
         })
 
         btnLike.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
             val likedUserId = adapter.getUserId(viewPager.currentItem)
             viewModel.addLike(likedUserId)
-            navigateToNextUser()
         }
 
         btnPass.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return_black))
             navigateToNextUser()
         }
 
         returnButton.setOnClickListener {
+            returnButton.setBackground(resources.getDrawable(R.drawable.arrow_return))
             navigateToPreviousUser()
         }
 

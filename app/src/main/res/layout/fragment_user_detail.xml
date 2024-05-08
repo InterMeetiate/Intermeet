@@ -69,7 +69,7 @@
                     android:fontFamily="@font/outfitregular"
                     android:padding="12dp"/>
 
-                <HorizontalScrollView
+                <com.intermeet.android.custom.NonInterceptingHorizontalScrollView
                     android:id="@+id/hsvAttributes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,66 +81,60 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:divider="?android:attr/listDivider"
-                        android:showDividers="middle"
                         android:dividerPadding="4dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:showDividers="middle">
 
                         <TextView
                             android:id="@+id/tvHeight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/tvEducation"
+                            android:padding="12dp"
                             android:text="5'8"
-                            android:fontFamily="@font/outfitregular"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvLocation"
-                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:padding="12dp"
                             android:text="Long Beach, CA"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvPronouns"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:padding="12dp"
                             android:text="He/him"
-                            android:fontFamily="@font/outfitregular"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvGender"
-                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:padding="12dp"
                             android:text="Male"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvSexuality"
-                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:padding="12dp"
                             android:text="Straight"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
 
                         <TextView
                             android:id="@+id/tvEthnicity"
-                            android:fontFamily="@font/outfitregular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:padding="12dp"
                             android:text="Pomeranian-Husky"
-                            android:textSize="15sp"
-                            android:padding="12dp"/>
+                            android:textSize="15sp" />
                     </LinearLayout>
-                </HorizontalScrollView>
+                </com.intermeet.android.custom.NonInterceptingHorizontalScrollView>
+
 
 
 
@@ -174,13 +168,19 @@
                     android:fontFamily="@font/outfitregular"
                     android:textStyle="bold"
                     android:padding="12dp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
+                <com.intermeet.android.custom.NonInterceptingRecyclerView
                     android:id="@+id/rvInterests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scrollbars="none"
                     android:layout_below="@id/tvInterestsHeader"
-                    android:padding="12dp"/>
+                    tools:listitem="@layout/item_interest" />
+
+                    <!-- Adapter and other settings can be configured in your activity or fragment -->
+
+
+
+
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
     </RelativeLayout>

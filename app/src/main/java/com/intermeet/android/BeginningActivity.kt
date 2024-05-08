@@ -1,15 +1,16 @@
 package com.intermeet.android
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 
 class BeginningActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,16 +64,37 @@ class BeginningActivity : AppCompatActivity() {
 
     private fun buttonFunc() {
         val signInButton: TextView = findViewById(R.id.sign_in_button)
+        val signUpButton: TextView = findViewById(R.id.sign_up_button)
+
         signInButton.setOnClickListener {
             // Intent to navigate to the LoginActivity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-        val signUpButton: TextView = findViewById(R.id.sign_up_button)
+
         signUpButton.setOnClickListener {
             // Intent to navigate to the SignupActivity
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
+        }
+
+        // Set up animations for touch interaction
+        setupButtonAnimations(signInButton)
+        setupButtonAnimations(signUpButton)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupButtonAnimations(button: View) {
+        button.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(200).start()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    v.animate().scaleX(1f).scaleY(1f).setDuration(200).start()
+                }
+            }
+            false // Return false to allow the click event to proceed
         }
     }
 }

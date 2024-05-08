@@ -34,7 +34,6 @@
         android:clipToOutline="true"
         android:fontFamily="@font/outfitlight"
         android:gravity="center_horizontal|top"
-
         android:text="@string/discover_homepage"
         android:textColor="@color/white"
         android:textSize="30sp"

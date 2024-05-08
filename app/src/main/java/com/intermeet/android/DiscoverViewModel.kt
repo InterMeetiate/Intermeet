@@ -103,12 +103,13 @@ class DiscoverViewModel : ViewModel() {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
             val seenUserIds = fetchSeenUserIds()
+            val likedUserIds = fetchLikedUsers()
             val userRef = FirebaseDatabase.getInstance().getReference("users")
 
             val usersDataDeferred = userIds.map { userId ->
                 async {
                     val userData = userRef.child(userId).get().await().getValue(UserDataModel::class.java)
-                    if (userData != null && !seenUserIds.contains(userId)) {
+                    if (userData != null && !seenUserIds.contains(userId) && !likedUserIds.contains(userId)) {
                         userId to userData
                     } else {
                         null
@@ -139,20 +140,18 @@ class DiscoverViewModel : ViewModel() {
         return userId
     }
 
-    private fun fetchLikedUsers(userID: String, callback: (List<String>) -> Unit) {
-        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userID).child("likes")
-        userRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val likedUserIds = snapshot.children.mapNotNull { it.key }
-                callback(likedUserIds)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FetchLikedUsers", "Error fetching liked user IDs: ${error.message}")
-                callback(emptyList()) // Return an empty list in case of error
-            }
-        })
+    private suspend fun fetchLikedUsers(): Set<String> {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return emptySet()
+        val userRef = FirebaseDatabase.getInstance().getReference("users/$userId/liked")
+        return try {
+            val snapshot = userRef.get().await()
+            snapshot.children.mapNotNull { it.key }.toSet()
+        } catch (e: Exception) {
+            Log.e("DiscoverViewModel", "Failed to fetch liked user IDs", e)
+            emptySet()  // Return an empty set in case of error
+        }
     }
+
     private suspend fun fetchCurrentUserPreferences(): UserDataModel {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return UserDataModel()
         val prefRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -248,8 +247,15 @@ class DiscoverViewModel : ViewModel() {
     fun addLike(likedUserId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val likeTimestamp = System.currentTimeMillis()
-        val dbRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
-        dbRef.updateChildren(mapOf(userId to likeTimestamp))
+
+
+        // Update likes for the liked user
+        val likedUserLikesRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
+        likedUserLikesRef.updateChildren(mapOf(userId to likeTimestamp))
+
+        // Add the liked user within the current user
+        val currentUserLikedRef = FirebaseDatabase.getInstance().getReference("users/$userId/liked")
+        currentUserLikedRef.child(likedUserId).setValue(likeTimestamp)
 
         // Notify liked user
         val notificationRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/notifications")

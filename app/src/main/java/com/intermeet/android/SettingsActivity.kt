@@ -45,7 +45,7 @@ class SettingsActivity : AppCompatActivity() {
         val logout: Button = findViewById(R.id.LogOut)
         val privacyPolicyButton: Button = findViewById(R.id.privacyPolicyButton)
         val notificationSettingsButton: Button = findViewById(R.id.PushNotifications)
-
+        val termsOfServiceButton: Button = findViewById(R.id.TOS)
 
         // Set click listener for the toolbar navigation icon (back button)
         toolbar.setNavigationOnClickListener {
@@ -67,10 +67,16 @@ class SettingsActivity : AppCompatActivity() {
             openNotificationSettingsForApp()
         }
         privacyPolicyButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://intermeetiate.github.io/InterMeetiatePrivatePolicy"))
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("url", "https://intermeetiate.github.io/InterMeetiatePrivatePolicy") // Your privacy policy URL
             startActivity(intent)
         }
 
+        termsOfServiceButton.setOnClickListener {
+            val intent = Intent(this, WebViewActivity::class.java)
+            intent.putExtra("url", "https://intermeetiate.github.io/TermsOfService/") // Your terms of service URL
+            startActivity(intent)
+        }
         // Set click listener for the payments button
 
         logout.setOnClickListener {

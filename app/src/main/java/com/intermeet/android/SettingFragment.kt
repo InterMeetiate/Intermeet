@@ -38,6 +38,7 @@ class SettingsFragment : Fragment() {
         val emailButton: Button = view.findViewById(R.id.Email)
         val privacyPolicyButton: Button = view.findViewById(R.id.privacyPolicyButton)
         val notificationButton: Button = view.findViewById(R.id.PushNotifications)
+        val tosButton: Button = view.findViewById(R.id.TOS)
 
 
         // Handle back press explicitly
@@ -59,6 +60,14 @@ class SettingsFragment : Fragment() {
         // Navigate using NavController
         emailButton.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_profileEmailFragment)
+        }
+        tosButton.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW, Uri.parse(
+                    "https://intermeetiate.github.io/TermsOfService/"
+                )
+            )
+            startActivity(intent)
         }
         //OPEN PRIVACY POLICY LINK
         privacyPolicyButton.setOnClickListener{

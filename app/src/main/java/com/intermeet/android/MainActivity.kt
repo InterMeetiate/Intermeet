@@ -66,17 +66,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         if (intent.hasExtra("openFragment")) {
-            val fragment = when (intent.getStringExtra("openFragment")) {
-                "chat" -> ChatFragment.newInstance()
-                else -> DiscoverFragment.newInstance()  // Ensure the default fragment is DiscoverFragment
-            }
-            navigateTo(fragment)
-            bottomNav.selectedItemId = when (fragment) {
-                is ChatFragment -> R.id.navigation_chat
-                else -> R.id.navigation_discover
+            when (intent.getStringExtra("openFragment")) {
+                "like" -> navigateTo(LikesPageFragment.newInstance())
+                "chat" -> {
+                    val userId = intent.getStringExtra("userId")
+                    if (userId != null) {
+                        navigateTo(ChatFragment.newInstance().apply {
+                            arguments = Bundle().apply { putString("userId", userId) }
+                        })
+                    }
+                }
+                // Handle other cases if necessary
             }
         }
-
     }
 
     private fun updateFCMToken() {
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             // viewModel.setUserId(userId)
         }
     }
+
 }
 
 

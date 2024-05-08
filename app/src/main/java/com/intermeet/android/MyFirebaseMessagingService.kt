@@ -74,8 +74,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = System.currentTimeMillis().toInt()
 
-        val intent = Intent(this, ChatActivity::class.java).apply {
-            putExtra("userId", userId)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            // Check if the notification is from LikeChannel and adjust intent accordingly
+            if (channelId == "LikeChannel") {
+                putExtra("openFragment", "like")  // Custom extra to dictate which fragment to open
+            } else if (channelId == "ChatChannel") {
+                putExtra("userId", userId)  // For chat notifications
+            }
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 

@@ -208,7 +208,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         }
 
         AlertDialog.Builder(this).apply {
-            setTitle("Mind if they drink?")
+            setTitle("Cool if they drink?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
                 selectedDrink = drinking[numberPicker.value]
@@ -233,7 +233,7 @@ class PreferenceActivity : AppCompatActivity(), DistanceFragment.OnDistanceSelec
         }
 
         AlertDialog.Builder(this).apply {
-            setTitle("Care if they take anything interesting?")
+            setTitle("Cool if they take anything interesting?")
             setView(numberPicker)
             setPositiveButton("OK") { _, _ ->
                 selectedDrugs = drugs[numberPicker.value]

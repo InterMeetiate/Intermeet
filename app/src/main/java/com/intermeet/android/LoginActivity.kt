@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         forgotPasswordButton.setOnClickListener {
-            val intent = Intent(this, ResetPasswordActivity::class.java)
+            val intent = Intent(this, EmailGrabActivity::class.java)
             startActivity(intent)
         }
 

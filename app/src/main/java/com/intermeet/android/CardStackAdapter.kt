@@ -35,7 +35,7 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
             val tvEducation: TextView = view.findViewById(R.id.tvEducation)
             tvEducation.text = user.school
 
-            // Translate coordinates into city and State
+            // Translate coordinates into city and state
             val geocoder = Geocoder(view.context)
             val tvLocation: TextView = view.findViewById(R.id.tvLocation)
             try {
@@ -44,11 +44,11 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
                         geocoder.getFromLocation(it, longitude, 1)
                     }
                 }
-                if (addresses != null && addresses.isNotEmpty()) {
+                if (!addresses.isNullOrEmpty()) {
                     val address = addresses[0]
-                    val city = address.locality // Get the city name
-                    val state = address.adminArea // Get the state name
-                    val stateAbbreviation = getStateAbbreviation(state) // Method to convert state name to abbreviation
+                    val city = address.locality
+                    val state = address.adminArea
+                    val stateAbbreviation = getStateAbbreviation(state)
                     tvLocation.text = if (city != null && stateAbbreviation != null) {
                         "$city, $stateAbbreviation"
                     } else {

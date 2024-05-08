@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/usersCardStackView"
         android:layout_width="match_parent"
         android:layout_height="687dp"
-        android:layout_below="@+id/frame_2"
-        android:layout_marginTop="-38dp" />
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="83dp" />
 
+    <View
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="82dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent" />
     <View
         android:id="@+id/return_button"
         android:layout_width="40dp"
         android:layout_height="38dp"
         android:background="@drawable/resource_return"
-        android:layout_marginEnd="48dp"
-        android:layout_marginTop="45dp"
-        android:layout_marginStart="23dp"/>
+        android:layout_gravity="start|top"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="45dp"/>
 
     <TextView
         android:id="@+id/frame_2"
         android:layout_width="177dp"
         android:layout_height="38dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginTop="45dp"
         android:background="@drawable/discover_bar"
-        android:gravity="center_horizontal"
-        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/outfitlight"
+        android:gravity="center"
         android:text="@string/discover_homepage"
         android:textColor="@color/white"
-        android:layout_margin="45dp"
         android:textSize="30sp" />
 
     <TextView
@@ -38,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/no_users"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone"
         android:textSize="18sp"
         android:padding="16dp" />
@@ -47,22 +54,21 @@
         android:id="@+id/btnRefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvNoUsers"
         android:text="@string/review"
         android:visibility="gone"
         android:background="@drawable/discover_button"
         android:gravity="center"
-        android:layout_centerHorizontal="true"/>
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="20dp"/>
 
     <ProgressBar
         android:id="@+id/loadingProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
         android:indeterminate="true"
         android:visibility="gone" />
-
 
     <FrameLayout
         android:id="@+id/like_animation_container"
@@ -74,13 +80,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <!--    <it.fabiosassu.stackexpandableview.StackExpandableView-->
-    <!--        android:id="@+id/stackExpandableView"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:visibility="gone"-->
-    <!--        android:background="#CCFFFFFF"-->
-    <!--        app:orientation="vertical"/>-->
-
-</RelativeLayout>
-
+</FrameLayout>

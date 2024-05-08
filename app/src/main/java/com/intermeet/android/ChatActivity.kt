@@ -164,16 +164,17 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (isTaskRoot) {
-            // If this activity is the root activity of the task, create a proper back stack
-            Intent(this, MainActivity::class.java).also {
-                it.putExtra("openFragment", "chat")  // Direct MainActivity to open ChatFragment
-                startActivity(it)
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("openFragment", "chat")
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
+            startActivity(intent)
         } else {
             super.onBackPressed()  // Follow the normal back behavior
         }
-        finish()  // Ensure this activity is finished after handling back action
+        finish()  // Ensure this activity is finished after handling the back action
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showCalendarDialog() {

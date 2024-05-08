@@ -115,6 +115,7 @@
         android:layout_height="50dp"
         android:background="@drawable/sign_up_button_ripple"
         android:gravity="center"
+        android:fontFamily="@font/outfitregular"
         android:text="@string/sign_up"
         android:textColor="@android:color/white"
         android:textSize="15dp"

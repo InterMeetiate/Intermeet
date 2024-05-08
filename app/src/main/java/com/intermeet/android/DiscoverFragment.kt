@@ -34,7 +34,7 @@ class DiscoverFragment : Fragment() {
     private lateinit var returnButton: View
     private lateinit var progressBar: ProgressBar
     private lateinit var manager: CardStackLayoutManager
-
+    private var canRewind = true  // Initially allow rewinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -47,8 +47,6 @@ class DiscoverFragment : Fragment() {
         Log.d("DiscoverFragment", "onViewCreated")
 
         cardStackView = view.findViewById(R.id.usersCardStackView)
-        //stackExpandableView = view.findViewById(R.id.stackExpandableView)
-
         setupViews(view)
         setupListeners()
         setupCardStackView()
@@ -68,7 +66,6 @@ class DiscoverFragment : Fragment() {
         fetchUsers(autoRefresh = false)
     }
 
-
     private fun setupViews(view: View) {
         cardStackView = view.findViewById(R.id.usersCardStackView)
         noUsersTextView = view.findViewById(R.id.tvNoUsers)
@@ -83,8 +80,12 @@ class DiscoverFragment : Fragment() {
     private fun setupListeners() {
         Log.d("DiscoverFragment", "setupListeners executed")
         returnButton.setOnClickListener {
-            Log.d("DiscoverFragment", "Return button clicked")
-            cardStackView.rewind()
+            if (canRewind) {
+                Log.d("DiscoverFragment", "Return button clicked")
+                cardStackView.rewind()
+            } else {
+                Log.d("DiscoverFragment", "Cannot rewind after a right swipe")
+            }
         }
 
         btnRefresh.setOnClickListener {
@@ -92,7 +93,6 @@ class DiscoverFragment : Fragment() {
             fetchUsers(autoRefresh = false)
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchUsers(autoRefresh: Boolean) {
@@ -112,8 +112,6 @@ class DiscoverFragment : Fragment() {
         }
     }
 
-
-
     private fun displayNoUsers(autoRefresh: Boolean = false) {
         Log.d("DiscoverFragment", "displayNoUsers executed with autoRefresh=$autoRefresh")
         progressBar.visibility = View.GONE  // Ensure the progress bar is hidden
@@ -127,7 +125,7 @@ class DiscoverFragment : Fragment() {
             if (autoRefresh) {
                 fetchUsers(autoRefresh = true)
             }
-        }, 1500) // 2000 milliseconds = 2 seconds
+        }, 1500) // 2 seconds
     }
 
     private fun updateAdapter(users: List<UserDataModel>) {
@@ -159,11 +157,13 @@ class DiscoverFragment : Fragment() {
                         viewModel.addLike(likedUserId)
                         triggerLikeAnimation()
                         viewModel.markAsSeen(likedUserId)
+                        canRewind = false  // Disable rewind after swiping right
                     }
                     Direction.Left -> {
                         triggerPassAnimation()
                         val passedUserId = adapter.getUserIdAtPosition(position)
                         viewModel.markAsSeen(passedUserId ?: "")
+                        canRewind = true  // Enable rewind after swiping left
                     }
                     else -> {}
                 }
@@ -173,7 +173,6 @@ class DiscoverFragment : Fragment() {
                     displayNoUsers()
                 }
             }
-
 
             override fun onCardRewound() {
                 // Handle card rewind
@@ -205,8 +204,6 @@ class DiscoverFragment : Fragment() {
         cardStackView.adapter = adapter
     }
 
-
-
     private fun triggerLikeAnimation() {
         Log.d("DiscoverFragment", "triggerLikeAnimation executed")
         val likeAnimationFragment =
@@ -215,14 +212,6 @@ class DiscoverFragment : Fragment() {
             it.animateLike()
             it.toggleBackgroundAnimation()
         }
-    }
-
-    private fun addLikeAnimationFragment() {
-        val transaction = childFragmentManager.beginTransaction()
-        val likeFragment = LikeAnimation()
-        transaction.add(R.id.like_animation_container, likeFragment, "LikeAnimationFragment")
-        transaction.commit()
-        Log.d("DiscoverFragment", "Like animation fragment added")
     }
 
     private fun triggerPassAnimation() {
@@ -235,16 +224,12 @@ class DiscoverFragment : Fragment() {
         }
     }
 
-    private fun removeUserFromAdapter(position: Int) {
-        if (position >= 0 && position < adapter.itemCount) {
-            adapter.removeUserAtPosition(position)
-        }
-
-        // Now check if the adapter is empty
-        if (adapter.itemCount == 0) {
-            Log.d("DiscoverFragment", "Adapter is empty after swipe")
-            displayNoUsers()
-        }
+    private fun addLikeAnimationFragment() {
+        val transaction = childFragmentManager.beginTransaction()
+        val likeFragment = LikeAnimation()
+        transaction.add(R.id.like_animation_container, likeFragment, "LikeAnimationFragment")
+        transaction.commit()
+        Log.d("DiscoverFragment", "Like animation fragment added")
     }
 
     private fun addPassAnimationFragment() {
@@ -254,7 +239,6 @@ class DiscoverFragment : Fragment() {
         transaction.commit()
         Log.d("DiscoverFragment", "Pass animation fragment added")
     }
-
 
     companion object {
         fun newInstance() = DiscoverFragment()

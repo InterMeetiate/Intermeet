@@ -132,7 +132,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            handleBackButton()
+            onBackPressed()  // Use the system's default back pressed handling
         }
 
         calenderIcon.setOnClickListener {
@@ -162,6 +162,18 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
+    override fun onBackPressed() {
+        if (isTaskRoot) {
+            // If this activity is the root activity of the task, create a proper back stack
+            Intent(this, MainActivity::class.java).also {
+                it.putExtra("openFragment", "chat")  // Direct MainActivity to open ChatFragment
+                startActivity(it)
+            }
+        } else {
+            super.onBackPressed()  // Follow the normal back behavior
+        }
+        finish()  // Ensure this activity is finished after handling back action
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showCalendarDialog() {
@@ -464,12 +476,12 @@ class ChatActivity : AppCompatActivity() {
 
     private fun handleBackButton() {
         if (isTaskRoot) {
-            val intent = Intent(this, MainActivity::class.java).apply {
-                putExtra("openFragment", "chat")
-            }
+            // If this is the root activity, start MainActivity with the right fragment
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("openFragment", "chat")
             startActivity(intent)
         }
-        finish()
+        finish()  // Finish this activity
     }
 
     override fun onResume() {

@@ -93,5 +93,10 @@
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
         android:indeterminate="true"
         android:visibility="gone" />
+    <FrameLayout
+        android:id="@+id/match_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </RelativeLayout>
 

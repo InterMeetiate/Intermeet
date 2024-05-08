@@ -3,6 +3,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.intermeet.android.ChatActivity
 import com.intermeet.android.DiscoverViewModel
+import com.intermeet.android.LikeAnimation
 import com.intermeet.android.LikesPageAdapter
+import com.intermeet.android.MatchAnimation
 import com.intermeet.android.R
 
 class LikesFragment : Fragment() {
@@ -44,6 +47,7 @@ class LikesFragment : Fragment() {
         arguments?.let {
             passedUserId = it.getString(ARG_USER_ID)
         }
+
         return inflater.inflate(R.layout.fragment_likes_prepage, container, false)
     }
 
@@ -53,7 +57,7 @@ class LikesFragment : Fragment() {
 
         setupViews(view)
         setupListeners()
-
+        addMatchAnimationFragment()
         viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
             progressBar.visibility = View.GONE
             if (userIds.isNotEmpty()) {
@@ -88,10 +92,19 @@ class LikesFragment : Fragment() {
         })*/
 
         btnLike.setOnClickListener {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
             val likedUserId = passedUserId//adapter.getUserId(viewPager.currentItem)
             Log.d(TAG, "Liked user: " + likedUserId)
             if (likedUserId != null) {
                 addMatch(likedUserId)
+                val MatchAnimationFragment =
+                    childFragmentManager.findFragmentByTag("MatchAnimationFragment") as? MatchAnimation
+                MatchAnimationFragment?.let {
+                    if (userId != null) {
+                        it.loadImages(userId, likedUserId)
+                    }
+                    it.toggleBackgroundAnimation()
+                }
                 removeLikedUser(likedUserId)
             }
             //need to implement to remove from someones discover list and then add to chats
@@ -108,6 +121,13 @@ class LikesFragment : Fragment() {
         returnButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+    }
+    private fun addMatchAnimationFragment() {
+        val transaction = childFragmentManager.beginTransaction()
+        val matchAnimation = MatchAnimation()
+        transaction.add(R.id.match_animation_container, matchAnimation, "MatchAnimationFragment")
+        transaction.commit()
+        Log.d("LikeFragment", "Match animation fragment added")
     }
 
     private fun addMatch(likedUserId : String)
@@ -153,11 +173,16 @@ class LikesFragment : Fragment() {
                             Log.e(TAG, "Error adding match to current user's database", error.toException())
                         }
                     })
+                    Handler().postDelayed({
+                        val intent = Intent(requireContext(), ChatActivity::class.java)
+                        intent.putExtra("userId", likedUserId)
+                        startActivity(intent)
 
+                    }, 1500) // 2 seconds
                     // Navigate to chat activity
-                    val intent = Intent(requireContext(), ChatActivity::class.java)
-                    intent.putExtra("userId", likedUserId)
-                    startActivity(intent)
+                    //val intent = Intent(requireContext(), ChatActivity::class.java)
+                    //intent.putExtra("userId", likedUserId)
+                    //startActivity(intent)
                 } else {
                     Log.d(TAG, "User $likedUserId is already in matches list")
                 }

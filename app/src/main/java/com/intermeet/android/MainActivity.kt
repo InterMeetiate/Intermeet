@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             // Default to opening the DiscoverFragment if no specific fragment is requested and there is no saved state
             bottomNav.selectedItemId = R.id.navigation_discover
             navigateTo(DiscoverFragment.newInstance())
+            Log.d(TAG, "Navigating to DiscoverFragment (default)")
         }
     }
 
@@ -104,24 +105,35 @@ class MainActivity : AppCompatActivity() {
             "discover" -> {
                 navigateTo(DiscoverFragment.newInstance())
                 bottomNav.selectedItemId = R.id.navigation_discover
+                Log.d(TAG, "Navigating to DiscoverFragment (Intent)")
             }
             "chat" -> {
                 navigateTo(ChatFragment.newInstance().apply {
                     arguments = Bundle().apply { putString("userId", intent.getStringExtra("userId")) }
                 })
                 bottomNav.selectedItemId = R.id.navigation_chat
+                Log.d(TAG, "Navigating to ChatFragment (Intent)")
             }
             "like" -> {
                 navigateTo(LikesPageFragment.newInstance())
                 bottomNav.selectedItemId = R.id.navigation_worth
+                Log.d(TAG, "Navigating to LikesPageFragment (Intent)")
             }
             "events" -> {
                 navigateTo(EventsFragment.newInstance())
                 bottomNav.selectedItemId = R.id.navigation_events
+                Log.d(TAG, "Navigating to EventsFragment (Intent)")
+            }
+            "profile" -> {
+                navigateTo(ProfileFragment.newInstance())
+                bottomNav.selectedItemId = R.id.navigation_account
+                Log.d(TAG, "Navigating to ProfileFragment (Intent)")
             }
             else -> {
-                navigateTo(DiscoverFragment.newInstance())  // Default fragment
-                bottomNav.selectedItemId = R.id.navigation_discover
+                //navigateTo(DiscoverFragment.newInstance())  // Default fragment
+                //bottomNav.selectedItemId = R.id.navigation_discover
+                //Log.d(TAG, "Navigating to DiscoverFragment (Default)")
+                false
             }
         }
     }

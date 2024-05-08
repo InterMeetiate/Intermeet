@@ -6,8 +6,10 @@ import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -18,12 +20,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.model.LatLng
+import com.intermeet.android.custom.NonInterceptingHorizontalScrollView
+import com.intermeet.android.custom.NonInterceptingRecyclerView
 import com.intermeet.android.helperFunc.calculateAgeWithCalendar
 import java.io.IOException
 
-class
-CardStackAdapter(private val context: Context, private var users: MutableList<UserDataModel>) :
+class CardStackAdapter(private val context: Context, private var users: MutableList<UserDataModel>) :
     RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
+
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(user: UserDataModel) {
 
@@ -87,11 +91,12 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
             tvEthnicity.text = user.ethnicity
 
             // Interests RecyclerView
-            val recyclerViewInterests: RecyclerView = view.findViewById(R.id.rvInterests)
+            val recyclerViewInterests: NonInterceptingRecyclerView = view.findViewById(R.id.rvInterests)
             recyclerViewInterests.adapter = InterestsAdapter(user.interests)
             recyclerViewInterests.layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
-            val relativeLayout : RelativeLayout = view.findViewById(R.id.relativeLayout)
+            // Custom HorizontalScrollView to display user attributes
+            val hsvAttributes: NonInterceptingHorizontalScrollView = view.findViewById(R.id.hsvAttributes)
 
             // Load main profile image
             val imageView1: ImageView = view.findViewById(R.id.imageView1)
@@ -100,6 +105,7 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
                 .centerCrop()
                 .into(imageView1)
 
+            val relativeLayout: RelativeLayout = view.findViewById(R.id.relativeLayout)
 
             val imageUrls = user.photoDownloadUrls.drop(1) // Drops the first element
 
@@ -189,6 +195,7 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
             return cardView
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.fragment_user_detail, parent, false)
@@ -199,18 +206,20 @@ CardStackAdapter(private val context: Context, private var users: MutableList<Us
         holder.itemView.alpha = 0f  // Start fully transparent
         holder.bind(users[position])
     }
+
     fun removeUserAtPosition(position: Int) {
         if (position >= 0 && position < users.size) {
             users.removeAt(position)
             notifyItemRemoved(position)
-
         }
     }
+
     fun getUserIdAtPosition(position: Int): String {
         return users.getOrNull(position)?.userId ?: throw IllegalStateException("User at position $position not found")
     }
 
     override fun getItemCount(): Int = users.size
+
     fun setUsers(newUsers: List<UserDataModel>) {
         this.users = newUsers.toMutableList()
         notifyDataSetChanged()
@@ -279,3 +288,4 @@ private fun getStateAbbreviation(stateName: String?): String? {
     )
     return stateAbbreviations[stateName]
 }
+

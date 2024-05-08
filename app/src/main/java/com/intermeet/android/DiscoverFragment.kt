@@ -150,22 +150,30 @@ class DiscoverFragment : Fragment() {
             }
 
             override fun onCardSwiped(direction: Direction) {
-                // Log the swipe direction and position
-                Log.d("DiscoverFragment", "Card swiped at position: ${manager.topPosition - 1}")
+                val position = manager.topPosition - 1  // Index of the swiped card
+                Log.d("DiscoverFragment", "Card swiped at position: $position")
 
-                // Trigger animations and user removal based on swipe direction
                 when (direction) {
                     Direction.Right -> {
+                        val likedUserId = adapter.getUserIdAtPosition(position) ?: return
+                        viewModel.addLike(likedUserId)
                         triggerLikeAnimation()
-                        removeUserFromAdapter(manager.topPosition - 1)
+                        viewModel.markAsSeen(likedUserId)
                     }
                     Direction.Left -> {
                         triggerPassAnimation()
-                        removeUserFromAdapter(manager.topPosition - 1)
+                        val passedUserId = adapter.getUserIdAtPosition(position)
+                        viewModel.markAsSeen(passedUserId ?: "")
                     }
                     else -> {}
                 }
+
+                // Check if adapter is empty and display "No Users" message
+                if (manager.topPosition == adapter.itemCount) {
+                    displayNoUsers()
+                }
             }
+
 
             override fun onCardRewound() {
                 // Handle card rewind
@@ -207,10 +215,6 @@ class DiscoverFragment : Fragment() {
             it.animateLike()
             it.toggleBackgroundAnimation()
         }
-
-        // Get the current top card's position and pass it to the remove method
-        val positionToRemove = manager.topPosition - 1
-        removeUserFromAdapter(positionToRemove)
     }
 
     private fun addLikeAnimationFragment() {
@@ -229,10 +233,6 @@ class DiscoverFragment : Fragment() {
             it.animatePass()
             it.toggleBackgroundAnimation()
         }
-
-        // Get the current top card's position and pass it to the remove method
-        val positionToRemove = manager.topPosition - 1
-        removeUserFromAdapter(positionToRemove)
     }
 
     private fun removeUserFromAdapter(position: Int) {

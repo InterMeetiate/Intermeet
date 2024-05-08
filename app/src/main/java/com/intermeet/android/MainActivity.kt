@@ -87,17 +87,45 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
+    //private fun handleIntent(intent: Intent) {
+    //    val fragmentToOpen = intent.getStringExtra("openFragment")
+    //    when (fragmentToOpen) {
+    //        "discover" -> navigateTo(DiscoverFragment.newInstance())
+    //        "chat" -> navigateTo(ChatFragment.newInstance().apply {
+    //            arguments = Bundle().apply { putString("userId", intent.getStringExtra("userId")) }
+    //        })
+    //        "like" -> navigateTo(LikesPageFragment.newInstance())
+    //        else -> navigateTo(DiscoverFragment.newInstance())  // Default fragment
+    //    }
+    //}
     private fun handleIntent(intent: Intent) {
         val fragmentToOpen = intent.getStringExtra("openFragment")
         when (fragmentToOpen) {
-            "discover" -> navigateTo(DiscoverFragment.newInstance())
-            "chat" -> navigateTo(ChatFragment.newInstance().apply {
-                arguments = Bundle().apply { putString("userId", intent.getStringExtra("userId")) }
-            })
-            "like" -> navigateTo(LikesPageFragment.newInstance())
-            else -> navigateTo(DiscoverFragment.newInstance())  // Default fragment
+            "discover" -> {
+                navigateTo(DiscoverFragment.newInstance())
+                bottomNav.selectedItemId = R.id.navigation_discover
+            }
+            "chat" -> {
+                navigateTo(ChatFragment.newInstance().apply {
+                    arguments = Bundle().apply { putString("userId", intent.getStringExtra("userId")) }
+                })
+                bottomNav.selectedItemId = R.id.navigation_chat
+            }
+            "like" -> {
+                navigateTo(LikesPageFragment.newInstance())
+                bottomNav.selectedItemId = R.id.navigation_worth
+            }
+            "events" -> {
+                navigateTo(EventsFragment.newInstance())
+                bottomNav.selectedItemId = R.id.navigation_events
+            }
+            else -> {
+                navigateTo(DiscoverFragment.newInstance())  // Default fragment
+                bottomNav.selectedItemId = R.id.navigation_discover
+            }
         }
     }
+
 
     private fun updateFCMToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->

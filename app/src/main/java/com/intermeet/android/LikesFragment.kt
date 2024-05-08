@@ -173,12 +173,12 @@ class LikesFragment : Fragment() {
                             Log.e(TAG, "Error adding match to current user's database", error.toException())
                         }
                     })
-                    Handler().postDelayed({
-                        val intent = Intent(requireContext(), ChatActivity::class.java)
-                        intent.putExtra("userId", likedUserId)
-                        startActivity(intent)
+                    //Handler().postDelayed({
+                        //val intent = Intent(requireContext(), ChatActivity::class.java)
+                        //intent.putExtra("userId", likedUserId)
+                        //startActivity(intent)
 
-                    }, 1500) // 2 seconds
+                    //}, 20000) // 2 seconds
                     // Navigate to chat activity
                     //val intent = Intent(requireContext(), ChatActivity::class.java)
                     //intent.putExtra("userId", likedUserId)
@@ -193,9 +193,17 @@ class LikesFragment : Fragment() {
             }
         })
 
+        //val intent = Intent(requireContext(), ChatActivity::class.java)
+        //intent.putExtra("userId", likedUserId)
+        //startActivity(intent)
+        btnPass.visibility = View.GONE
+        btnLike.visibility = View.GONE
+        Handler().postDelayed({
         val intent = Intent(requireContext(), ChatActivity::class.java)
         intent.putExtra("userId", likedUserId)
         startActivity(intent)
+
+        }, 2000) // 2 seconds
     }
 
     private fun removeLikedUser(likedUserId : String)

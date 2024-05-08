@@ -86,12 +86,20 @@ class DiscoverFragment : Fragment() {
             } else {
                 Log.d("DiscoverFragment", "Cannot rewind after a right swipe")
             }
+            updateReturnButtonDrawable()
         }
 
         btnRefresh.setOnClickListener {
             Log.d("DiscoverFragment", "Refresh button clicked")
             fetchUsers(autoRefresh = false)
+            canRewind = false  // Reset rewind ability after refresh
+            updateReturnButtonDrawable()
         }
+    }
+
+    private fun updateReturnButtonDrawable() {
+        val drawableRes = if (canRewind) R.drawable.arrow_return_black else R.drawable.arrow_return
+        returnButton.setBackgroundResource(drawableRes)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -167,6 +175,8 @@ class DiscoverFragment : Fragment() {
                     }
                     else -> {}
                 }
+
+                updateReturnButtonDrawable()
 
                 // Check if adapter is empty and display "No Users" message
                 if (manager.topPosition == adapter.itemCount) {

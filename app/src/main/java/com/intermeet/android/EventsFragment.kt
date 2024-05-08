@@ -939,6 +939,9 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // Ensure the fragment is attached to a context
+                val context = context ?: return
+
                 eventsList.clear()
                 for (snapshot in dataSnapshot.children) {
                     val event = snapshot.getValue(Event::class.java)
@@ -947,7 +950,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
                     }
                 }
                 // Update the ListView adapter
-                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                val eventAdapter = EventSheetAdapter(context, eventsList)
                 eventList.adapter = eventAdapter
                 eventAdapter.notifyDataSetChanged()
                 // Also update markers on the map

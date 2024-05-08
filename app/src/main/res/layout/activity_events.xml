@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
+    android:layout_marginTop="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -32,19 +33,24 @@
 
     <TextView
         android:id="@+id/events_title"
-        android:layout_width="wrap_content"
+        android:layout_width="177dp"
         android:layout_height="38dp"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal|top"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/discover_bar"
         android:clipToOutline="true"
+        android:fontFamily="@font/outfitlight"
         android:gravity="center_horizontal|top"
         android:text="@string/events"
-        android:fontFamily="@font/outfitlight"
         android:textColor="@color/white"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.027" />
 
     <Button
         android:id="@+id/events_debug"

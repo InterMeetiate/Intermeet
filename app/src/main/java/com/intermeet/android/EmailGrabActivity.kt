@@ -18,7 +18,7 @@ class EmailGrabActivity : AppCompatActivity() {
     {
         val nextButton: Button = findViewById(R.id.ForgotPasswordButton)
         nextButton.setOnClickListener{
-            val emailForPass : EditText = findViewById(R.id.emailForgotPass)
+            val emailForPass : EditText = findViewById(R.id.email)
             val email = emailForPass.text.toString()
 
             val intent = Intent(this, ResetPasswordActivity::class.java)

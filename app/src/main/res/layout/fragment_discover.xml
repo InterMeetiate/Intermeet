@@ -16,7 +16,7 @@
     <View
         android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="90dp"
         android:layout_gravity="center_horizontal"
         android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"

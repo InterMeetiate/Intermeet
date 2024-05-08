@@ -34,7 +34,6 @@ class DiscoverViewModel : ViewModel() {
     private val _filteredUsers = MutableLiveData<List<UserDataModel>>()
     val filteredUsers: LiveData<List<UserDataModel>> = _filteredUsers
 
-
     fun fetchUserData(userId: String) {
         viewModelScope.launch {
             val dbRef = FirebaseDatabase.getInstance().getReference("users/$userId")
@@ -99,17 +98,37 @@ class DiscoverViewModel : ViewModel() {
         })
     }
 
+    private suspend fun fetchMatchedUserIds(): Set<String> {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return emptySet()
+        val matchesRef = FirebaseDatabase.getInstance().getReference("users/$userId/matches")
+        return try {
+            val snapshot = matchesRef.get().await()
+            // Use both key and value to collect matched user IDs
+            val matchedUserIds = snapshot.children.mapNotNull { it.getValue(String::class.java) }.toSet()
+            Log.d("DiscoverViewModel", "Matched user IDs: $matchedUserIds")
+            matchedUserIds
+        } catch (e: Exception) {
+            Log.e("DiscoverViewModel", "Failed to fetch matched user IDs or node does not exist", e)
+            emptySet() // Return an empty set in case of error
+        }
+    }
+
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
             val currentUser = fetchCurrentUserPreferences()
             val seenUserIds = fetchSeenUserIds()
             val likedUserIds = fetchLikedUsers()
+            val matchedUserIds = fetchMatchedUserIds()
             val userRef = FirebaseDatabase.getInstance().getReference("users")
 
             val usersDataDeferred = userIds.map { userId ->
                 async {
                     val userData = userRef.child(userId).get().await().getValue(UserDataModel::class.java)
-                    if (userData != null && !seenUserIds.contains(userId) && !likedUserIds.contains(userId)) {
+                    if (userData != null &&
+                        !seenUserIds.contains(userId) &&
+                        !likedUserIds.contains(userId) &&
+                        !matchedUserIds.contains(userId)
+                    ) {
                         userId to userData
                     } else {
                         null
@@ -134,8 +153,7 @@ class DiscoverViewModel : ViewModel() {
         }
     }
 
-    private fun getCurrentUser() : String?
-    {
+    private fun getCurrentUser(): String? {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         return userId
     }
@@ -182,8 +200,8 @@ class DiscoverViewModel : ViewModel() {
             }
         }
     }
-    private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
 
+    private fun userMeetsPreferences(user: UserDataModel, currentUser: UserDataModel): Boolean {
         val preferenceFields = listOf(
             "smokingPreference", "ethnicityPreference", "politicsPreference", "drugsPreference", "drinkingPreference", "religionPreference"
         )
@@ -192,11 +210,8 @@ class DiscoverViewModel : ViewModel() {
         val user_name = user.firstName
         Log.d("DiscoverViewModel", "Score rn $user_name")
 
-        // Assume ageWithinRange and doesGenderMatch methods are defined elsewhere
         if (!ageWithinRange(user.birthday, currentUser.minAgePreference, currentUser.maxAgePreference)) {
             return false
-            Log.d("DiscoverViewModel", "Score rn $score")
-
         }
 
         if (currentUser.genderPreference != "Open to all" && !doesGenderMatch(user.gender, currentUser.genderPreference)) {
@@ -207,17 +222,13 @@ class DiscoverViewModel : ViewModel() {
             val userValue = user::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(user) as? String ?: "Default or Error Handling Value"
             val currentUserPreference = currentUser::class.java.getDeclaredField(prefField).apply { isAccessible = true }.get(currentUser) as? String ?: "Default or Error Handling Value"
 
-
             if (currentUserPreference == "Open to all" || currentUserPreference == userValue) {
                 score++
                 Log.d("DiscoverViewModel", "Score rn $score")
             }
         }
-        Log.d("DiscoverViewModel", "Total Score rn ${score}")
+        Log.d("DiscoverViewModel", "Total Score rn $score")
         return score >= 3
-        //return true
-
-
     }
 
     private fun doesGenderMatch(userGender: String?, userPreference: String?): Boolean {
@@ -248,7 +259,6 @@ class DiscoverViewModel : ViewModel() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         val likeTimestamp = System.currentTimeMillis()
 
-
         // Update likes for the liked user
         val likedUserLikesRef = FirebaseDatabase.getInstance().getReference("users/$likedUserId/likes")
         likedUserLikesRef.updateChildren(mapOf(userId to likeTimestamp))
@@ -273,7 +283,6 @@ class DiscoverViewModel : ViewModel() {
             }
 
     }
-
 
     fun markAsSeen(seenUserId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -301,3 +310,4 @@ class DiscoverViewModel : ViewModel() {
         seenRef.removeValue()
     }
 }
+

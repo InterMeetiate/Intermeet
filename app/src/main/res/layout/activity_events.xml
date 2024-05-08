@@ -59,6 +59,7 @@
         android:layout_gravity="top|start"
         android:layout_marginStart="35dp"
         android:layout_marginTop="10dp"
+        android:visibility="gone"
         android:background="@drawable/debug_icon"
         android:contentDescription="@string/events" />
 

@@ -100,6 +100,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var rectangleBackground: View
     private lateinit var participantText: TextView
+    private lateinit var handleBar: ImageView
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -124,10 +125,13 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Set up bottomSheet for events
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
         rectangleBackground = view.findViewById(R.id.buttonHolder)
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
+        bottomSheetBehavior = LockableBottomSheetBehavior.from(bottomSheet).apply {
             peekHeight = 250
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
+        val handleBar = view.findViewById<View>(R.id.transparent_overlay)
+        (bottomSheetBehavior as LockableBottomSheetBehavior<View>).setHandleBar(handleBar)
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {

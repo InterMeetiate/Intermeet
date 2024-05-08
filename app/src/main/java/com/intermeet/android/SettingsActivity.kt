@@ -27,7 +27,7 @@ class SettingsActivity : AppCompatActivity() {
 
         privacyPolicyButton.setOnClickListener {
             val intent = Intent(this, WebViewActivity::class.java)
-            intent.putExtra("url", "https://intermeetiate.github.io/InterMeetiatePrivatePolicy") // Your actual URL
+            intent.putExtra("url", "https://intermeetiate.github.io/InterMeetiatePrivatePolicy/") // Your actual URL
             startActivity(intent)
         }
 

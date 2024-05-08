@@ -77,8 +77,8 @@
                     android:scrollbars="none">
 
                     <LinearLayout
-                        android:id="@+id/llAttributes"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/allAttributes"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:divider="?android:attr/listDivider"
                         android:showDividers="middle"

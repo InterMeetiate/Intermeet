@@ -111,6 +111,12 @@
         android:background="@drawable/rounded_event_list"
         app:layout_behavior="com.intermeet.android.LockableBottomSheetBehavior" >
 
+        <View
+            android:id="@+id/transparent_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="top|center" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -118,6 +124,7 @@
             tools:ignore="UselessParent">
 
             <ImageView
+                android:id="@+id/handle_bar"
                 android:layout_width="34dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|top"

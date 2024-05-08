@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="37dp">
 
 
     <View
@@ -19,7 +20,9 @@
         android:id="@+id/searchbox"
         android:layout_width="match_parent"
         android:layout_height="27dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:paddingStart="7dp"
         android:background="@drawable/rounded_corners"
         android:hint="@string/search"
@@ -33,17 +36,14 @@
 
     <TextView
         android:id="@+id/chats_title"
-        android:layout_width="wrap_content"
+        android:layout_width="177dp"
         android:layout_height="38dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal|top"
         android:background="@drawable/discover_bar"
+        android:fontFamily="@font/outfitlight"
         android:clipToOutline="true"
         android:gravity="center_horizontal|top"
         android:text="@string/chat"
-        android:fontFamily="@font/outfitlight"
         android:textColor="@color/white"
         android:textSize="30sp" />
 
@@ -51,8 +51,8 @@
     <ListView
         android:id="@+id/usersList"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp" />
+        android:layout_height="658dp"
+        android:layout_marginTop="110dp" />
 
 
 

@@ -125,7 +125,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         val bottomSheet = view.findViewById<View>(R.id.eventSheet)
         rectangleBackground = view.findViewById(R.id.buttonHolder)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet).apply {
-            peekHeight = 320
+            peekHeight = 250
             state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
@@ -184,24 +184,18 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         searchBar.threshold = 1 // Start autocomplete after 1 character
 
         // Fill up the event bottom sheet with events from the database
-        fetchEventsFromDatabase { fetchedEventsList ->
-            eventsList = fetchedEventsList
-            val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
-            eventList.adapter = eventAdapter
-        }
+        fetchEventsFromDatabase()
+
 
         // Fills the database when events based on the currently logged in user's current location
         debugButton.setOnClickListener {
             getUserLocation { userLocation ->
                 val addressComponents = userLocation.split(", ")
+                Log.d("Events YEA YEA YEA", "$addressComponents")
                 val city = addressComponents.getOrNull(1)?.replace(" ", "+") ?: ""
-                getEventsByLocation(city)
-            }
-
-            fetchEventsFromDatabase { fetchedEventsList ->
-                eventsList = fetchedEventsList
-                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
-                eventList.adapter = eventAdapter
+                val state = addressComponents.getOrNull(2)?.replace(" ", "+") ?: ""
+                val findEventLocation = "${city}+${state}"
+                getEventsByLocation(findEventLocation)
             }
         }
 
@@ -377,32 +371,22 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         googleMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
 
         googleMap.setOnMarkerClickListener { marker ->
-            // Open the event card when a marker is clicked
             openEventCard(marker)
-            true // Return true to consume the event and prevent the default behavior (opening the info window)
+            true
         }
 
-        fetchEventsFromDatabase { eventsList ->
-            addMarkersToMap(eventsList)
-        }
-
-        // Initialize fusedLocationClient
+        fetchEventsFromDatabase()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
-        // Check if permission is granted
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, proceed with location updates
             startLocationUpdates()
         } else {
-            // Permission not granted, request permission
             permissionCallback = object : PermissionCallback {
                 override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
                     if (requestCode == REQUEST_LOCATION_PERMISSION) {
                         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                            // Permission granted, proceed with location updates
                             startLocationUpdates()
                         } else {
-                            // Permission denied, handle accordingly
                             Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -815,16 +799,20 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     private fun addMarkersToMap(events: List<Event>) {
+        if (!::googleMap.isInitialized) return
+
+        googleMap.clear()
+        eventMarkersMap.clear()
+
         for (event in events) {
             val fullAddress = event.addressList.joinToString(", ")
             val coords = performGeocoding(fullAddress)
             Log.d("addMarkersToMap()", "${event.title} added at ${coords}")
 
-            // Add marker to the map and store the title-marker pair in the map
             val marker = googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
             if (marker != null) {
                 marker.tag = event
-            } // Set the event object as the tag for the marker
+            }
             eventMarkersMap[event.title] = marker
         }
     }
@@ -857,57 +845,63 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     private fun handleEvents(response: String) {
         val jsonResponse = JSONObject(response)
-        val eventsArray = jsonResponse.getJSONArray("events_results")
+        val eventsArray = jsonResponse.optJSONArray("events_results") ?: return
 
+        val newEventsList = mutableListOf<Event>()
         for (i in 0 until eventsArray.length()) {
-            val eventObject = eventsArray.getJSONObject(i)
-            val title = eventObject.getString("title")
-            Log.d("SerpAPI", "Event found: ${title}")
-            val startDate = eventObject.getJSONObject("date").getString("start_date")
-            val whenInfo = eventObject.getJSONObject("date").getString("when")
-            val addressArray = eventObject.getJSONArray("address")
+            val eventObject = eventsArray.optJSONObject(i) ?: continue
+            val title = eventObject.optString("title")
+            val startDate = eventObject.optJSONObject("date")?.optString("start_date") ?: ""
+            val whenInfo = eventObject.optJSONObject("date")?.optString("when") ?: ""
+            val addressArray = eventObject.optJSONArray("address") ?: continue
             val addressList = mutableListOf<String>()
             for (j in 0 until addressArray.length()) {
-                addressList.add(addressArray.getString(j))
+                addressList.add(addressArray.optString(j, ""))
             }
-            val link = eventObject.getString("link")
-            val description = eventObject.getString("description")
-            val thumbnail = eventObject.getString("thumbnail")
+            val link = eventObject.optString("link", "")
+            val description = eventObject.optString("description", "")
+            val thumbnail = eventObject.optString("thumbnail", "")
             val peopleGoing = mutableListOf<String>()
+
             val event = Event("", title, startDate, whenInfo, addressList, link, description, thumbnail, peopleGoing)
-            uploadEvent(event)
+            newEventsList.add(event)
+        }
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                uploadEventsToDatabase(newEventsList)
+            }
         }
     }
 
-    private fun uploadEvent(event: Event) {
+    private fun uploadEventsToDatabase(events: List<Event>) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("events")
 
-        // Query to check if the event already exists
-        databaseReference.orderByChild("title").equalTo(event.title).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // Event already exists, do not add it again
-                    Log.d("Add Event", "Event already exists in database")
-                } else {
-                    // Event does not exist, generate random ID and add it
-                    val eventId = UUID.randomUUID().toString() // Generate random UUID
-                    val eventRef = databaseReference.child(eventId)
-                    event.id = eventId // Set the generated ID to the event
-                    eventRef.setValue(event)
-                        .addOnSuccessListener {
-                            Log.d("Add Event", "Event added successfully with ID: $eventId")
-                        }
-                        .addOnFailureListener {
-                            Log.d("Add Event", "Could not add event")
-                        }
+        for (event in events) {
+            databaseReference.orderByChild("title").equalTo(event.title).addListenerForSingleValueEvent(object :
+                ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d("Add Event", "Event already exists in database: ${event.title}")
+                    } else {
+                        val eventId = UUID.randomUUID().toString()
+                        val eventRef = databaseReference.child(eventId)
+                        event.id = eventId
+                        eventRef.setValue(event)
+                            .addOnSuccessListener {
+                                Log.d("Add Event", "Event added successfully with ID: $eventId")
+                            }
+                            .addOnFailureListener {
+                                Log.e("Add Event", "Could not add event with title: ${event.title}")
+                            }
+                    }
                 }
-            }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Log.d("Add Event", "Database query cancelled: ${databaseError.message}")
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.e("Add Event", "Database query cancelled: ${databaseError.message}")
+                }
+            })
+        }
     }
 
     private fun getUserLocation(callback: (String) -> Unit) {
@@ -936,24 +930,28 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         })
     }
 
-    private fun fetchEventsFromDatabase(callback: (MutableList<Event>) -> Unit) {
+    private fun fetchEventsFromDatabase() {
         val databaseReference = FirebaseDatabase.getInstance().getReference("events")
 
-        databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+        databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val eventsList = mutableListOf<Event>()
+                eventsList.clear()
                 for (snapshot in dataSnapshot.children) {
                     val event = snapshot.getValue(Event::class.java)
                     event?.let {
                         eventsList.add(it)
                     }
                 }
-                callback(eventsList)
+                // Update the ListView adapter
+                val eventAdapter = EventSheetAdapter(requireContext(), eventsList)
+                eventList.adapter = eventAdapter
+                eventAdapter.notifyDataSetChanged()
+                // Also update markers on the map
+                addMarkersToMap(eventsList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("FetchEvents", "Failed to fetch events from database: ${databaseError.message}")
-                callback(mutableListOf()) // Pass an empty list in case of failure
             }
         })
     }

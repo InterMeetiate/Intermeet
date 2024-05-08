@@ -20,7 +20,8 @@
             android:paddingStart="16dp"
             android:paddingEnd="10dp"
             android:paddingTop="16dp"
-            android:paddingBottom="16dp"/>
+            android:paddingBottom="16dp"
+            app:tint="@android:color/black" />
 
         <ImageView
             android:id="@+id/profile_image"

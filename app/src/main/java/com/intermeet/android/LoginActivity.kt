@@ -104,16 +104,17 @@ class LoginActivity : AppCompatActivity() {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             showProgressBar()
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
-                hideProgressBar()
                 if (task.isSuccessful) {
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
+                    hideProgressBar()
                     Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
                     updateUI(null)
                 }
             }
         } else {
+            hideProgressBar()
             Toast.makeText(this, "Invalid Email and Password.", Toast.LENGTH_SHORT).show()
         }
     }

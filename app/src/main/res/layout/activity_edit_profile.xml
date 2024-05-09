@@ -227,6 +227,7 @@
                 android:hint="@string/i_am"
                 android:padding="12dp"
                 android:textColor="@color/black"
+                android:textCursorDrawable="@drawable/custom_cursor"
                 android:fontFamily="@font/outfitregular"
                 android:layout_marginTop="16dp"
                 android:textSize="30sp"

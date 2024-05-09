@@ -9,6 +9,7 @@
         android:id="@+id/editTextPronoun"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textCursorDrawable="@drawable/custom_cursor"
         android:hint="Enter your Pronoun"
         android:textColor="@color/black"
         android:fontFamily="@font/outfitregular"

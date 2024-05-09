@@ -100,7 +100,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var rectangleBackground: View
     private lateinit var participantText: TextView
-    private lateinit var handleBar: ImageView
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()

@@ -65,6 +65,7 @@
         android:gravity="top|start"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
+        android:textCursorDrawable="@drawable/custom_cursor"
         android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:fontFamily="@font/outfitregular"

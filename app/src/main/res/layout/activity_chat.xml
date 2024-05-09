@@ -84,6 +84,7 @@
             android:textColor="@color/black"
             android:fontFamily="@font/outfitregular"
             android:hint="Type a message..."
+            android:textCursorDrawable="@drawable/custom_cursor"
             android:maxLines="3"
             android:inputType="textMultiLine|textCapSentences|textAutoCorrect"
             android:imeOptions="actionSend" />

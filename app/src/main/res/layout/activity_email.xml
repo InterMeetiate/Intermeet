@@ -56,6 +56,7 @@
         android:padding="10dp"
         android:textColor="@color/black"
         android:fontFamily="@font/outfitregular"
+        android:textCursorDrawable="@drawable/custom_cursor"
         android:textColorHint="@color/dark_gray"
         android:textSize="16sp"
         android:autofillHints="emailAddress"

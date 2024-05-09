@@ -149,6 +149,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rounded_corners"
                     android:hint="@string/search_maps"
+                    android:textCursorDrawable="@drawable/custom_cursor"
                     android:importantForAutofill="no"
                     android:inputType="textAutoCorrect"
                     android:paddingStart="15dp"

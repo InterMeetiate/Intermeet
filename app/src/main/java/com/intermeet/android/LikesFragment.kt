@@ -25,8 +25,9 @@ import com.intermeet.android.DiscoverViewModel
 import com.intermeet.android.LikeAnimation
 import com.intermeet.android.LikesPageAdapter
 import com.intermeet.android.MatchAnimation
+import com.intermeet.android.PassAnimation
 import com.intermeet.android.R
-
+import java.util.*
 class LikesFragment : Fragment() {
     private val viewModel: DiscoverViewModel by viewModels()
     private lateinit var viewPager: ViewPager2
@@ -39,6 +40,7 @@ class LikesFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private var passedUserId: String? = null
     private val currentUser = FirebaseAuth.getInstance().currentUser?.uid
+
 
 
     override fun onCreateView(
@@ -58,6 +60,7 @@ class LikesFragment : Fragment() {
         setupViews(view)
         setupListeners()
         addMatchAnimationFragment()
+        addPassAnimationFragment()
         viewModel.filteredUserIdsLiveData.observe(viewLifecycleOwner) { userIds ->
             progressBar.visibility = View.GONE
             if (userIds.isNotEmpty()) {
@@ -112,15 +115,49 @@ class LikesFragment : Fragment() {
         }
 
         btnPass.setOnClickListener {
-            //navigateToNextUser()
-            parentFragmentManager.popBackStack()
+            val userId = FirebaseAuth.getInstance().currentUser?.uid
+            val likedUserId = passedUserId // adapter.getUserId(viewPager.currentItem)
 
-            //need to implement to remove someone from the list
+            val passAnimationFragment =
+                childFragmentManager.findFragmentByTag("PassAnimationFragment") as? PassAnimation
+            passAnimationFragment?.let {
+                Log.d("DiscoverFragment", "Pass animation fragment triggered")
+                btnPass.visibility = View.GONE
+                btnLike.visibility = View.GONE
+                it.animatePass()
+                it.toggleBackgroundAnimation()
+            }
+
+            // Add the likedUserId to the passedLikes list
+            if (userId != null && likedUserId != null) {
+                addPassedLike(userId, likedUserId)
+            }
+
+            Handler().postDelayed({
+                if (likedUserId != null) {
+                    removeLikedUser(likedUserId)
+                }
+                parentFragmentManager.popBackStack()
+            }, 2000)
         }
 
         returnButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+    }
+    private fun addPassedLike(userId: String, likedUserId: String) {
+        val userPassedLikesDB = FirebaseDatabase.getInstance()
+            .getReference("users/$userId/passedLikes")
+
+        val currentTime = System.currentTimeMillis() // Current timestamp
+
+        userPassedLikesDB.child(likedUserId).setValue(currentTime)
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully added $likedUserId to passedLikes at time $currentTime")
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Failed to add $likedUserId to passedLikes", it)
+            }
     }
     private fun addMatchAnimationFragment() {
         val transaction = childFragmentManager.beginTransaction()
@@ -129,6 +166,14 @@ class LikesFragment : Fragment() {
         transaction.commit()
         Log.d("LikeFragment", "Match animation fragment added")
     }
+    private fun addPassAnimationFragment() {
+        val transaction = childFragmentManager.beginTransaction()
+        val passFragment = PassAnimation()
+        transaction.add(R.id.pass_animation_container, passFragment, "PassAnimationFragment")
+        transaction.commit()
+        Log.d("DiscoverFragment", "Pass animation fragment added")
+    }
+
 
     private fun addMatch(likedUserId : String)
     {

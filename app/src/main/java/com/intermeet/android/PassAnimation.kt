@@ -47,6 +47,9 @@ class PassAnimation : Fragment() {
         // Start the animation
         animationDrawable.start()
 
+        // Make the whole container visible
+        constraintLayout.visibility = View.VISIBLE
+
         // Fade in the background
         ObjectAnimator.ofFloat(constraintLayout, "alpha", 0f, 1f).apply {
             duration = 500
@@ -62,15 +65,22 @@ class PassAnimation : Fragment() {
                     override fun onAnimationEnd(animation: Animator) {
                         // Set back to transparent to avoid drawing over other elements when not in use
                         constraintLayout.setBackgroundResource(android.R.color.transparent)
+                        constraintLayout.visibility = View.GONE
                     }
                 })
             }
         }, 1500) // Total visible duration of the gradient background
     }
 
+
     fun animatePass() {
         // Make the ImageView visible
         passImageView.visibility = View.VISIBLE
+
+        // Reset to initial scale and rotation to ensure animation starts correctly
+        passImageView.scaleX = 0.2f
+        passImageView.scaleY = 0.2f
+        passImageView.rotation = -135f
 
         // Define the animation properties
         val scaleX = ObjectAnimator.ofFloat(passImageView, View.SCALE_X, 0.2f, 1.0f)
@@ -105,6 +115,14 @@ class PassAnimation : Fragment() {
         val animatorSet = AnimatorSet()
         animatorSet.playSequentially(initialAnimatorSet, finalRotationAnimatorSet)
         animatorSet.start()
+
+        // Hide the ImageView after the animation ends
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                passImageView.visibility = View.GONE
+            }
+        })
     }
+
 
 }

@@ -112,6 +112,17 @@ class DiscoverViewModel : ViewModel() {
             emptySet() // Return an empty set in case of error
         }
     }
+    private suspend fun fetchPassedUserIds(): Set<String> {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return emptySet()
+        val passRef = FirebaseDatabase.getInstance().getReference("users/$userId/passedLikes")
+        return try {
+            val snapshot = passRef.get().await()
+            snapshot.children.mapNotNull { it.key }.toSet()
+        } catch (e: Exception) {
+            Log.e("DiscoverViewModel", "Failed to fetch liked user IDs", e)
+            emptySet()  // Return an empty set in case of error
+        }
+    }
 
     private fun filterUserIdsByPreference(userIds: List<String>) {
         viewModelScope.launch {
@@ -119,6 +130,7 @@ class DiscoverViewModel : ViewModel() {
             val seenUserIds = fetchSeenUserIds()
             val likedUserIds = fetchLikedUsers()
             val matchedUserIds = fetchMatchedUserIds()
+            val passedUserIds = fetchPassedUserIds()
             val userRef = FirebaseDatabase.getInstance().getReference("users")
 
             val usersDataDeferred = userIds.map { userId ->
@@ -127,7 +139,8 @@ class DiscoverViewModel : ViewModel() {
                     if (userData != null &&
                         !seenUserIds.contains(userId) &&
                         !likedUserIds.contains(userId) &&
-                        !matchedUserIds.contains(userId)
+                        !matchedUserIds.contains(userId) &&
+                        !passedUserIds.contains(userId)
                     ) {
                         userId to userData
                     } else {

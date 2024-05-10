@@ -100,6 +100,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var progressBar: ProgressBar
     private lateinit var rectangleBackground: View
     private lateinit var participantText: TextView
+    private var allEventsList: MutableList<Event> = mutableListOf()
     private val REQUEST_LOCATION_PERMISSION = 1001
     private var cameraMovedOnce = false
     private var eventsList: MutableList<Event> = mutableListOf()
@@ -184,7 +185,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         // Set up autocomplete for search bar
         autocompleteAdapter = AutocompleteAdapter(requireContext())
         searchBar.setAdapter(autocompleteAdapter)
-        searchBar.threshold = 1 // Start autocomplete after 1 character
 
         // Fill up the event bottom sheet with events from the database
         fetchEventsFromDatabase()
@@ -235,7 +235,7 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                fetchAutocompletePredictions(s.toString())
+                filterEvents(s.toString())
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -313,6 +313,20 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
             }
         }
         popupMenu.show()
+    }
+
+    private fun filterEvents(query: String) {
+        val filteredList = allEventsList.filter { event ->
+            event.title.contains(query, ignoreCase = true) ||
+                    event.description.contains(query, ignoreCase = true) ||
+                    event.addressList.any { it.contains(query, ignoreCase = true) }
+        }
+
+        eventList.adapter = EventSheetAdapter(requireContext(), filteredList)
+        (eventList.adapter as EventSheetAdapter).notifyDataSetChanged()
+
+        // Update markers on the map
+        addMarkersToMap(filteredList)
     }
 
     private fun sortEventsByName(eventsList: MutableList<Event>) {
@@ -810,8 +824,6 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
         for (event in events) {
             val fullAddress = event.addressList.joinToString(", ")
             val coords = performGeocoding(fullAddress)
-            Log.d("addMarkersToMap()", "${event.title} added at ${coords}")
-
             val marker = googleMap.addMarker(MarkerOptions().position(coords).title(event.title))
             if (marker != null) {
                 marker.tag = event
@@ -938,21 +950,22 @@ class EventsFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // Ensure the fragment is attached to a context
                 val context = context ?: return
 
                 eventsList.clear()
+                allEventsList.clear()
+
                 for (snapshot in dataSnapshot.children) {
                     val event = snapshot.getValue(Event::class.java)
                     event?.let {
                         eventsList.add(it)
+                        allEventsList.add(it)
                     }
                 }
-                // Update the ListView adapter
+
                 val eventAdapter = EventSheetAdapter(context, eventsList)
                 eventList.adapter = eventAdapter
                 eventAdapter.notifyDataSetChanged()
-                // Also update markers on the map
                 addMarkersToMap(eventsList)
             }
 
